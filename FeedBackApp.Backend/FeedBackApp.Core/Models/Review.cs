@@ -11,7 +11,7 @@ namespace FeedBackApp.Backend.Core.Models
         public short? Score { get; set; }
         public string? Comment { get; set; } = String.Empty;
         public Guid SubjectId { get; set; } = new();
-        public Subject Subject { get; set; } = new(); // navigation for EF
+        public Subject Subject { get; set; } = new(); // navigation for E
         public Guid TeacherId { get; set; } = new();
         public Person Teacher { get; set; } = new(); // navigation for EF
 

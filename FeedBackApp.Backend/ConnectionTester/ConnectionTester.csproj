@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.52.1" />
-    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
   </ItemGroup>
 
 </Project>

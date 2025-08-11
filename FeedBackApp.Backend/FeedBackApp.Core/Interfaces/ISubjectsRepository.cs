@@ -1,7 +1,6 @@
-﻿
-using FeedBackApp.Backend.Core.Models;
+﻿using FeedBackApp.Backend.Core.Models;
 
-namespace FeedBackApp.Backend.Core.Interfaces
+namespace FeedBackApp.Core.Interfaces
 {
     public interface ISubjectsRepository
     {
