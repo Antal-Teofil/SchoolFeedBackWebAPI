@@ -10,7 +10,19 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
+        public AppDBContext() { }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseCosmos(
+                    "https://localhost:8081/",
+                    "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                    "SchoolDatabase");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +39,6 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
                 .HasOne(r => r.Subject)
                 .WithMany(s => s.Reviews)
                 .HasForeignKey(r => r.SubjectId)
-                .HasForeignKey(t => t.TeacherId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-many: Teacher(Person) -> Reviews

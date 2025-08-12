@@ -13,24 +13,24 @@ class Program
 
         Console.WriteLine("Connected to Cosmos DB Emulator.");
 
-        Database db = await client.CreateDatabaseIfNotExistsAsync("TestDB");
-        Container container = await db.CreateContainerIfNotExistsAsync("TestContainer", "/id");
+        Database db = await client.CreateDatabaseIfNotExistsAsync("SchoolDatabase");
+        //Container container = await db.CreateContainerIfNotExistsAsync("TestContainer", "/id");
 
-        var sqlQueryText = "SELECT c.id FROM c";
+        //var sqlQueryText = "SELECT c.id FROM c";
 
-        Console.WriteLine($"Running query: {sqlQueryText}");
+        //Console.WriteLine($"Running query: {sqlQueryText}");
 
-        QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
-        FeedIterator<dynamic> queryResultSetIterator = container.GetItemQueryIterator<dynamic>(queryDefinition);
+        //QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+        //FeedIterator<dynamic> queryResultSetIterator = container.GetItemQueryIterator<dynamic>(queryDefinition);
 
-        while (queryResultSetIterator.HasMoreResults)
-        {
-            FeedResponse<dynamic> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-            foreach (var item in currentResultSet)
-            {
-                Console.WriteLine(item);
-            }
-        }
+        //while (queryResultSetIterator.HasMoreResults)
+        //{
+        //    FeedResponse<dynamic> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+        //    foreach (var item in currentResultSet)
+        //    {
+        //        Console.WriteLine(item);
+        //    }
+        //}
 
 
     }
