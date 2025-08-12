@@ -46,9 +46,7 @@ const Index = () => {
           <span className="block mb-2">Preview dashboards:</span>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a className="underline hover:text-foreground" href="/dashboard/student">Student</a>
-            <a className="underline hover:text-foreground" href="/dashboard/teacher">Teacher</a>
             <a className="underline hover:text-foreground" href="/dashboard/admin">Admin</a>
-            <a className="underline hover:text-foreground" href="/dashboard/hod">HoD</a>
           </div>
         </nav>
       </main>
