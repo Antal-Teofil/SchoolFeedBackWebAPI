@@ -18,6 +18,8 @@ public class GoodleAuth
         _logger = logger;
     }
 
+
+    //Google OAuth id validation and JWT token providing
     [Function("LoginWithGoogle")]
     public async Task<HttpResponseData> LoginWithGoogle(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
@@ -54,6 +56,8 @@ public class GoodleAuth
         await response.WriteStringAsync(JsonConvert.SerializeObject(new { token }));
         return response;
     }
+
+    //Placeholder while the database is not accessible
     private Task<UserRecord> GetUserFromDatabase(string email)
     {
         var users = new List<UserRecord>
@@ -65,9 +69,11 @@ public class GoodleAuth
         return Task.FromResult(users.FirstOrDefault(u => u.Email == email));
     }
 
+    //Generate a JWT token with the email and role of the person for future authorization
     private string GenerateJwtToken(UserRecord user)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("N7x8!qP2vYd#5rTf@Wm9LsZ0GjHx4KuV"));
+        string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
@@ -77,8 +83,8 @@ public class GoodleAuth
         };
 
         var token = new JwtSecurityToken(
-            issuer: "SchoolFeedbackWebApi",
-            audience: "SchoolFeedbackWebApi",
+            issuer: "SchoolFeedbackWebAPI",
+            audience: "SchoolFeedbackWebAPI",
             claims: claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: creds
@@ -87,6 +93,7 @@ public class GoodleAuth
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    //Scheme of a login request
     public class LoginRequest
     {
         public string IdToken { get; set; }
