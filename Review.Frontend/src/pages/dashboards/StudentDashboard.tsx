@@ -1,6 +1,9 @@
 import { FeedbackForm } from "@/components/feedback/FeedbackForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useReviews } from "../../hooks/useReviews";
+import { toast } from "sonner";
 
+//memory
 const subjects = [
   { id: "math", name: "Mathematics" },
   { id: "phy", name: "Physics" },
@@ -13,6 +16,34 @@ const teachers = [
 ];
 
 export default function StudentDashboard() {
+  /*const {
+    subjectsByGrade,
+    isLoadingSubjectsByGrade,
+    isErrorSubjectsByGrade,
+    errorSubjectsByGrade,
+    teachersBySubject,
+    isLoadingTeachersBySubject,
+    isErrorTeachersBySubject,
+    errorTeachersBySubject,
+  } = useReviews()
+
+
+  if (isLoadingSubjectsByGrade) {
+    toast("Loading Subjects By Grade");
+  }
+
+  if (isLoadingTeachersBySubject) {
+    toast("Loading Teachers By Subjects");
+  }
+
+  if (isErrorSubjectsByGrade) {
+    return <div className="error">Error has occured:{errorSubjectsByGrade.message}</div>
+  }
+
+  if (isErrorTeachersBySubject) {
+    return <div className="error">Error has occured:{errorTeachersBySubject.message}</div>
+  }
+*/
   return (
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
@@ -42,7 +73,7 @@ export default function StudentDashboard() {
       </section>
 
       <section>
-        <FeedbackForm subjects={subjects} teachers={teachers} />
+        <FeedbackForm subjects={subjects/*subjectsByGrade*/} teachers={teachers/*teachersBySubject*/} />
       </section>
     </main>
   );
