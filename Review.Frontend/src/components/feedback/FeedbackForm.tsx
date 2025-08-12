@@ -126,19 +126,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
         {/* Alap kiválasztások */}
         <section className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
-            <Label htmlFor="grade">Évfolyam</Label>
-            <Select value={grade} onValueChange={setGrade}>
-              <SelectTrigger id="grade">
-                <SelectValue placeholder="Válassz évfolyamot (5–12)" />
-              </SelectTrigger>
-              <SelectContent>
-                {grades.map((g) => (
-                  <SelectItem key={g} value={g}>{g}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
             <Label htmlFor="subject">Tantárgy</Label>
             <Select value={subjectId} onValueChange={setSubjectId}>
               <SelectTrigger id="subject">
