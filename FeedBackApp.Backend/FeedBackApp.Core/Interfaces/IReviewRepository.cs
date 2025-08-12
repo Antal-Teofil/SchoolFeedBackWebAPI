@@ -2,7 +2,7 @@
 
 namespace FeedBackApp.Core.Interfaces
 {
-    public interface IReviewsRepository
+    public interface IReviewRepository
     {
         public ICollection<Review> GetAllReviews();
 

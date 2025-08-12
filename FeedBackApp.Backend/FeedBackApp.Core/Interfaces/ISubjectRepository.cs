@@ -2,7 +2,7 @@
 
 namespace FeedBackApp.Core.Interfaces
 {
-    public interface ISubjectsRepository
+    public interface ISubjectRepository
     {
         public Subject? GetSubjectById(Guid id);
 

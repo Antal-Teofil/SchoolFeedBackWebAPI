@@ -2,7 +2,7 @@
 
 namespace FeedBackApp.Core.Interfaces
 {
-    public interface IPersonsRepository
+    public interface IPersonRepository
     {
         public Person? GetPersonById(Guid id);
 
