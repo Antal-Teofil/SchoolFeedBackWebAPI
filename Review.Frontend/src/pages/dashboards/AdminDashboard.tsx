@@ -20,7 +20,16 @@ export default function AdminDashboard() {
     toast("Export will be available after backend setup (Excel).");
   };
 
+  const sendQuestionnaires = () => {
+
+  }
+
+  const deleteQuestionnaires = () => {
+
+  }
+
   return (
+    
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -61,8 +70,10 @@ export default function AdminDashboard() {
         </Card>
       </section>
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-row gap-4">
         <Button onClick={exportExcel}>Export results to Excel</Button>
+        <Button onClick={sendQuestionnaires}>Send Questionnaires to students!</Button>
+        <Button onClick={deleteQuestionnaires}>Delete Questionnaires</Button>
       </div>
     </main>
   );
