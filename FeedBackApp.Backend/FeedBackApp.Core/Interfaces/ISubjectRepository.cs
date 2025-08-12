@@ -1,0 +1,21 @@
+﻿using FeedBackApp.Backend.Core.Models;
+
+namespace FeedBackApp.Core.Interfaces
+{
+    public interface ISubjectRepository
+    {
+        public Subject? GetSubjectById(Guid id);
+
+        public ICollection<Person> GetTeachersBySubject(Subject subject);
+
+        public ICollection<Person> GetTeachersBySubjectId(Guid id);
+
+        public ICollection<Subject> GetSubjectsByGrade(short grade);
+
+        public bool AddSubject(Subject subject);
+
+        public bool DeleteSubject(Guid id);
+
+        public bool UpdateSubject(Subject subject);
+    }
+}
