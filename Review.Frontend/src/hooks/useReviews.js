@@ -1,53 +1,53 @@
-import { useQuery, useQueryClient, useMutation} from "@tanstack/react-query"
-import {getSubjectsByGrade,getTeachersBySubject,saveReview,getReviewsBySubject,getSubjectsByTeacher,getReviewStats,setFormAvailability,getAllReviews} from "@/api/ReviewApi"
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { getSubjectsByGrade, getTeachersBySubject, saveReview, getReviewsBySubject, getSubjectsByTeacher, getReviewStats, setFormAvailability, getAllReviews } from "@/api/ReviewApi"
 
-export const useReviews = () =>{
-    const client=useQueryClient();
-    const{
-        data:subjectsByGrade,
-        isLoading : isLoadingSubjectsByGrade,
-        isError : isErrorSubjectsByGrade,
-        error : errorSubjectsByGrade
+export const useReviews = () => {
+    const client = useQueryClient();
+    const {
+        data: subjectsByGrade,
+        isLoading: isLoadingSubjectsByGrade,
+        isError: isErrorSubjectsByGrade,
+        error: errorSubjectsByGrade
     } = useQuery({
-        queryKey: [`subjectsByGrade`,grade],
-        queryFn:getSubjectsByGrade(grade)
-    })
-        
-    const{
-        data:teachersBySubject,
-        isLoading : isLoadingTeachersBySubject,
-        isError : isErrorTeachersBySubject,
-        error : errorTeachersBySubject
-    } = useQuery({
-        queryKey: [`teachersBySubject`,subject],
-        queryFn:getTeachersBySubject(subject)
+        queryKey: [`subjectsByGrade`, gradeId],
+        queryFn: getSubjectsByGrade(gradeId)
     })
 
-    const{
-        data:reviewsBySubject,
-        isLoading : isLoadingReviewsBySubject,
-        isError : isErrorReviewsBySubject,
-        error : errorReviewsBySubject
+    const {
+        data: teachersBySubject,
+        isLoading: isLoadingTeachersBySubject,
+        isError: isErrorTeachersBySubject,
+        error: errorTeachersBySubject
     } = useQuery({
-        queryKey: [`reviews`,subject],
-        queryFn:getReviewsBySubject(subject)
+        queryKey: [`teachersBySubject`, subjectId],
+        queryFn: getTeachersBySubject(subjectId)
     })
 
-    const{
-        data:subjectsByTeacher,
-        isLoading : isLoadingSubjectsByTeacher,
-        isError : isErrorSubjectsByTeacher,
-        error : errorReviewsSubjectsByTeacher
+    const {
+        data: reviewsBySubject,
+        isLoading: isLoadingReviewsBySubject,
+        isError: isErrorReviewsBySubject,
+        error: errorReviewsBySubject
     } = useQuery({
-        queryKey: [`reviews`,teacher],
-        queryFn:getSubjectsByTeacher(teacher)
+        queryKey: [`reviews`, subjectId],
+        queryFn: getReviewsBySubject(subjectId)
+    })
+
+    const {
+        data: subjectsByTeacher,
+        isLoading: isLoadingSubjectsByTeacher,
+        isError: isErrorSubjectsByTeacher,
+        error: errorReviewsSubjectsByTeacher
+    } = useQuery({
+        queryKey: [`reviews`, teacherId],
+        queryFn: getSubjectsByTeacher(teacherId)
     })
 
     const {
         data: statsReviews,
-        isLoading:isLoadingStatsReview,
-        isError:isErrorStatsReview,
-        error:errorStatsReview,
+        isLoading: isLoadingStatsReview,
+        isError: isErrorStatsReview,
+        error: errorStatsReview,
     } = useQuery({
         queryKey: ['statsReviews'],
         queryFn: getReviewStats,
@@ -55,28 +55,19 @@ export const useReviews = () =>{
 
     const {
         data: allReviews,
-        isLoading:isLoadingAllReviews,
-        isError:isErrorAllReviews,
-        error:errorAllReview,
+        isLoading: isLoadingAllReviews,
+        isError: isErrorAllReviews,
+        error: errorAllReview,
     } = useQuery({
         queryKey: ['allReviews'],
         queryFn: getAllReviews,
     })
 
-    const {mutate: saveReviewItem , isPending: isSavingReview } = useMutation({
+    const { mutate: saveReview, isPending: isSavingReview } = useMutation({
         mutationFn: saveReview,
-        onSuccess: (review) => {
+        onSuccess: () => {
             client.invalidateQueries({
-                queryKey: ['reviews',review]
-            });
-        }
-    })
-
-     const {mutate: setFormAvailability , isPending: isSettingFormAvailability} = useMutation({
-        mutationFn: setFormAvailability,
-        onSuccess: (avaliability) => {
-            client.invalidateQueries({
-                queryKey: ['reviews',avaliability]
+                queryKey: ['reviews']
             });
         }
     })
@@ -108,7 +99,5 @@ export const useReviews = () =>{
         errorAllReview,
         saveReviewItem,
         isSavingReview,
-        setFormAvailability,
-        isSettingFormAvailability
     }
 }
