@@ -8,6 +8,7 @@ const apiClient = axios.create({
     },
 });
 
+//
 export const getSubjectsByGrade = async (gradeId) => {
     const response = await apiClient.get(`/grades/${gradeId}/subjects`);
     return response.data;
