@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { getSubjectsByGrade, getTeachersBySubject, saveReview, getReviewsBySubject, getSubjectsByTeacher, getReviewStats, setFormAvailability, getAllReviews } from "@/api/ReviewApi"
+import { getSubjectsByGrade, getTeachersBySubject, saveReview, getReviewsBySubject, getSubjectsByTeacher, getReviewStats, getAllReviews } from "@/api/ReviewApi"
 
 export const useReviews = () => {
     const client = useQueryClient();
@@ -63,11 +63,20 @@ export const useReviews = () => {
         queryFn: getAllReviews,
     })
 
-    const { mutate: saveReview, isPending: isSavingReview } = useMutation({
+    const { mutate: saveReviewItem, isPending: isSavingReview } = useMutation({
         mutationFn: saveReview,
         onSuccess: () => {
             client.invalidateQueries({
                 queryKey: ['reviews']
+            });
+        }
+    })
+
+    const {mutate: setFormAvailability , isPending: isSettingFormAvailability} = useMutation({
+        mutationFn: setFormAvailability,
+        onSuccess: (avaliability) => {
+            client.invalidateQueries({
+                queryKey: ['reviews',avaliability]
             });
         }
     })
@@ -99,5 +108,7 @@ export const useReviews = () => {
         errorAllReview,
         saveReviewItem,
         isSavingReview,
+        setFormAvailability,
+        isSettingFormAvailability
     }
 }

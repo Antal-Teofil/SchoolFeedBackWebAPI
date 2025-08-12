@@ -42,3 +42,8 @@ export const getReviewStats = async () => {
     const response = await apiClient.get(`/reviews/stats`)
     return response.data;
 }
+
+export const setFormAvailability = async (avaliability) => {
+    const response = await apiClient.post(`/setFormAvailability/${avaliability}`)
+    return response.data;
+}
