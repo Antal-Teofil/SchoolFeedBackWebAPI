@@ -22,9 +22,6 @@ namespace FeedBackApp.Backend.Core.Models
         public string Email { get; set; } = String.Empty;
 
         [Required]
-        public byte[] Password { get; set; } = []; // changable to string
-
-        [Required]
         public Role Role { get; set; } = Role.Student;
 
         public ICollection<Subject> Subjects { get; set; } = new List<Subject>();
