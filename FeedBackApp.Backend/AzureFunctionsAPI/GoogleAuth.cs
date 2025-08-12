@@ -24,7 +24,7 @@ public class GoogleAuth
     //Google OAuth id validation and JWT token providing
     [Function("LoginWithGoogle")]
     public async Task<HttpResponseData> LoginWithGoogle(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="/login/google")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="auth/login/google")] HttpRequestData req)
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<LoginRequest>(body);
@@ -44,11 +44,12 @@ public class GoogleAuth
             return badResp;
         }
 
+        //Check if the admin is in the list of admins in the environment variable
         var adminEmailsEnv = Environment.GetEnvironmentVariable("AdminEmails") ?? "";
         var adminEmails = adminEmailsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
         bool isAdmin = adminEmails.Contains(payload.Email, StringComparer.OrdinalIgnoreCase);
 
+        //If not admin, and also not student
         if (!students.Contains(payload.Email, StringComparer.OrdinalIgnoreCase) && !isAdmin)
         {
             var notFoundResp = req.CreateResponse(System.Net.HttpStatusCode.Forbidden);
@@ -61,12 +62,14 @@ public class GoogleAuth
         var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
 
         // Set the cookie
-        response.Headers.Add("Set-Cookie",
+        response.Headers.Add("Set-Cookie", 
             $"token={token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400");
 
         await response.WriteAsJsonAsync(new
         {
             email = payload.Email,
+            firstName = payload.GivenName,
+            lastName = payload.FamilyName,
             role = isAdmin ? "Admin" : "Student"
         });
 
