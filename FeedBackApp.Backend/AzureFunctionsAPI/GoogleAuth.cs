@@ -24,7 +24,7 @@ public class GoogleAuth
     //Google OAuth id validation and JWT token providing
     [Function("LoginWithGoogle")]
     public async Task<HttpResponseData> LoginWithGoogle(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="auth/login/google")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="auth/google")] HttpRequestData req)
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<LoginRequest>(body);
