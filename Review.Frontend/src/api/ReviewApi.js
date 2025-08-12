@@ -9,42 +9,27 @@ const apiClient = axios.create({
 });
 
 //
-export const getSubjectsByGrade = async (gradeId) => {
-    const response = await apiClient.get(`/grades/${gradeId}/subjects`);
+export const CreateQuestionnaires = async () => {
+    const response = await apiClient.post(`/questionnaires`);
     return response.data;
 }
 
-export const getTeachersBySubject = async (subjectId) => {
-    const response = await apiClient.get(`/subjects/${subjectId}/teachers`)
+export const GetQuestionnaireSummary = async (questionnaireId) => {
+    const response = await apiClient.get(`/questionnaires/${questionnaireId}`)
     return response.data;
 }
 
-export const saveReview = async () => {
-    const response = await apiClient.post(`reviews`)
+export const GetEvaluation  = async (evaluationId) => {
+    const response = await apiClient.get(`/evaluations/${evaluationId}`)
     return response.data;
 }
 
-export const getReviewsBySubject = async (subjectId) => {
-    const response = await apiClient.get(`/subjects/${subjectId}/reviews`)
+export const UpdateEvaluation = async (evaluationId) => {
+    const response = await apiClient.patch(`/evaluations/${evaluationId}`)
     return response.data;
 }
 
-export const getSubjectsByTeacher = async (teacherId) => {
-    const response = await apiClient.get(`/teachers/${teacherId}/subjects`)
-    return response.data;
-}
-
-export const getAllReviews = async () => {
-    const response = await apiClient.get(`/reviews`)
-    return response.data;
-}
-
-export const getReviewStats = async () => {
-    const response = await apiClient.get(`/reviews/stats`)
-    return response.data;
-}
-
-export const setFormAvailability = async (avaliability) => {
-    const response = await apiClient.post(`/setFormAvailability/${avaliability}`)
+export const DeleteQuestionnaire  = async (questionnaireId) => {
+    const response = await apiClient.delete(`/questionnaires/${questionnaireId}`)
     return response.data;
 }
