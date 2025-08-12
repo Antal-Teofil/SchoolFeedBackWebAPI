@@ -3,112 +3,68 @@ import { getSubjectsByGrade, getTeachersBySubject, saveReview, getReviewsBySubje
 
 export const useReviews = () => {
     const client = useQueryClient();
-    const {
-        data: subjectsByGrade,
-        isLoading: isLoadingSubjectsByGrade,
-        isError: isErrorSubjectsByGrade,
-        error: errorSubjectsByGrade
-    } = useQuery({
-        queryKey: [`subjectsByGrade`, gradeId],
-        queryFn: getSubjectsByGrade(gradeId)
-    })
 
-    const {
-        data: teachersBySubject,
-        isLoading: isLoadingTeachersBySubject,
-        isError: isErrorTeachersBySubject,
-        error: errorTeachersBySubject
-    } = useQuery({
-        queryKey: [`teachersBySubject`, subjectId],
-        queryFn: getTeachersBySubject(subjectId)
-    })
-
-    const {
-        data: reviewsBySubject,
-        isLoading: isLoadingReviewsBySubject,
-        isError: isErrorReviewsBySubject,
-        error: errorReviewsBySubject
-    } = useQuery({
-        queryKey: [`reviews`, subjectId],
-        queryFn: getReviewsBySubject(subjectId)
-    })
-
-    const {
-        data: subjectsByTeacher,
-        isLoading: isLoadingSubjectsByTeacher,
-        isError: isErrorSubjectsByTeacher,
-        error: errorReviewsSubjectsByTeacher
-    } = useQuery({
-        queryKey: [`reviews`, teacherId],
-        queryFn: getSubjectsByTeacher(teacherId)
-    })
-
-    const {
-        data: statsReviews,
-        isLoading: isLoadingStatsReview,
-        isError: isErrorStatsReview,
-        error: errorStatsReview,
-    } = useQuery({
-        queryKey: ['statsReviews'],
-        queryFn: getReviewStats,
-    })
-
-    const {
-        data: allReviews,
-        isLoading: isLoadingAllReviews,
-        isError: isErrorAllReviews,
-        error: errorAllReview,
-    } = useQuery({
-        queryKey: ['allReviews'],
-        queryFn: getAllReviews,
-    })
-
-    const { mutate: saveReviewItem, isPending: isSavingReview } = useMutation({
-        mutationFn: saveReview,
+    const { mutate: createQuestionnaires, isPending: isCreatingQuestionnaire } = useMutation({
+        mutationFn: CreateQuestionnaires,
         onSuccess: () => {
             client.invalidateQueries({
-                queryKey: ['reviews']
+                queryKey: ['questionnaires']
             });
         }
     })
 
-    const {mutate: setFormAvailability , isPending: isSettingFormAvailability} = useMutation({
-        mutationFn: setFormAvailability,
-        onSuccess: (avaliability) => {
+    const {
+        data: questionnairesSummary,
+        isLoading: isLoadingQuestionnairesSummary,
+        isError: isErrorQuestionnairesSummary,
+        error: errorQuestionnairesSummary
+    } = useQuery({
+        queryKey: [`questionnairesSummary`, questionnaireId],
+        queryFn: GetQuestionnaireSummary(questionnaireId)
+    })
+
+    const {
+        data: evaluation,
+        isLoading: isLoadingEvaluation,
+        isError: isErrorEvaluation,
+        error: errorEvaluation
+    } = useQuery({
+        queryKey: [`evaluation`, evaluationId],
+        queryFn: GetEvaluation(evaluationId)
+    })
+
+
+    const { mutate: updateEvaluation, isPending: isUpdatingEvaluation } = useMutation({
+        mutationFn: UpdateEvaluation,
+        onSuccess: (evaluationId) => {
             client.invalidateQueries({
-                queryKey: ['reviews',avaliability]
+                queryKey: ['updatedEvaluation', evaluationId]
             });
         }
     })
 
+    const { mutate: deleteQuestionnaire, isPending: isDeletingQuestionnaire } = useMutation({
+        mutationFn: DeleteQuestionnaire,
+        onSuccess: (questionnaireId) => {
+            client.invalidateQueries({
+                queryKey: ['deletedQuestionnaire', questionnaireId]
+            });
+        }
+    })
     return {
-        subjectsByGrade,
-        isLoadingSubjectsByGrade,
-        isErrorSubjectsByGrade,
-        errorSubjectsByGrade,
-        teachersBySubject,
-        isLoadingTeachersBySubject,
-        isErrorTeachersBySubject,
-        errorTeachersBySubject,
-        reviewsBySubject,
-        isLoadingReviewsBySubject,
-        isErrorReviewsBySubject,
-        errorReviewsBySubject,
-        subjectsByTeacher,
-        isLoadingSubjectsByTeacher,
-        isErrorSubjectsByTeacher,
-        errorReviewsSubjectsByTeacher,
-        statsReviews,
-        isLoadingStatsReview,
-        isErrorStatsReview,
-        errorStatsReview,
-        allReviews,
-        isLoadingAllReviews,
-        isErrorAllReviews,
-        errorAllReview,
-        saveReviewItem,
-        isSavingReview,
-        setFormAvailability,
-        isSettingFormAvailability
+        createQuestionnaires,
+        isCreatingQuestionnaire,
+        questionnairesSummary,
+        isLoadingQuestionnairesSummary,
+        isErrorQuestionnairesSummary,
+        errorQuestionnairesSummary,
+        evaluation,
+        isLoadingEvaluation,
+        isErrorEvaluation,
+        errorEvaluation,
+        updateEvaluation,
+        isUpdatingEvaluation,
+        deleteQuestionnaire,
+        isDeletingQuestionnaire,
     }
 }
