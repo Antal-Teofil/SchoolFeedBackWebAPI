@@ -58,7 +58,7 @@ public class GoodleAuth
     {
         var users = new List<UserRecord>
         {
-            new UserRecord { Email = "student@example.com", Role = "Student" },
+            new UserRecord { Email = "szrichard2004@gmail.com", Role = "Student" },
             new UserRecord { Email = "teacher@example.com", Role = "Teacher" }
         };
 
@@ -67,8 +67,8 @@ public class GoodleAuth
 
     private string GenerateJwtToken(UserRecord user)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YOUR_SUPER_SECRET_KEY"));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.Sha256);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("N7x8!qP2vYd#5rTf@Wm9LsZ0GjHx4KuV"));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
