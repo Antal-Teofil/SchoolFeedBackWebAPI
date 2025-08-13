@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { getSubjectsByGrade, getTeachersBySubject, saveReview, getReviewsBySubject, getSubjectsByTeacher, getReviewStats, getAllReviews } from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary,GetEvaluation, UpdateEvaluation,DeleteQuestionnaire} from "@/api/ReviewApi"
 
 export const useReviews = () => {
     const client = useQueryClient();
