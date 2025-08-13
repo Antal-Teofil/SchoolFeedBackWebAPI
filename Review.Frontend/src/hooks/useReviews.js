@@ -1,8 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CreateQuestionnaires, GetQuestionnaireSummary,GetEvaluation, UpdateEvaluation,DeleteQuestionnaire} from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle } from "@/api/ReviewApi"
+import { useParams } from "react-router-dom";
 
 export const useReviews = () => {
     const client = useQueryClient();
+    const { questionnaireId, evaluationId } = useParams();
 
     const { mutate: createQuestionnaires, isPending: isCreatingQuestionnaire } = useMutation({
         mutationFn: CreateQuestionnaires,
@@ -51,6 +53,15 @@ export const useReviews = () => {
             });
         }
     })
+
+const { mutate: loginWithGoogle, isPending: isLoggingIn, error: loginError } = useMutation({
+    mutationFn: LoginWithGoogle,
+    onSuccess: (data) => {
+        client.invalidateQueries({ queryKey: ['user'] })
+    }
+});
+
+
     return {
         createQuestionnaires,
         isCreatingQuestionnaire,
@@ -66,5 +77,8 @@ export const useReviews = () => {
         isUpdatingEvaluation,
         deleteQuestionnaire,
         isDeletingQuestionnaire,
+        loginWithGoogle,
+        isLoggingIn,
+        loginError,
     }
 }

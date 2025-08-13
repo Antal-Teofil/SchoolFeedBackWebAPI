@@ -3,12 +3,13 @@ import axios from "axios"
 const API_URL = "http://localhost:7277/api";
 const apiClient = axios.create({
     baseURL: API_URL,
+    withCredentials: true, 
     headers: {
         "Content-Type": "application/json",
     },
 });
 
-//
+
 export const CreateQuestionnaires = async () => {
     const response = await apiClient.post(`/questionnaires`);
     return response.data;
@@ -33,3 +34,10 @@ export const DeleteQuestionnaire  = async (questionnaireId) => {
     const response = await apiClient.delete(`/questionnaires/${questionnaireId}`)
     return response.data;
 }
+
+export const LoginWithGoogle = async (idToken) => {
+    const response = await apiClient.post('/auth/google', { IdToken: idToken },{
+    withCredentials: true
+  });
+    return response.data;
+};
