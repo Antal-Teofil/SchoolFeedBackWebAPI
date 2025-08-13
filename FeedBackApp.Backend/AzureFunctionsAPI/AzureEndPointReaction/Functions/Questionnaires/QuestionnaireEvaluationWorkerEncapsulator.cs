@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,7 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireEvaluationWorkerEncapsulator(IServiceProvider service, ILogger<QuestionnaireEvaluationWorkerEncapsulator> logger)
+    public sealed class QuestionnaireEvaluationWorkerEncapsulator(IServiceProvider service, ILogger<QuestionnaireEvaluationWorkerEncapsulator> logger) : IQuestionnaireWorker
     {
         private readonly IServiceProvider _service = service;
         private readonly ILogger<QuestionnaireEvaluationWorkerEncapsulator> _logger = logger;

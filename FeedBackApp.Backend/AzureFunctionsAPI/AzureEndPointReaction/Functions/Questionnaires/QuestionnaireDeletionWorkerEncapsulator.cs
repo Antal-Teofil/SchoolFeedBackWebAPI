@@ -1,4 +1,5 @@
-﻿using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+﻿using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -8,7 +9,7 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireDeletionWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireDeletionWorkerEncapsulator> logger)
+    public sealed class QuestionnaireDeletionWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireDeletionWorkerEncapsulator> logger) : IQuestionnaireWorker
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireDeletionWorkerEncapsulator> _logger = logger;

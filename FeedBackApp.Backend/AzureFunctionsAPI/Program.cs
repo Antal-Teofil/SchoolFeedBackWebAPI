@@ -2,6 +2,8 @@
 using Azure.Core.Serialization;
 using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureEndPointReaction.Functions.Questionnaires;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,8 +38,12 @@ var host = new HostBuilder()
 
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
-        // services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+        services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+        services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
+        services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
+        services.AddScoped<IQuestionnaireWorker, QuestionnaireSummaryRequestWorkerEncapsulator>();
+        services.AddScoped<IQuestionnaireWorker, QuestionnaireUpdateRequestWorkerEncapsulator>();
     })
     // Pipeline/Middleware (IFunctionsWorkerApplicationBuilder overload)
     .ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder app) =>

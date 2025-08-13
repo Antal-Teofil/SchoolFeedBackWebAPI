@@ -4,6 +4,7 @@ using System.Text;
 using Google.Apis.Auth;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -23,6 +24,8 @@ public class GoogleAuth
 
     //Google OAuth id validation and JWT token providing
     [Function("LoginWithGoogle")]
+    [OpenApiOperation(operationId: "LoginWithGoogle", tags: new[] { "Auth" })]
+    [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(LoginRequest), Required = true, Description = "Google ID Token payload")]
     public async Task<HttpResponseData> LoginWithGoogle(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="auth/google")] HttpRequestData req)
     {

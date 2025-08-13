@@ -13,6 +13,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireCompilerWorkerEncapsulator> _logger = logger;
 
+
         [Function("PerformQuestionnaireCompilation")]
         [OpenApiOperation(
             operationId: "PerformQuestionnaireCompilation",
@@ -27,7 +28,11 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             statusCode: HttpStatusCode.OK, 
             contentType: "application/json", 
             bodyType: typeof(object) // replace dto
-            )] 
+            )]
+        [OpenApiResponseWithoutBody(
+            statusCode: HttpStatusCode.BadRequest,
+            Description = "Request body is missing or invalid"
+        )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
             /*implementation in progress*/
