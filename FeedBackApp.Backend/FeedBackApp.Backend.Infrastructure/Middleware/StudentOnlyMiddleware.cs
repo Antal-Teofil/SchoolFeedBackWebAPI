@@ -4,7 +4,7 @@ using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 
 namespace FeedBackApp.Backend.Infrastructure.Middleware
 {
-    public class AdminOnlyMiddleware : IFunctionsWorkerMiddleware
+    public class StudentOnlyMiddleware : IFunctionsWorkerMiddleware
     {
         public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
         {
@@ -31,7 +31,7 @@ namespace FeedBackApp.Backend.Infrastructure.Middleware
 
             var token = bearerToken.Substring("Bearer ".Length).Trim();
 
-            if (!JwtRoleValidator.IsAdmin(token))
+            if (!JwtRoleValidator.IsStudent(token))
             {
                 await ReturnForbidden.ExecuteAsync(context, httpRequestData);
                 return;
