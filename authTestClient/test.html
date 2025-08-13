@@ -16,7 +16,7 @@
         console.log("ID Token:", response.credential);
 
         try {
-          const res = await fetch('http://localhost:7277/api/auth/login/google', {
+          const res = await fetch('http://localhost:7277/api/auth/google', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

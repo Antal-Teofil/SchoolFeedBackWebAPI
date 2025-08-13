@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google"; // ⬅️ HOZZÁAD
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import NoAccess from "./pages/NoAccess";
@@ -11,22 +13,27 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 
 const queryClient = new QueryClient();
 
+const GOOGLE_CLIENT_ID =
+  "637207134191-t75bngevukdts5fqq8mh0f30h7es0hn5.apps.googleusercontent.com";
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard/student" element={<StudentDashboard />} />
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
-          <Route path="/no-access" element={<NoAccess/>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider> 
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}> {/* ⬅️ KÖRBEÖLEL MINDENT */}
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard/student" element={<StudentDashboard />} />
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route path="/no-access" element={<NoAccess />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </GoogleOAuthProvider>
 );
 
 export default App;
