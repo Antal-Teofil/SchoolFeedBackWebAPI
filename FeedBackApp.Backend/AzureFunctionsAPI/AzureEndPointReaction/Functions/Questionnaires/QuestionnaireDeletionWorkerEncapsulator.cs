@@ -1,7 +1,9 @@
 ﻿using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
@@ -12,6 +14,16 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly ILogger<QuestionnaireDeletionWorkerEncapsulator> _logger = logger;
 
         [Function("PerformQuestionnarieDeletion")]
+        [OpenApiOperation(
+            operationId: "PerformQuestionnaireDeletion",
+            tags: new[] { "Questionnaires" }
+        )]
+        [OpenApiParameter(
+            name: "id",
+            In = ParameterLocation.Path,
+            Required = true,
+            Type = typeof(Guid)
+        )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
 

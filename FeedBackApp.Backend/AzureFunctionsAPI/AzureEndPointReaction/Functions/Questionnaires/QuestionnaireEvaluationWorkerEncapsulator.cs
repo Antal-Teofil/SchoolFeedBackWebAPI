@@ -1,12 +1,10 @@
 ﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.OpenApi.Models;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
@@ -16,6 +14,21 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly ILogger<QuestionnaireEvaluationWorkerEncapsulator> _logger = logger;
 
         [Function("PerformQuestionnaireEvaluation")]
+        [OpenApiOperation(
+            operationId: "PerformQuestionnaireEvaluation",
+            tags: new[] { "Evaluations" }
+        )]
+        [OpenApiParameter(
+            name: "id",
+            In = ParameterLocation.Path,
+            Required = true,
+            Type = typeof(Guid)
+        )]
+        [OpenApiResponseWithBody(
+            statusCode: HttpStatusCode.OK,
+            contentType: "application/json",
+            bodyType: typeof(object) // replace with actual evaluation DTO
+        )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
             /*implementation in progress*/

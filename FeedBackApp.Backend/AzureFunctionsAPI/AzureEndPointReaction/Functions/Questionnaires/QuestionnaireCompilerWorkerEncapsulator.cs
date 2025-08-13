@@ -3,6 +3,7 @@ using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
@@ -13,6 +14,20 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly ILogger<QuestionnaireCompilerWorkerEncapsulator> _logger = logger;
 
         [Function("PerformQuestionnaireCompilation")]
+        [OpenApiOperation(
+            operationId: "PerformQuestionnaireCompilation",
+            tags: new[] { "Questionnaires" }
+            )]
+        [OpenApiRequestBody(
+            contentType: "application/json", 
+            bodyType: typeof(object), // replace with dto
+            Required = true
+            )]
+        [OpenApiResponseWithBody(
+            statusCode: HttpStatusCode.OK, 
+            contentType: "application/json", 
+            bodyType: typeof(object) // replace dto
+            )] 
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
             /*implementation in progress*/
