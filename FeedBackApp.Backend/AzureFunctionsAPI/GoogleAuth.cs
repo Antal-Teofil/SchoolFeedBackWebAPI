@@ -18,11 +18,13 @@ public class GoogleAuth
         _logger = logger;
     }
 
+    //List of students who can access the review page
+    private String[] students = new String[] { "szrichard2004@gmail.com" };
 
     //Google OAuth id validation and JWT token providing
     [Function("LoginWithGoogle")]
     public async Task<HttpResponseData> LoginWithGoogle(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="auth/google")] HttpRequestData req)
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<LoginRequest>(body);
@@ -31,7 +33,7 @@ public class GoogleAuth
         {
             payload = await GoogleJsonWebSignature.ValidateAsync(data.IdToken, new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new[] { "499857664830-2bdarnf13t5g3j8t3e7pgv46it7tba1b.apps.googleusercontent.com" }
+                Audience = new[] { Environment.GetEnvironmentVariable("GoogleClientId") }
             });
         }
         catch (Exception ex)
@@ -42,35 +44,41 @@ public class GoogleAuth
             return badResp;
         }
 
-        var user = await GetUserFromDatabase(payload.Email);
-        if (user == null)
+        //Check if the admin is in the list of admins in the environment variable
+        var adminEmailsEnv = Environment.GetEnvironmentVariable("AdminEmails") ?? "";
+        var adminEmails = adminEmailsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        bool isAdmin = adminEmails.Contains(payload.Email, StringComparer.OrdinalIgnoreCase);
+
+        //If not admin, and also not student
+        if (!students.Contains(payload.Email, StringComparer.OrdinalIgnoreCase) && !isAdmin)
         {
             var notFoundResp = req.CreateResponse(System.Net.HttpStatusCode.Forbidden);
             await notFoundResp.WriteStringAsync("User not found");
             return notFoundResp;
         }
 
-        var token = GenerateJwtToken(user);
+        var token = GenerateJwtToken(payload.Email,isAdmin);
 
         var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
-        await response.WriteStringAsync(JsonConvert.SerializeObject(new { token }));
+
+        // Set the cookie
+        response.Headers.Add("Set-Cookie", 
+            $"token={token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400");
+
+        await response.WriteAsJsonAsync(new
+        {
+            email = payload.Email,
+            firstName = payload.GivenName,
+            lastName = payload.FamilyName,
+            role = isAdmin ? "Admin" : "Student"
+        });
+
         return response;
     }
 
-    //Placeholder while the database is not accessible
-    private Task<UserRecord> GetUserFromDatabase(string email)
-    {
-        var users = new List<UserRecord>
-        {
-            new UserRecord { Email = "szrichard2004@gmail.com", Role = "Student" },
-            new UserRecord { Email = "teacher@example.com", Role = "Teacher" }
-        };
-
-        return Task.FromResult(users.FirstOrDefault(u => u.Email == email));
-    }
 
     //Generate a JWT token with the email and role of the person for future authorization
-    private string GenerateJwtToken(UserRecord user)
+    private string GenerateJwtToken(string email,bool isAdmin)
     {
         string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -78,30 +86,24 @@ public class GoogleAuth
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Email),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.NameIdentifier, email),
+            new Claim(ClaimTypes.Role, isAdmin?"Admin":"Student")
         };
 
         var token = new JwtSecurityToken(
             issuer: "SchoolFeedbackWebAPI",
             audience: "SchoolFeedbackWebAPI",
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddHours(24),
             signingCredentials: creds
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    //Scheme of a login request
+    //Scheme of a login request for easy deserialization
     public class LoginRequest
     {
         public string IdToken { get; set; }
-    }
-
-    public class UserRecord
-    {
-        public string Email { get; set; }
-        public string Role { get; set; }
     }
 }

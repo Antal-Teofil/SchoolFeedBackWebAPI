@@ -12,9 +12,33 @@
     <div class="g_id_signin" data-type="standard"></div>
 
     <script>
-      function handleCredentialResponse(response) {
+      async function handleCredentialResponse(response) {
         console.log("ID Token:", response.credential);
-        alert("Copy the ID token from console log");
+
+        try {
+          const res = await fetch('http://localhost:7277/api/auth/login/google', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',  // important to receive cookies
+            body: JSON.stringify({ IdToken: response.credential })
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            alert("Login failed: " + errorText);
+            return;
+          }
+
+          const data = await res.json();
+          // data should contain email, role, etc.
+          console.log("User data from backend:", data);
+          alert(`Welcome ${data.email}, role: ${data.role}`);
+        } catch (err) {
+          console.error(err);
+          alert("An error occurred during login");
+        }
       }
     </script>
   </body>
