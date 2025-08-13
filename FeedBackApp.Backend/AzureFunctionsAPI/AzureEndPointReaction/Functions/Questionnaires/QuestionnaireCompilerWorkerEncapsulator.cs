@@ -1,0 +1,23 @@
+﻿using System.Net;
+using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
+
+namespace AzureEndPointReaction.Functions.Questionnaires
+{
+    public sealed class QuestionnaireCompilerWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireCompilerWorkerEncapsulator> logger) : IQuestionnaireWorker
+    {
+        private readonly IQuestionnaireService _service = service;
+        private readonly ILogger<QuestionnaireCompilerWorkerEncapsulator> _logger = logger;
+
+        [Function("PerformQuestionnaireCompilation")]
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        {
+            /*implementation in progress*/
+            var response = request.CreateResponse(HttpStatusCode.OK);
+            return response;
+        }
+    }
+}
