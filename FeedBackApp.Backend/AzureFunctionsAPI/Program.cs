@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using Azure.Core.Serialization;
+using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using AzureEndPointReaction.Functions.Questionnaires;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
+
 
 var host = new HostBuilder()
     .ConfigureAppConfiguration((ctx, cfg) =>
@@ -16,6 +18,7 @@ var host = new HostBuilder()
     })
     .ConfigureServices((ctx, services) =>
     {
+
         services.AddApplicationInsightsTelemetryWorkerService();
 
         // WorkerOptions (serializer stb.)
@@ -34,6 +37,7 @@ var host = new HostBuilder()
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
         // services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+        services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
     })
     // Pipeline/Middleware (IFunctionsWorkerApplicationBuilder overload)
     .ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder app) =>
