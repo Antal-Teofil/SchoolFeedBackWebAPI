@@ -10,6 +10,7 @@ export default function GoogleAuthApp() {
   const onIdTokenSuccess = async (resp: any) => {
     try {
       const idToken = resp?.credential
+      console.log(idToken);
       const r = await fetch(`${API_BASE_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
