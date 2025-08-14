@@ -41,8 +41,10 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const [q17, setQ17] = useState("");
 
   // Iskolán kívüli oktatás
+
+  const [q18Other, setQ18Other] = useState("");
   const [q18, setQ18] = useState("");
- // const [q18Other, setQ18Other] = useState("");
+  // const [q18Other, setQ18Other] = useState("");
   const [q19, setQ19] = useState("");
   const [q20, setQ20] = useState<string[]>([]); // többválasztós
   const [q21, setQ21] = useState<string[]>([]); // többválasztós
@@ -76,11 +78,21 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       return;
     }
 
-    if(isAttendingOutside){
+    if (isAttendingOutside) {
       setQ20([]);
     }
 
+
+
     const data = getFormData();
+    console.log(q18);
+    if (q18 == "egyéb") {
+      console.log(q18);
+      setQ18(q18Other);
+      console.log(q18Other);
+      console.log(q18);
+    }
+    console.log(q18);
     console.log("Draft saved:", JSON.stringify(data, null, 2));
     toast("Piszkozat helyben elmentve. Backend csatlakoztatásával lesz tartós.");
   };
@@ -104,6 +116,10 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       return;
     }
 
+    if (q18 === "egyéb") {
+      setQ18(q18Other);
+    }
+
     if (!q19) {
       toast("Kérjük, válaszolj a 19. kérdésre.");
       return;
@@ -113,7 +129,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       return;
     }
 
-    if(!isAttendingOutside){
+    if (!isAttendingOutside) {
       setQ20([]);
     }
 
@@ -397,7 +413,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
           </header>
 
           <div className="space-y-2">
-            <Label>18) A Tanár részesít külön foglalkozásban, hogy felkészítsen vizsgára/versenyre/szereplésre:</Label>
+            <Label>18) A Tanár részesít külön foglalkozásban...</Label>
             <RadioGroup value={q18} onValueChange={setQ18} className="grid gap-2">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem id="q18-elkereztetve" value="igen, elkéreztetve más Tanárok óráiról" />
@@ -416,9 +432,15 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
                 <Label htmlFor="q18-egyeb">egyéb, éspedig:</Label>
               </div>
             </RadioGroup>
+
             {q18 === "egyéb" && (
               <div className="pt-2">
-                <Input type="text" value={q18} onChange={(e) => setQ18(e.target.value)} placeholder="Írd le röviden..." />
+                <Input
+                  type="text"
+                  value={q18Other}
+                  onChange={(e) => setQ18Other(e.target.value)}
+                  placeholder="Írd le röviden..."
+                />
               </div>
             )}
           </div>

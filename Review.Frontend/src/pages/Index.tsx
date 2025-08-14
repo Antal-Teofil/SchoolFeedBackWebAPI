@@ -1,7 +1,6 @@
-import { GoogleLogin } from '@react-oauth/google'
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
 import { useReviews } from '@/hooks/useReviews'
-import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/useAuthStore'
 
 export default function GoogleAuthApp() {
@@ -10,7 +9,7 @@ export default function GoogleAuthApp() {
 
   const { loginWithGoogle, isLoggingIn } = useReviews()
 
-  const onIdTokenSuccess = (resp: any) => {
+  const onIdTokenSuccess = (resp: CredentialResponse) => {
     const idToken = resp?.credential
     if (!idToken) {
       console.error("No ID token from Google")
@@ -29,7 +28,7 @@ export default function GoogleAuthApp() {
           navigate("/no-access")
         }
       },
-      onError: (e: any) => {
+      onError: (e) => {
         if (e?.response?.status === 403) {
           navigate("/no-access")
         } else {
