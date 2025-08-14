@@ -10,7 +10,6 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
-        public AppDBContext() { }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
