@@ -12,3 +12,9 @@ type AuthStore ={
     setUser: (u:User) => void
     clearUser : () => void
 }
+
+export const useAuthStore = create<AuthStore>((set) => ({
+    user: null,
+    setUser : (u) => set({user : u}),
+    clearUser : () => set({user : null})
+}))

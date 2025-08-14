@@ -2,6 +2,7 @@ import { FeedbackForm } from "@/components/feedback/FeedbackForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useReviews } from "../../hooks/useReviews";
 import { toast } from "sonner";
+import { useAuthStore } from '@/stores/useAuthStore'
 
 //memory
 const subjects = [
@@ -44,10 +45,13 @@ export default function StudentDashboard() {
     return <div className="error">Error has occured:{errorTeachersBySubject.message}</div>
   }
 */
+
+const user = useAuthStore((state) => state.user)
+
   return (
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Student Dashboard</h1>
+        <h1 className="text-3xl font-bold">Welcome,{user.firstName}</h1>
         <p className="text-muted-foreground">Submit feedback for your enrolled subjects.</p>
       </header>
 

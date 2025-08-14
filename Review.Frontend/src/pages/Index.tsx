@@ -2,10 +2,11 @@ import { GoogleLogin } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
 import { useReviews } from '@/hooks/useReviews'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 export default function GoogleAuthApp() {
   const navigate = useNavigate()
-  const client = useQueryClient()
+  const setUser = useAuthStore((state) => state.setUser)
 
   const { loginWithGoogle, isLoggingIn } = useReviews()
 
@@ -18,7 +19,7 @@ export default function GoogleAuthApp() {
 
     loginWithGoogle(idToken, {
       onSuccess: (user) => {
-        client.setQueryData(['user'], user)
+        setUser(user)
 
         if (user.role === 'Admin') {
           navigate("/dashboard/admin")
