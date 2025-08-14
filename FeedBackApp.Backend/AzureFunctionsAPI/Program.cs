@@ -40,6 +40,7 @@ var host = new HostBuilder()
         // services.AddScoped<IMyService, MyService>();
         services.AddScoped<IEvaluationService, EvaluationService>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+        services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
