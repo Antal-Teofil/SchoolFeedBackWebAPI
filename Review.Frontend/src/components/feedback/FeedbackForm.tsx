@@ -60,7 +60,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const likertValues = ["1", "2", "3", "4", "5"];
 
   const isAttendingOutside = useMemo(
-    () => q19 === "maganorak" || q19 === "csoportos",
+    () => q19 === "csoportos felkészülésen veszek részt" || q19 === "magánórára, egyéni felkészítőre járok",
     [q19]
   );
 
@@ -75,6 +75,11 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
       return;
     }
+
+    if(isAttendingOutside){
+      setQ20([]);
+    }
+
     const data = getFormData();
     console.log("Draft saved:", JSON.stringify(data, null, 2));
     toast("Piszkozat helyben elmentve. Backend csatlakoztatásával lesz tartós.");
@@ -106,6 +111,10 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     if (isAttendingOutside && q20.length === 0) {
       toast("Kérjük, jelöld meg legalább egy okot a 20. kérdésnél.");
       return;
+    }
+
+    if(!isAttendingOutside){
+      setQ20([]);
     }
 
     if (q21.length === 0) {
