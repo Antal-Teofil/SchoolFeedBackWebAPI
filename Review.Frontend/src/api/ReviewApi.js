@@ -1,9 +1,9 @@
 import axios from "axios"
 
-const API_URL = "http://localhost:7277/api";
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 const apiClient = axios.create({
     baseURL: API_URL,
-    withCredentials: true, 
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
     },
@@ -19,7 +19,7 @@ export const GetQuestionnaireSummary = async (questionnaireId) => {
     return response.data;
 }
 
-export const GetEvaluation  = async (evaluationId) => {
+export const GetEvaluation = async (evaluationId) => {
     const response = await apiClient.get(`/evaluations/${evaluationId}`)
     return response.data;
 }
@@ -29,12 +29,12 @@ export const UpdateEvaluation = async (evaluationId) => {
     return response.data;
 }
 
-export const DeleteQuestionnaire  = async (questionnaireId) => {
+export const DeleteQuestionnaire = async (questionnaireId) => {
     const response = await apiClient.delete(`/questionnaires/${questionnaireId}`)
     return response.data;
 }
 
-export const LoginWithGoogle = async (idToken)  => {
-    const {data} = await apiClient.post('/auth/google', { IdToken: idToken });
+export const LoginWithGoogle = async (idToken) => {
+    const { data } = await apiClient.post('/auth/google', { IdToken: idToken });
     return data;
 };
