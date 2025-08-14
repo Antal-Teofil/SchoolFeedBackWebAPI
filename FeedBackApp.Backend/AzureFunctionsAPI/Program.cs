@@ -1,3 +1,4 @@
+using FeedBackApp.Backend.Core.Models;
 using FeedBackApp.Backend.Infrastructure.Persistence;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -9,20 +10,22 @@ using Microsoft.Extensions.Hosting;
 var builder = FunctionsApplication.CreateBuilder(args);
 
 
-var AccountEndpoint = Environment.GetEnvironmentVariable("AccountEndpoint");
-var AccountKey = Environment.GetEnvironmentVariable("AccountKey");
-var DatabaseName = Environment.GetEnvironmentVariable("DatabaseName");
-builder.Services.AddDbContextFactory<AppDBContext>(opt =>
-{
-    var configuration = builder.Configuration;
-    opt.UseCosmos(
-        accountEndpoint: configuration["AccountEndpoint"],
-        accountKey: configuration["AccountKey"],
-        databaseName: configuration["DatabaseName"]
-        );
-});
+//var AccountEndpoint = Environment.GetEnvironmentVariable("AccountEndpoint");
+//var AccountKey = Environment.GetEnvironmentVariable("AccountKey");
+//var DatabaseName = Environment.GetEnvironmentVariable("DatabaseName");
+//builder.Services.AddDbContextFactory<AppDBContext>(opt =>
+//{
+//    var configuration = builder.Configuration;
+//    opt.UseCosmos(
+//        accountEndpoint: configuration["AccountEndpoint"],
+//        accountKey: configuration["AccountKey"],
+//        databaseName: configuration["DatabaseName"]
+//        );
+//});
 
 // mapper transients validators
+
+
 
 builder.ConfigureFunctionsWebApplication();
 

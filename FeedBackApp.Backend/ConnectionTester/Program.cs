@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using FeedBackApp.Backend.Core.Models;
+using FeedBackApp.Backend.Infrastructure.Persistence;
+using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 namespace ConnectionTester;
@@ -6,14 +8,14 @@ class Program
 {
     static async Task Main()
     {
-        string endpointUri = "https://localhost:8081/";
-        string primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        //string endpointUri = "https://localhost:8081/";
+        //string primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
-        CosmosClient client = new CosmosClient(endpointUri, primaryKey);
+        //CosmosClient client = new CosmosClient(endpointUri, primaryKey);
 
-        Console.WriteLine("Connected to Cosmos DB Emulator.");
+        //Console.WriteLine("Connected to Cosmos DB Emulator.");
 
-        Database db = await client.CreateDatabaseIfNotExistsAsync("SchoolDatabase");
+        //Database db = await client.CreateDatabaseIfNotExistsAsync("SchoolDatabase");
         //Container container = await db.CreateContainerIfNotExistsAsync("TestContainer", "/id");
 
         //var sqlQueryText = "SELECT c.id FROM c";
@@ -32,6 +34,17 @@ class Program
         //    }
         //}
 
+        var context = new AppDBContext();
+        await context.Database.EnsureCreatedAsync();
+
+        context.Add(
+            new Subject
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "AnyadKinja"
+            });
+        await context.SaveChangesAsync();
+        
 
     }
 }
