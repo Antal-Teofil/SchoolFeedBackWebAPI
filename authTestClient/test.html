@@ -11,6 +11,8 @@
     </div>
     <div class="g_id_signin" data-type="standard"></div>
 
+    <button id="get-evaluation">Get Evaluation</button>
+
     <script>
       async function handleCredentialResponse(response) {
         console.log("ID Token:", response.credential);
@@ -32,7 +34,6 @@
           }
 
           const data = await res.json();
-          // data should contain email, role, etc.
           console.log("User data from backend:", data);
           alert(`Welcome ${data.email}, role: ${data.role}`);
         } catch (err) {
@@ -40,6 +41,28 @@
           alert("An error occurred during login");
         }
       }
+
+      document.getElementById('get-evaluation').addEventListener('click', async () => {
+        try {
+          const res = await fetch('http://localhost:7277/api/evaluations/314983c0-344f-45da-9b91-b7f1a5a31fea', {
+            method: 'PATCH',
+            credentials: 'include', // send cookies automatically
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            alert("Failed to get evaluation: " + errorText);
+            return;
+          }
+
+          const evaluation = await res.json();
+          console.log("Evaluation data:", evaluation);
+          alert("Evaluation data received! Check console for details.");
+        } catch (err) {
+          console.error(err);
+          alert("An error occurred while fetching the evaluation");
+        }
+      });
     </script>
   </body>
 </html>

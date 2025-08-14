@@ -32,7 +32,9 @@ namespace AzureEndPointReaction.Functions.Questionnaires
 
             /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(new { message = "Delete successful" });
             return response;
+
         }
     }
 }
