@@ -126,7 +126,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
   };
 
-  };
+
 
   const toggleMulti = (value: string, setFn: (updater: (prev: string[]) => string[]) => void) => {
     setFn((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
@@ -573,5 +573,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
         </div>
       </CardContent>
     </Card>
-  );
+ 
+);
 }
