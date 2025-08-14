@@ -10,7 +10,6 @@ namespace FeedBackApp.Tests
     {
         public static string GenerateTestToken(string role, DateTime? expires = null)
         {
-            // Ensure the secret key exists
             var secretKey = Environment.GetEnvironmentVariable("JwtSecretKey");
             if (string.IsNullOrEmpty(secretKey))
                 throw new InvalidOperationException("JWT secret key not set in environment variables.");
@@ -25,7 +24,6 @@ namespace FeedBackApp.Tests
                 notBefore = expires.Value.AddHours(-1);
             }
 
-            // Make token valid immediately (NotBefore = now)
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, role) }),
