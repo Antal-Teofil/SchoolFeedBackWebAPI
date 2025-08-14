@@ -20,7 +20,7 @@ namespace AzureFunctionsAPI
             _logger = logger;
         }
 
-        private string[] students = new string[] { "lkincso946@gmail.com" };
+        private string[] students = new string[] { "szrichard2004@gmail.com" };
 
         [Function("LoginWithGoogle")]
     [OpenApiOperation(operationId: "LoginWithGoogle", tags: new[] { "Auth" })]

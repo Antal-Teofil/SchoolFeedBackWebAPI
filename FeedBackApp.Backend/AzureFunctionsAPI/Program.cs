@@ -1,13 +1,15 @@
-﻿using System.Text.Json;
-using Azure.Core.Serialization;
+﻿using Azure.Core.Serialization;
 using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureEndPointReaction.Functions.Questionnaires;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Services;
+using FeedBackApp.Backend.Infrastructure.Middleware;
+using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
 
 var host = new HostBuilder()
     .ConfigureAppConfiguration((ctx, cfg) =>
@@ -19,7 +21,7 @@ var host = new HostBuilder()
     })
     .ConfigureServices((ctx, services) =>
     {
-
+       
         services.AddApplicationInsightsTelemetryWorkerService();
 
         // WorkerOptions (serializer stb.)
@@ -44,11 +46,15 @@ var host = new HostBuilder()
         services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireSummaryRequestWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireUpdateRequestWorkerEncapsulator>();
+
+        services.AddSingleton<AdminOnlyMiddleware>();
+        services.AddSingleton<StudentOnlyMiddleware>();
+        services.AddSingleton<MiddlewareSelector>();
     })
     // Pipeline/Middleware (IFunctionsWorkerApplicationBuilder overload)
     .ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder app) =>
     {
-
+        app.UseMiddleware<MiddlewareSelector>();
         // Globális middleware-k ide:
         // app.UseMiddleware<YourExceptionMiddleware>();
         // app.UseWhen(ctx => true, branch => { /* branch middleware-k */ });
