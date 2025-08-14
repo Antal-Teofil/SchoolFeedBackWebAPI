@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-
 var host = new HostBuilder()
     .ConfigureAppConfiguration((ctx, cfg) =>
     {
@@ -39,7 +38,6 @@ var host = new HostBuilder()
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
         services.AddScoped<IEvaluationService, EvaluationService>();
-        services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
