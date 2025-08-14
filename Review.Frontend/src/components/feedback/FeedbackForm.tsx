@@ -10,16 +10,16 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 interface FeedbackFormProps {
-  subjects: { id: string; name: string }[];
-  teachers: { id: string; name: string }[];
+  subjects: string[];
+  teachers: string[];
 }
 
 const grades = Array.from({ length: 8 }).map((_, i) => String(5 + i));
 
 export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   // Alap azonosítók
-  const [subjectId, setSubjectId] = useState<string>("");
-  const [teacherId, setTeacherId] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
+  const [teacher, setTeacher] = useState<string>("");
 
   // Likert 1–5: Q1–Q12, Q13 (ütem), Q14–Q17
   const [q1, setQ1] = useState("");
@@ -65,8 +65,8 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   );
 
   const getFormData = () => ({
-    subjectId,
-    teacherId,
+    subject,
+    teacher,
     responses: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q18Other, q19, q20, q21, q22, q23, q24, q25, q26 },
   });
 
@@ -77,7 +77,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   };
 
   const onSubmit = () => {
-    if (!subjectId || !teacherId) {
+    if (!subject || !teacher) {
       const data = getFormData();
       console.log("submit saved:", JSON.stringify(data, null, 2));
       toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
@@ -139,26 +139,26 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
         <section className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="subject">Tantárgy</Label>
-            <Select value={subjectId} onValueChange={setSubjectId}>
+            <Select value={subject} onValueChange={setSubject}>
               <SelectTrigger id="subject">
                 <SelectValue placeholder="Válassz tantárgyat" />
               </SelectTrigger>
               <SelectContent>
                 {subjects.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="teacher">Tanár</Label>
-            <Select value={teacherId} onValueChange={setTeacherId}>
+            <Select value={teacher} onValueChange={setTeacher}>
               <SelectTrigger id="teacher">
                 <SelectValue placeholder="Válassz tanárt" />
               </SelectTrigger>
               <SelectContent>
                 {teachers.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                  <SelectItem key={t} value={t}>{t}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
