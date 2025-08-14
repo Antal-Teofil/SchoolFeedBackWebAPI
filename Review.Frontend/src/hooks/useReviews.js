@@ -55,10 +55,7 @@ export const useReviews = () => {
     })
 
 const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
-    mutationFn: LoginWithGoogle,
-    onSuccess: (user) => {
-         client.setQueryData(["user"], user);
-    }
+    mutationFn: LoginWithGoogle
 });
 
 

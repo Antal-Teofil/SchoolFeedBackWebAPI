@@ -1,6 +1,6 @@
 import { GoogleLogin } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
-import { useReviews } from '@/hooks/useReviews' // innen jön a loginWithGoogle mutáció
+import { useReviews } from '@/hooks/useReviews' 
 import { useQueryClient } from '@tanstack/react-query'
 
 export default function GoogleAuthApp() {
@@ -16,13 +16,10 @@ export default function GoogleAuthApp() {
       return
     }
 
-    // Meghívjuk a mutációt
     loginWithGoogle(idToken, {
       onSuccess: (user) => {
-        // Az adat már itt van, beállítjuk cache-be
         client.setQueryData(['user'], user)
 
-        // Role alapú navigáció
         if (user.role === 'Admin') {
           navigate("/dashboard/admin")
         } else if (user.role === 'Student') {
@@ -50,7 +47,6 @@ export default function GoogleAuthApp() {
         auto_select
       />
       {isLoggingIn && <p>Logging in...</p>}
-      {loginError && <p style={{ color: 'red' }}>{(loginError as any)?.message}</p>}
     </div>
   )
 }

@@ -35,6 +35,6 @@ export const DeleteQuestionnaire  = async (questionnaireId) => {
 }
 
 export const LoginWithGoogle = async (idToken)  => {
-    const response = await apiClient.post('/auth/google', { IdToken: idToken });
-    return response;
+    const {data} = await apiClient.post('/auth/google', { IdToken: idToken });
+    return data;
 };
