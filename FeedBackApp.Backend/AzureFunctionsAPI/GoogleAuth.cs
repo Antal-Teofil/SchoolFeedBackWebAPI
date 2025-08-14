@@ -20,7 +20,7 @@ namespace AzureFunctionsAPI
             _logger = logger;
         }
 
-        private string[] students = new string[] { "szrichard2004@gmail.com" };
+        
 
         [Function("LoginWithGoogle")]
     [OpenApiOperation(operationId: "LoginWithGoogle", tags: new[] { "Auth" })]
@@ -28,6 +28,9 @@ namespace AzureFunctionsAPI
         public async Task<HttpResponseData> LoginWithGoogle(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "auth/google")] HttpRequestData req)
         {
+            var studentsEnv = Environment.GetEnvironmentVariable("StudentEmails") ?? "";
+            var students = studentsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
             // Get origin
             var origin = req.Headers.TryGetValues("Origin", out var origins) ? origins.FirstOrDefault() : null;
 
@@ -86,6 +89,7 @@ namespace AzureFunctionsAPI
                 await notFoundResp.WriteStringAsync("User not found");
                 return notFoundResp;
             }
+
 
             var token = GenerateJwtToken(payload.Email, isAdmin);
 
