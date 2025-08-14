@@ -78,8 +78,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
 
   const onSubmit = () => {
     if (!subjectId || !teacherId) {
-      const data = getFormData();
-      console.log("submit saved:", JSON.stringify(data, null, 2));
       toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
       return;
     }
@@ -121,6 +119,8 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     }
 
     toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
+    const data = getFormData();
+    console.log("submit saved:", JSON.stringify(data, null, 2));
   };
 
 
