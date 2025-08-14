@@ -42,7 +42,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
 
   // Iskolán kívüli oktatás
   const [q18, setQ18] = useState("");
-  const [q18Other, setQ18Other] = useState("");
+ // const [q18Other, setQ18Other] = useState("");
   const [q19, setQ19] = useState("");
   const [q20, setQ20] = useState<string[]>([]); // többválasztós
   const [q21, setQ21] = useState<string[]>([]); // többválasztós
@@ -67,10 +67,14 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const getFormData = () => ({
     subject,
     teacher,
-    responses: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q18Other, q19, q20, q21, q22, q23, q24, q25, q26 },
+    responses: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26 },
   });
 
   const onSaveDraft = () => {
+    if (!subject || !teacher) {
+      toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
+      return;
+    }
     const data = getFormData();
     console.log("Draft saved:", JSON.stringify(data, null, 2));
     toast("Piszkozat helyben elmentve. Backend csatlakoztatásával lesz tartós.");
@@ -92,10 +96,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
 
     if (!q18) {
       toast("Kérjük, válaszolj a 18. kérdésre.");
-      return;
-    }
-    if (q18 === "egyeb" && !q18Other.trim()) {
-      toast("Kérjük, töltsd ki a 18. kérdés 'egyéb' mezőjét.");
       return;
     }
 
@@ -403,13 +403,13 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
                 <Label htmlFor="q18-nincs">nincs külön foglalkozás ebből a tantárgyból</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-egyeb" value="egyéb, éspedig" />
+                <RadioGroupItem id="q18-egyeb" value="egyéb" />
                 <Label htmlFor="q18-egyeb">egyéb, éspedig:</Label>
               </div>
             </RadioGroup>
-            {q18 === "egyeb" && (
+            {q18 === "egyéb" && (
               <div className="pt-2">
-                <Input value={q18Other} onChange={(e) => setQ18Other(e.target.value)} placeholder="Írd le röviden..." />
+                <Input type="text" value={q18} onChange={(e) => setQ18(e.target.value)} placeholder="Írd le röviden..." />
               </div>
             )}
           </div>
