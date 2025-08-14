@@ -77,7 +77,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   };
 
   const onSubmit = () => {
-    if (!subjectId || !teacherId) {
+    if (!subject || !teacher) {
       toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
       return;
     }
