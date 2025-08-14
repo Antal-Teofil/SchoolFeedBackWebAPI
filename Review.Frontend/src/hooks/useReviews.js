@@ -54,10 +54,10 @@ export const useReviews = () => {
         }
     })
 
-const { mutate: loginWithGoogle, isPending: isLoggingIn, error: loginError } = useMutation({
+const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
     mutationFn: LoginWithGoogle,
-    onSuccess: (data) => {
-        client.invalidateQueries({ queryKey: ['user'] })
+    onSuccess: (user) => {
+         client.setQueryData(["user"], user);
     }
 });
 
@@ -79,6 +79,5 @@ const { mutate: loginWithGoogle, isPending: isLoggingIn, error: loginError } = u
         isDeletingQuestionnaire,
         loginWithGoogle,
         isLoggingIn,
-        loginError,
     }
 }

@@ -1,76 +1,56 @@
-import { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
-
-const API_BASE_URL = 'http://localhost:7277/api'
-
-type ApiUser = {
-  firstName?: string
-  lastName?: string
-  email?: string
-  role?: 'Admin' | 'Student' | string
-}
-
-type abc = {
-
-}
-
+import { useReviews } from '@/hooks/useReviews' // innen jön a loginWithGoogle mutáció
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function GoogleAuthApp() {
-  const [user, setUser] = useState<ApiUser|null>(null)
-  const [error, setError] = useState('')
-  const navigate = useNavigate() 
+  const navigate = useNavigate()
+  const client = useQueryClient()
 
-  const onIdTokenSuccess = async (resp: any) => {
-    try {
-      const idToken = resp?.credential
-      if (!idToken) throw new Error(`No ID token from Google`)
+  const {  loginWithGoogle,isLoggingIn } = useReviews()
 
-      const r = await fetch(`${API_BASE_URL}/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ IdToken: idToken })
-      })
+  const onIdTokenSuccess = (resp: any) => {
+    const idToken = resp?.credential
+    if (!idToken) {
+      console.error("No ID token from Google")
+      return
+    }
 
-      if(r.status==403){
-        navigate('/no-access')
-        return
-      }
+    // Meghívjuk a mutációt
+    loginWithGoogle(idToken, {
+      onSuccess: (user) => {
+        // Az adat már itt van, beállítjuk cache-be
+        client.setQueryData(['user'], user)
 
-      if (!r.ok) throw new Error(await r.text() || 'Auth failed')
-      
-      const data:ApiUser=await r.json()  
-      setUser(data)
-      if(data.role=='Admin')
-      {
-        navigate("/dashboard/admin")
+        // Role alapú navigáció
+        if (user.role === 'Admin') {
+          navigate("/dashboard/admin")
+        } else if (user.role === 'Student') {
+          navigate("/dashboard/student/")
+        } else {
+          navigate("/no-access")
+        }
+      },
+      onError: (e: any) => {
+        if (e?.response?.status === 403) {
+          navigate("/no-access")
+        } else {
+          console.error(e)
+        }
       }
-      else if(data.role=='Student')
-      {
-        navigate("/dashboard/student/")
-      }
-      else{
-        navigate('/no-access')
-      }
-    } catch (e: any) { setError(e.message) }
+    })
   }
 
   return (
     <div>
-      {!user ? (
-        <>
-          <GoogleLogin
-            onSuccess={onIdTokenSuccess}
-            onError={() => setError('Login failed')}
-            useOneTap
-            auto_select
-          />
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </>
-      ) : (
-        <div>Welcome, {user.firstName}</div>
-      )}
+      <GoogleLogin
+        onSuccess={onIdTokenSuccess}
+        onError={() => console.error("Login failed")}
+        useOneTap
+        auto_select
+      />
+      {isLoggingIn && <p>Logging in...</p>}
+      {loginError && <p style={{ color: 'red' }}>{(loginError as any)?.message}</p>}
     </div>
   )
 }
