@@ -9,7 +9,6 @@ const apiClient = axios.create({
     },
 });
 
-
 export const CreateQuestionnaires = async () => {
     const response = await apiClient.post(`/questionnaires`);
     return response.data;
@@ -35,9 +34,7 @@ export const DeleteQuestionnaire  = async (questionnaireId) => {
     return response.data;
 }
 
-export const LoginWithGoogle = async (idToken) => {
-    const response = await apiClient.post('/auth/google', { IdToken: idToken },{
-    withCredentials: true
-  });
-    return response.data;
+export const LoginWithGoogle = async (idToken)  => {
+    const response = await apiClient.post('/auth/google', { IdToken: idToken });
+    return response;
 };
