@@ -4,6 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { useReviews } from "@/hooks/useReviews";
 
 const grades = Array.from({ length: 8 }).map((_, i) => 5 + i);
 
@@ -12,24 +13,58 @@ export default function AdminDashboard() {
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [allowed, setAllowed] = useState<number[]>(grades);
 
+  const {
+    createQuestionnaires,
+    isCreatingQuestionnaire,
+    questionnairesSummary,
+    isLoadingQuestionnairesSummary,
+    deleteQuestionnaire,
+    isDeletingQuestionnaire
+  } = useReviews();
+
   const toggleGrade = (g: number) => {
     setAllowed((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
   };
 
   const exportExcel = () => {
-    toast("Export will be available after backend setup (Excel).");
+    if (!questionnairesSummary) {
+      toast.error("No questionnaire summary available to export.");
+      return;
+    }
+    console.log("Questionnaire summary:", questionnairesSummary);
+    if (isLoadingQuestionnairesSummary) {
+      toast("Exporting results to Excel...");
+    }
   };
 
   const sendQuestionnaires = () => {
-
+    createQuestionnaires(
+      { startDate, endDate, allowedGrades: allowed },
+      {
+        onSuccess: () => toast.success("Questionnaires created and sent!"),
+        onError: () => toast.error("Failed to create questionnaires.")
+      }
+    );
+    if (isCreatingQuestionnaire) {
+      toast("creating questionaries");
+    };
   }
 
   const deleteQuestionnaires = () => {
-
+    deleteQuestionnaire(
+      {}, // Pass questionnaireId if required
+      {
+        onSuccess: () => toast.success("Questionnaires deleted successfully!"),
+        onError: () => toast.error("Failed to delete questionnaires.")
+      }
+    );
+    if (isDeletingQuestionnaire) {
+      toast("creating questionaries");
+    };
   }
 
   return (
-    
+
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
