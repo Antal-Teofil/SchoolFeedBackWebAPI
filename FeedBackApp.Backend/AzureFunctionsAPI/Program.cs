@@ -4,6 +4,9 @@ using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureEndPointReaction.Functions.Questionnaires;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Services;
+using FeedBackApp.Backend.Infrastructure.Middleware;
+using FeedBackApp.Backend.Infrastructure.Middleware.;
+using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +23,8 @@ var host = new HostBuilder()
     })
     .ConfigureServices((ctx, services) =>
     {
+        services.AddScoped<AdminOnlyMiddleware>();
+        services.AddScoped<StudentOnlyMiddleware>();
 
         services.AddApplicationInsightsTelemetryWorkerService();
 
@@ -40,6 +45,7 @@ var host = new HostBuilder()
         // services.AddScoped<IMyService, MyService>();
         services.AddScoped<IEvaluationService, EvaluationService>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+        services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
@@ -49,7 +55,7 @@ var host = new HostBuilder()
     // Pipeline/Middleware (IFunctionsWorkerApplicationBuilder overload)
     .ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder app) =>
     {
-
+        app.UseMiddleware<MiddlewareSelector>();
         // Globális middleware-k ide:
         // app.UseMiddleware<YourExceptionMiddleware>();
         // app.UseWhen(ctx => true, branch => { /* branch middleware-k */ });

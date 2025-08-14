@@ -1,5 +1,6 @@
 ﻿using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -13,7 +14,8 @@ namespace AzureEndPointReaction.Functions.Questionnaires
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireDeletionWorkerEncapsulator> _logger = logger;
-
+        
+        [RequireAdmin]
         [Function("PerformQuestionnarieDeletion")]
         [OpenApiOperation(
             operationId: "PerformQuestionnaireDeletion",

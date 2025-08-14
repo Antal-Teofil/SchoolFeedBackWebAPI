@@ -1,5 +1,6 @@
 ﻿using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -15,6 +16,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> _logger = logger;
 
+        [RequireAdmin]
         [Function("PerformQuestionnarieStatistics")]
         [OpenApiOperation(
             operationId: "PerformQuestionnaireStatistics",
