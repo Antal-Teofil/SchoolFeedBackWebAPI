@@ -9,14 +9,17 @@ using Microsoft.Extensions.Hosting;
 var builder = FunctionsApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<AppDBContext>(options =>
+var AccountEndpoint = Environment.GetEnvironmentVariable("AccountEndpoint");
+var AccountKey = Environment.GetEnvironmentVariable("AccountKey");
+var DatabaseName = Environment.GetEnvironmentVariable("DatabaseName");
+builder.Services.AddDbContextFactory<AppDBContext>(opt =>
 {
     var configuration = builder.Configuration;
-
-    options.UseCosmos(
-        accountEndpoint:configuration["AccountEndpoint"],
+    opt.UseCosmos(
+        accountEndpoint: configuration["AccountEndpoint"],
         accountKey: configuration["AccountKey"],
-        databaseName: configuration["DatabaseName"]);
+        databaseName: configuration["DatabaseName"]
+        );
 });
 
 // mapper transients validators
