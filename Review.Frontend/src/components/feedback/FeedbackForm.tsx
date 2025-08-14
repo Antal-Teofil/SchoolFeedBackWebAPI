@@ -56,8 +56,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const [q25, setQ25] = useState("");
   const [q26, setQ26] = useState("");
 
-  const [submittedAnswers, setSubmittedAnswers] = useState<any>(null);
-
 
   const likertValues = ["1", "2", "3", "4", "5"];
 
@@ -65,6 +63,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     () => q19 === "maganorak" || q19 === "csoportos",
     [q19]
   );
+
 
   const onSaveDraft = () => {
     toast("Piszkozat helyben elmentve. Backend csatlakoztatásával lesz tartós.");
@@ -113,24 +112,8 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     }
 
     toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
-    const answers = {
-    subjectId,
-    teacherId,
-    q1, q2, q3, q4, q5, q6, q7, q8, q9, q10,
-    q11, q12, q13, q14, q15, q16, q17,
-    q18,
-    q18Other: q18 === "egyeb" ? q18Other.trim() : null,
-    q19,
-    q20,
-    q21,
-    q22,
-    q23,
-    q24,
-    q25,
-    q26,
   };
 
-  console.log("Válaszok:", answers); 
   };
 
   const toggleMulti = (value: string, setFn: (updater: (prev: string[]) => string[]) => void) => {
