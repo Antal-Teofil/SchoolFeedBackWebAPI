@@ -67,10 +67,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const getFormData = () => ({
     subjectId,
     teacherId,
-    likerts: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17 },
-    outsideEducation: { q18, q18Other, q19, q20, q21 },
-    textAnswers: { q22, q23 },
-    attendance: { q24, q25, q26 },
+    responses: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q18Other, q19, q20, q21, q22, q23, q24, q25, q26 },
   });
 
   const onSaveDraft = () => {
@@ -82,7 +79,7 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const onSubmit = () => {
     if (!subjectId || !teacherId) {
       const data = getFormData();
-      console.log("Draft saved:", JSON.stringify(data, null, 2));
+      console.log("submit saved:", JSON.stringify(data, null, 2));
       toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
       return;
     }
@@ -573,6 +570,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
         </div>
       </CardContent>
     </Card>
- 
-);
+
+  );
 }
