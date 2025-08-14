@@ -1,13 +1,13 @@
 import { GoogleLogin } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
-import { useReviews } from '@/hooks/useReviews' 
+import { useReviews } from '@/hooks/useReviews'
 import { useQueryClient } from '@tanstack/react-query'
 
 export default function GoogleAuthApp() {
   const navigate = useNavigate()
   const client = useQueryClient()
 
-  const {  loginWithGoogle,isLoggingIn } = useReviews()
+  const { loginWithGoogle, isLoggingIn } = useReviews()
 
   const onIdTokenSuccess = (resp: any) => {
     const idToken = resp?.credential

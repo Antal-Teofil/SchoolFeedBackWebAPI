@@ -13,8 +13,9 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 
 const queryClient = new QueryClient();
 
-const GOOGLE_CLIENT_ID =
-  "606846576960-dst2a6lkdpi7dcd9shi8deg9e2mphjqk.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+console.log("Google Client ID:", GOOGLE_CLIENT_ID);
 
 const App = () => (
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}> {/* ⬅️ KÖRBEÖLEL MINDENT */}
