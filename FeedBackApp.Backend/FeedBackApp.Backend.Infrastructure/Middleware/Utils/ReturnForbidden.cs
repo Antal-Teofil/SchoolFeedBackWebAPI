@@ -11,6 +11,7 @@ namespace FeedBackApp.Backend.Infrastructure.Middleware.Utils
             var response = req.CreateResponse(HttpStatusCode.Forbidden);
             await response.WriteStringAsync("Forbidden");
             context.GetInvocationResult().Value = response;
+            return;
         }
     }
 }
