@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle } from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle , GetStudentByEmail} from "@/api/ReviewApi"
 import { useParams } from "react-router-dom";
 
 export const useReviews = () => {
@@ -54,9 +54,13 @@ export const useReviews = () => {
         }
     })
 
-const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
+    const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
     mutationFn: LoginWithGoogle
-});
+    });
+
+    const { mutate: getStudentByEmail, isPending:isGettingStudent} =useMutation({
+     mutationFn:GetStudentByEmail
+    })
 
 
     return {
@@ -76,5 +80,7 @@ const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
         isDeletingQuestionnaire,
         loginWithGoogle,
         isLoggingIn,
+        getStudentByEmail,
+        isGettingStudent,
     }
 }
