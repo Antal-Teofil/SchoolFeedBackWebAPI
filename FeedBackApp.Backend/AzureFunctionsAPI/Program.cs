@@ -5,7 +5,6 @@ using AzureEndPointReaction.Functions.Questionnaires;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Services;
 using FeedBackApp.Backend.Infrastructure.Middleware;
-using FeedBackApp.Backend.Infrastructure.Middleware.;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +13,10 @@ using Microsoft.Extensions.Hosting;
 
 
 var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults(worker =>
+    {
+        worker.UseMiddleware<MiddlewareSelector>();
+    })
     .ConfigureAppConfiguration((ctx, cfg) =>
     {
         // ide az appsettings helyere a vegleges konfiguracios file kellene bekeruljon. Ez csak pelda!!!!
@@ -55,7 +58,6 @@ var host = new HostBuilder()
     // Pipeline/Middleware (IFunctionsWorkerApplicationBuilder overload)
     .ConfigureFunctionsWebApplication((IFunctionsWorkerApplicationBuilder app) =>
     {
-        app.UseMiddleware<MiddlewareSelector>();
         // Globális middleware-k ide:
         // app.UseMiddleware<YourExceptionMiddleware>();
         // app.UseWhen(ctx => true, branch => { /* branch middleware-k */ });

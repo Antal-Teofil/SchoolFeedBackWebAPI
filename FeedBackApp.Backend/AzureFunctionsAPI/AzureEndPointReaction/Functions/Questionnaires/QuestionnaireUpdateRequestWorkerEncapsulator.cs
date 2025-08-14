@@ -15,7 +15,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly IEvaluationService _service = service;
         private readonly ILogger<QuestionnaireUpdateRequestWorkerEncapsulator> _logger = logger;
 
-        [RequireAdmin]
+        [RequireStudent]
         [Function("PerformQuestionnaireUpdate")]
         [OpenApiOperation(
             operationId: "PerformQuestionnaireUpdate",
