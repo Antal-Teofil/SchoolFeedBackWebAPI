@@ -2,6 +2,8 @@ import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
 import { useReviews } from '@/hooks/useReviews'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-react'
 
 export default function GoogleAuthApp() {
   const navigate = useNavigate()
@@ -19,7 +21,6 @@ export default function GoogleAuthApp() {
     loginWithGoogle(idToken, {
       onSuccess: (user) => {
         setUser(user)
-
         if (user.role === 'Admin') {
           navigate("/dashboard/admin")
         } else if (user.role === 'Student') {
@@ -39,14 +40,35 @@ export default function GoogleAuthApp() {
   }
 
   return (
-    <div>
-      <GoogleLogin
-        onSuccess={onIdTokenSuccess}
-        onError={() => console.error("Login failed")}
-        useOneTap
-        auto_select
-      />
-      {isLoggingIn && <p>Logging in...</p>}
-    </div>
+    <main className="min-h-screen grid place-items-center px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Bejelentkezés</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Jelentkezz be Google-fiókkal
+          </p>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-4">
+          <GoogleLogin
+            onSuccess={onIdTokenSuccess}
+            onError={() => console.error("Login failed")}
+            useOneTap
+            auto_select
+            theme="outline"
+            size="large"
+            shape="pill"
+            text="continue_with"
+            logo_alignment="center"
+            width="280"
+          />
+          {isLoggingIn && (
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Bejelentkezés folyamatban…
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </main>
   )
 }

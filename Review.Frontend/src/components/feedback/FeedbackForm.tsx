@@ -10,18 +10,18 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 interface FeedbackFormProps {
+  studentEmail:string;
   subjects: string[];
   teachers: string[];
 }
 
 const grades = Array.from({ length: 8 }).map((_, i) => String(5 + i));
 
-export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
-  // Alap azonosítók
+export function FeedbackForm({ studentEmail,subjects, teachers }: FeedbackFormProps) {
+
   const [subject, setSubject] = useState<string>("");
   const [teacher, setTeacher] = useState<string>("");
 
-  // Likert 1–5: Q1–Q12, Q13 (ütem), Q14–Q17
   const [q1, setQ1] = useState("");
   const [q2, setQ2] = useState("");
   const [q3, setQ3] = useState("");
@@ -39,21 +39,14 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const [q15, setQ15] = useState("");
   const [q16, setQ16] = useState("");
   const [q17, setQ17] = useState("");
-
-  // Iskolán kívüli oktatás
-
-  const [q18Other, setQ18Other] = useState("");
   const [q18, setQ18] = useState("");
-  // const [q18Other, setQ18Other] = useState("");
   const [q19, setQ19] = useState("");
-  const [q20, setQ20] = useState<string[]>([]); // többválasztós
-  const [q21, setQ21] = useState<string[]>([]); // többválasztós
+  const [q20, setQ20] = useState<string[]>([]);
+  const [q21, setQ21] = useState<string[]>([]);
 
-  // Szöveges
   const [q22, setQ22] = useState("");
   const [q23, setQ23] = useState("");
 
-  // Jelenlét / elmaradt órák
   const [q24, setQ24] = useState("");
   const [q25, setQ25] = useState("");
   const [q26, setQ26] = useState("");
@@ -62,11 +55,12 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   const likertValues = ["1", "2", "3", "4", "5"];
 
   const isAttendingOutside = useMemo(
-    () => q19 === "csoportos felkészülésen veszek részt" || q19 === "magánórára, egyéni felkészítőre járok",
+    () => q19 === "1" || q19 === "2",
     [q19]
   );
 
   const getFormData = () => ({
+    studentEmail,
     subject,
     teacher,
     responses: { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26 },
@@ -74,32 +68,20 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
 
   const onSaveDraft = () => {
     if (!subject || !teacher) {
-      toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
+      toast("Kérjük, válaszd ki a tantárgyat és a tanárt.");
       return;
     }
 
-    if (isAttendingOutside) {
+    if (!(q19 === "1" || q19 === "2")) {
       setQ20([]);
     }
-
-
-
     const data = getFormData();
-    console.log(q18);
-    if (q18 == "egyéb") {
-      console.log(q18);
-      setQ18(q18Other);
-      console.log(q18Other);
-      console.log(q18);
-    }
-    console.log(q18);
     console.log("Draft saved:", JSON.stringify(data, null, 2));
-    toast("Piszkozat helyben elmentve. Backend csatlakoztatásával lesz tartós.");
   };
 
   const onSubmit = () => {
     if (!subject || !teacher) {
-      toast("Kérjük, válaszd ki az évfolyamot, tantárgyat és tanárt.");
+      toast("Kérjük, válaszd ki a tantárgyat és a tanárt.");
       return;
     }
 
@@ -116,10 +98,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       return;
     }
 
-    if (q18 === "egyéb") {
-      setQ18(q18Other);
-    }
-
     if (!q19) {
       toast("Kérjük, válaszolj a 19. kérdésre.");
       return;
@@ -129,12 +107,18 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
       return;
     }
 
-    if (!isAttendingOutside) {
-      setQ20([]);
-    }
-
     if (q21.length === 0) {
       toast("Kérjük, válassz legalább egy lehetőséget a 21. kérdésnél.");
+      return;
+    }
+
+    if (q22.length < 50) {
+      toast("A 22. kérdésnél a válasznak legalább 50 karakternek kell lennie.");
+      return;
+    }
+
+    if (q23.length < 50) {
+      toast("A 23. kérdésnél a válasznak legalább 50 karakternek kell lennie.");
       return;
     }
 
@@ -148,8 +132,6 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
     console.log("submit saved:", JSON.stringify(data, null, 2));
   };
 
-
-
   const toggleMulti = (value: string, setFn: (updater: (prev: string[]) => string[]) => void) => {
     setFn((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
   };
@@ -157,10 +139,9 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Anonim visszajelzés beküldése</CardTitle>
+        <CardTitle>Oktatási visszajelzés</CardTitle>
       </CardHeader>
       <CardContent className="space-y-8">
-        {/* Alap kiválasztások */}
         <section className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="subject">Tantárgy</Label>
@@ -190,14 +171,12 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
           </div>
         </section>
 
-        {/* OSZTÁLYTERMI TEVÉKENYSÉG */}
         <section className="space-y-6">
           <header>
             <h2 className="text-xl font-semibold">Osztálytermi tevékenység</h2>
             <p className="text-sm text-muted-foreground">1 = egyáltalán nem értek egyet, 5 = teljes mértékben egyetértek</p>
           </header>
 
-          {/* Helper to render 1–5 radio rows */}
           <div className="space-y-5">
             <div className="space-y-2">
               <Label>1) A Tanár érthetően magyarázza a tananyagot.</Label>
@@ -406,58 +385,62 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
           </div>
         </section>
 
-        {/* ISKOLÁN KÍVÜLI OKTATÁS */}
         <section className="space-y-6">
           <header>
             <h2 className="text-xl font-semibold">Iskolán kívüli oktatás</h2>
           </header>
 
           <div className="space-y-2">
-            <Label>18) A Tanár részesít külön foglalkozásban...</Label>
-            <RadioGroup value={q18} onValueChange={setQ18} className="grid gap-2">
+            <Label>18) A Tanár részesít külön foglalkozásban,hogy felkészítsen vizsgára/versenyre/szereplésre:</Label>
+            <RadioGroup
+              value={["1", "2", "3"].includes(q18) ? q18 : ""}
+              onValueChange={(val) => setQ18(val)} 
+              className="grid gap-2"
+            >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-elkereztetve" value="igen, elkéreztetve más Tanárok óráiról" />
-                <Label htmlFor="q18-elkereztetve">igen, elkéreztetve más Tanárok óráiról</Label>
+                <RadioGroupItem id="q18-1" value="1" />
+                <Label htmlFor="q18-1">igen, elkéreztetve más Tanárok óráiról</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-iskidon" value="igen, iskolaidőn kívül" />
-                <Label htmlFor="q18-iskidon">igen, iskolaidőn kívül</Label>
+                <RadioGroupItem id="q18-2" value="2" />
+                <Label htmlFor="q18-2">igen, iskolaidőn kívül</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-nincs" value="nincs külön foglalkozás ebből a tantárgyból" />
-                <Label htmlFor="q18-nincs">nincs külön foglalkozás ebből a tantárgyból</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-egyeb" value="egyéb" />
-                <Label htmlFor="q18-egyeb">egyéb, éspedig:</Label>
+                <RadioGroupItem id="q18-3" value="3" />
+                <Label htmlFor="q18-3">nincs külön foglalkozás ebből a tantárgyból</Label>
               </div>
             </RadioGroup>
 
-            {q18 === "egyéb" && (
-              <div className="pt-2">
-                <Input
-                  type="text"
-                  value={q18Other}
-                  onChange={(e) => setQ18Other(e.target.value)}
-                  placeholder="Írd le röviden..."
-                />
-              </div>
-            )}
+            <div className="pt-2">
+              <Input
+                type="text"
+                placeholder="Egyéb, írd le röviden..."
+                value={!["1", "2", "3"].includes(q18) ? q18 : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val) {
+                    setQ18(val);
+                  } else {
+                    setQ18("");
+                  }
+                }}
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
             <Label>19) Ebből a tantárgyból iskolán kívül:</Label>
             <RadioGroup value={q19} onValueChange={setQ19} className="grid gap-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-maganora" value="magánórára, egyéni felkészítőre járok" />
+                <RadioGroupItem id="q19-maganora" value="1" />
                 <Label htmlFor="q19-maganora">magánórára, egyéni felkészítőre járok</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-csoportos" value="csoportos felkészülésen veszek részt" />
+                <RadioGroupItem id="q19-csoportos" value="2" />
                 <Label htmlFor="q19-csoportos">csoportos felkészülésen veszek részt</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-nem" value="nem veszek részt iskolán kívüli oktatásban ebből a tantárgyból" />
+                <RadioGroupItem id="q19-nem" value="3" />
                 <Label htmlFor="q19-nem">nem veszek részt iskolán kívüli oktatásban ebből a tantárgyból</Label>
               </div>
             </RadioGroup>
@@ -468,11 +451,11 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
               <Label>20) Az iskolán kívüli oktatáson azért veszek részt, mert:</Label>
               <div className="grid gap-2">
                 {[
-                  { id: "tetszik", label: "nagyon tetszik a téma, el szeretnék mélyülni még jobban az ismeretekben" },
-                  { id: "lemaradas", label: "szükségesnek érzem, mert nagyon le vagyok maradva az osztáytársakhoz képest" },
-                  { id: "nemEleg", label: "úgy érzem, hogy az iskolai oktatás/felkészítés nem elég a vizsgák sikerességéhez/jó jegyek eléréséhez" },
-                  { id: "szulok", label: "a szüleim ragaszkodnak hozzá, hogy magánórára járjak" },
-                  { id: "szabadido", label: "túl sok a szabadidőm, nincs mivel kitöltsem" },
+                  { id: "1", label: "nagyon tetszik a téma, el szeretnék mélyülni még jobban az ismeretekben" },
+                  { id: "2", label: "szükségesnek érzem, mert nagyon le vagyok maradva az osztáytársakhoz képest" },
+                  { id: "3", label: "úgy érzem, hogy az iskolai oktatás/felkészítés nem elég a vizsgák sikerességéhez/jó jegyek eléréséhez" },
+                  { id: "4", label: "a szüleim ragaszkodnak hozzá, hogy magánórára járjak" },
+                  { id: "5", label: "túl sok a szabadidőm, nincs mivel kitöltsem" },
                 ].map((opt) => (
                   <div key={opt.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -494,11 +477,11 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
             <Label>21) Szeretném, ha ebből a tantárgyból:</Label>
             <div className="grid gap-2">
               {[
-                { id: "gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot", label: "gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot" },
-                { id: "kevesebb házifeladat lenne", label: "kevesebb házifeladat lenne" },
-                { id: "kedvesebb/barátibb lenne a tanárunk", label: "kedvesebb/barátibb lenne a tanárunk" },
-                { id: "több információt kapnék, ami felhasználhatnék a mindennapokban is", label: "több információt kapnék, ami felhasználhatnék a mindennapokban is" },
-                { id: "Teljesen elégedett vagyok a mostani helyzettel", label: "Teljesen elégedett vagyok a mostani helyzettel" },
+                { id: "1", label: "gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot" },
+                { id: "2", label: "kevesebb házifeladat lenne" },
+                { id: "3", label: "kedvesebb/barátibb lenne a tanárunk" },
+                { id: "4", label: "több információt kapnék, ami felhasználhatnék a mindennapokban is" },
+                { id: "5", label: "Teljesen elégedett vagyok a mostani helyzettel" },
               ].map((opt) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -514,19 +497,40 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
           </div>
         </section>
 
-        {/* Szöveges kérdések */}
         <section className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="q22">22) Kérünk, fogalmazd meg röviden, mi volt a legjobb ezen az órán?</Label>
-            <Textarea id="q22" value={q22} onChange={(e) => setQ22(e.target.value)} placeholder="Rövid válasz..." />
+            <Label htmlFor="q22">
+              22) Kérünk, fogalmazd meg röviden, mi volt a legjobb ezen az órán?
+            </Label>
+            <Textarea
+              id="q22"
+              value={q22}
+              onChange={(e) => setQ22(e.target.value)}
+              placeholder="Rövid válasz..."
+              maxLength={400}
+            />
+            <p className="text-sm text-gray-500">
+              {q22.length}/400 karakter (min. 50)
+            </p>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="q23">23) Kérünk, fogalmazd meg röviden, mi nem tetszett ezen az órán?</Label>
-            <Textarea id="q23" value={q23} onChange={(e) => setQ23(e.target.value)} placeholder="Rövid válasz..." />
+            <Label htmlFor="q23">
+              23) Kérünk, fogalmazd meg röviden, mi nem tetszett ezen az órán?
+            </Label>
+            <Textarea
+              id="q23"
+              value={q23}
+              onChange={(e) => setQ23(e.target.value)}
+              placeholder="Rövid válasz..."
+              maxLength={400}
+            />
+            <p className="text-sm text-gray-500">
+              {q23.length}/400 karakter (min. 50)
+            </p>
           </div>
         </section>
 
-        {/* Jelenlét és elmaradt tanórák */}
         <section className="space-y-6">
           <header>
             <h2 className="text-xl font-semibold">Jelenlét és elmaradt tanórák</h2>
@@ -536,19 +540,19 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
             <Label>24) Ebben a tanévben jelen voltam a tantárgyban megtartott:</Label>
             <RadioGroup value={q24} onValueChange={setQ24} className="grid gap-2 md:grid-cols-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-25" value="órák 25%-án" />
+                <RadioGroupItem id="q24-25" value="1" />
                 <Label htmlFor="q24-25">órák 25%-án</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-50" value="órák 50%-án" />
+                <RadioGroupItem id="q24-50" value="2" />
                 <Label htmlFor="q24-50">órák 50%-án</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-75" value="órák 75%-án" />
+                <RadioGroupItem id="q24-75" value="3" />
                 <Label htmlFor="q24-75">órák 75%-án</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-90" value="órák több mint 90%-án" />
+                <RadioGroupItem id="q24-90" value="4" />
                 <Label htmlFor="q24-90">órák több mint 90%-án</Label>
               </div>
             </RadioGroup>
@@ -558,19 +562,19 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
             <Label>25) Válaszd ki a tantárgyra vonatkozó helyes megállapítást:</Label>
             <RadioGroup value={q25} onValueChange={setQ25} className="grid gap-2 md:grid-cols-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-25" value="az órák legfeljebb 25%-a volt megtartva" />
+                <RadioGroupItem id="q25-25" value="1" />
                 <Label htmlFor="q25-25">az órák legfeljebb 25%-a volt megtartva</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-50" value="az órák legfeljebb 50%-a volt megtartva" />
+                <RadioGroupItem id="q25-50" value="2" />
                 <Label htmlFor="q25-50">az órák legfeljebb 50%-a volt megtartva</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-75" value="az órák legfeljebb 75%-a volt megtartva" />
+                <RadioGroupItem id="q25-75" value="3" />
                 <Label htmlFor="q25-75">az órák legfeljebb 75%-a volt megtartva</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-90" value="az órák legalább 90%-a meg volt tartva" />
+                <RadioGroupItem id="q25-90" value="4" />
                 <Label htmlFor="q25-90">az órák legalább 90%-a meg volt tartva</Label>
               </div>
             </RadioGroup>
@@ -580,15 +584,15 @@ export function FeedbackForm({ subjects, teachers }: FeedbackFormProps) {
             <Label>26) Válaszd ki a gyakoribb megállapítást arra az esetre, ha a Tanárod nem tudta megtartani az órát:</Label>
             <RadioGroup value={q26} onValueChange={setQ26} className="grid gap-2 md:grid-cols-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-helyettes" value="volt helyettesítő tanár" />
+                <RadioGroupItem id="q26-helyettes" value="1" />
                 <Label htmlFor="q26-helyettes">volt helyettesítő tanár</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-lyukas" value="nem volt helyettesítés, lyukas óra lett belőle" />
+                <RadioGroupItem id="q26-lyukas" value="2" />
                 <Label htmlFor="q26-lyukas">nem volt helyettesítés, lyukas óra lett belőle</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-atren" value="átrendeződött az órarend, így egy órával később/hamarabb mentünk/jöttünk az iskolából" />
+                <RadioGroupItem id="q26-atren" value="3" />
                 <Label htmlFor="q26-atren">átrendeződött az órarend, így egy órával később/hamarabb mentünk/jöttünk az iskolából</Label>
               </div>
             </RadioGroup>
