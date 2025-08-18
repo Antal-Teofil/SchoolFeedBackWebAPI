@@ -1,0 +1,82 @@
+{
+  "id": "survey-date1-date2",
+  "teachers": [
+    {
+      "email": "kovacs.maria@gimi.ro",
+      "name": "Kovács Mária",
+      "subjects": [
+        {
+          "name": "Matematika",
+          "students": [
+            "anna.kiss@student.ro",
+            "bence.nagy@student.ro",
+            "csilla.szabo@student.ro",
+            "david.kovacs@student.ro"
+          ]
+        },
+        {
+          "name": "Fizika",
+          "students": [
+            "anna.kiss@student.ro",
+            "david.kovacs@student.ro",
+            "eszter.toth@student.ro"
+          ]
+        }
+      ]
+    },
+    {
+      "email": "szabo.peter@gimi.ro",
+      "name": "Szabó Péter",
+      "subjects": [
+        {
+          "name": "Informatika",
+          "students": [
+            "anna.kiss@student.ro",
+            "gabor.molnar@student.ro",
+            "hanna.farkas@student.ro"
+          ]
+        },
+        {
+          "name": "Programozás",
+          "students": [
+            "bence.nagy@student.ro",
+            "hanna.farkas@student.ro",
+            "imre.balogh@student.ro"
+          ]
+        }
+      ]
+    },
+    {
+      "email": "toth.andrea@gimi.ro",
+      "name": "Tóth Andrea",
+      "subjects": [
+        {
+          "name": "Angol",
+          "students": [
+            "csilla.szabo@student.ro",
+            "eszter.toth@student.ro",
+            "janos.kiss@student.ro"
+          ]
+        },
+        {
+          "name": "Francia",
+          "students": [
+            "anna.kiss@student.ro",
+            "janos.kiss@student.ro",
+            "katalin.varga@student.ro"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "startdate": "date1",
+  "enddate": "date2",
+
+  "questionnaire": {
+    "q1": "typ1",
+    "q2": "typ2",
+    "q3": "typ3"
+  }
+
+}

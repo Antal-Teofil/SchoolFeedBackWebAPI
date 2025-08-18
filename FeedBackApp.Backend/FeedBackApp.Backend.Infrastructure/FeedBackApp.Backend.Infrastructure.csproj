@@ -19,4 +19,12 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FeedBackApp.Core\FeedBackApp.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\Repository\" />
+  </ItemGroup>
+
 </Project>
