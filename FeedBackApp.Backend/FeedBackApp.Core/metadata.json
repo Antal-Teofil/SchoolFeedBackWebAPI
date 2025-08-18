@@ -1,4 +1,5 @@
 {
+  "id": "survey-date1-date2",
   "teachers": [
     {
       "email": "kovacs.maria@gimi.ro",
@@ -67,5 +68,15 @@
         }
       ]
     }
-  ]
+  ],
+
+  "startdate": "date1",
+  "enddate": "date2",
+
+  "questionnaire": {
+    "q1": "typ1",
+    "q2": "typ2",
+    "q3": "typ3"
+  }
+
 }
