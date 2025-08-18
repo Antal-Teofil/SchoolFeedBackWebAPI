@@ -21,22 +21,24 @@ namespace AzureFunctionsAPI
         }
 
         
-
         [Function("LoginWithGoogle")]
     [OpenApiOperation(operationId: "LoginWithGoogle", tags: new[] { "Auth" })]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(LoginRequest), Required = true, Description = "Google ID Token payload")]
         public async Task<HttpResponseData> LoginWithGoogle(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "auth/google")] HttpRequestData req)
         {
+            _logger.LogInformation("LoginWithGoogle function triggered.");
             var studentsEnv = Environment.GetEnvironmentVariable("StudentEmails") ?? "";
             var students = studentsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             // Get origin
             var origin = req.Headers.TryGetValues("Origin", out var origins) ? origins.FirstOrDefault() : null;
-
+            _logger.LogDebug("Request origin: {Origin}", origin ?? "None");
+            
             // Handle preflight request
             if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
             {
+                _logger.LogInformation("Handling CORS preflight request");
                 var preflight = req.CreateResponse(System.Net.HttpStatusCode.NoContent);
                 if (!string.IsNullOrEmpty(origin))
                 {
@@ -59,6 +61,7 @@ namespace AzureFunctionsAPI
                 {
                     Audience = new[] { Environment.GetEnvironmentVariable("GoogleClientId") }
                 });
+                _logger.LogInformation("Google token validated. Email: {Email}", payload.Email);
             }
             catch (Exception ex)
             {
@@ -80,6 +83,7 @@ namespace AzureFunctionsAPI
 
             if (!students.Contains(payload.Email, StringComparer.OrdinalIgnoreCase) && !isAdmin)
             {
+                _logger.LogWarning("Unauthorized login attempt. Email: {Email}", payload.Email);
                 var notFoundResp = req.CreateResponse(System.Net.HttpStatusCode.Forbidden);
                 if (!string.IsNullOrEmpty(origin))
                 {
@@ -90,8 +94,10 @@ namespace AzureFunctionsAPI
                 return notFoundResp;
             }
 
+            _logger.LogInformation("User authenticated. Email: {Email}, Role: {Role}", payload.Email, isAdmin ? "Admin" : "Student");
 
             var token = GenerateJwtToken(payload.Email, isAdmin);
+            _logger.LogDebug("JWT generated for {Email}", payload.Email);
 
             var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
 
@@ -113,6 +119,8 @@ namespace AzureFunctionsAPI
                 lastName = payload.FamilyName,
                 role = isAdmin ? "Admin" : "Student"
             });
+            
+            _logger.LogInformation("LoginWithGoogle function completed successfully for {Email}", payload.Email);
 
             return response;
         }
