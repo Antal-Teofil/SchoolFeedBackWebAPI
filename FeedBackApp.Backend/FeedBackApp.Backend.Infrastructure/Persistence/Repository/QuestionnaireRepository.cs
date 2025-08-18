@@ -13,24 +13,26 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             _context = context;
         }
 
-        public Task<Metadata?> GetMetadataAsync(string id)
+        public async Task<Metadata?> GetMetadataAsync(string id)
         {
-            return await
+            return await _context.Set<Metadata>().FindAsync(id);
         }
 
-        public Task<Questionnaire?> GetQuestionnaireAsync(string id)
+        public async Task<Questionnaire?> GetQuestionnaireAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<Questionnaire>().FindAsync(id);
         }
 
-        public Task SaveMetadataAsync(Metadata metadata)
+        public async Task SaveMetadataAsync(Metadata metadata)
         {
-            throw new NotImplementedException();
+            _context.Set<Metadata>().Add(metadata);
+            await _context.SaveChangesAsync();
         }
 
-        public Task SaveQuestionnaireAsync(Questionnaire questionnaire)
+        public async Task SaveQuestionnaireAsync(Questionnaire questionnaire)
         {
-            throw new NotImplementedException();
+            _context.Set<Questionnaire>().Add(questionnaire);
+            await _context.SaveChangesAsync();
         }
     }
 }
