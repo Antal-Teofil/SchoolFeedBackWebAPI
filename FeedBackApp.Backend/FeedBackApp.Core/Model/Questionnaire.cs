@@ -8,11 +8,24 @@ namespace FeedBackApp.Core.Model
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
-        
-        [JsonPropertyName("surveyid")]
-        public string SurveyId { get; set; } = string.Empty; // is this neccessary?
+
+        [JsonPropertyName("partitionKey")]
+        public string PartitionKey { get; set; } = string.Empty; // TeacherEmail_StudentEmail_SubjectName
+
+        [JsonPropertyName("teacherEmail")]
+        public string TeacherEmail { get; set; } = string.Empty;
+
+        [JsonPropertyName("teacherName")]
+        public string TeacherName { get; set; } = string.Empty;
+
+        [JsonPropertyName("subjectName")]
+        public string SubjectName { get; set; } = string.Empty;
+
+        [JsonPropertyName("studentEmail")]
+        public string StudentEmail { get; set; } = string.Empty;
 
         [JsonPropertyName("answers")]
         public Dictionary<string, QuestionAnswer> Answers { get; set; } = new();
     }
+
 }

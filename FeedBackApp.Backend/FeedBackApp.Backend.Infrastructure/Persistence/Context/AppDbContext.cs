@@ -1,6 +1,7 @@
 ﻿
 using FeedBackApp.Core.Model;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence
 {
@@ -8,7 +9,8 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
     {
         public DbSet<Metadata> Metadatas { get; set; } = null!;
         public DbSet<Questionnaire> Questionnaires { get; set; } = null!;
-        public DbSet<ReviewIndex> ReviewIndices { get; set; } = null!;
+
+        //public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
@@ -25,17 +27,21 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
 
             modelBuilder.HasDefaultContainer("MainContainer");
 
-            modelBuilder.Entity<Metadata>().ToContainer("MainContainer")
-                .HasPartitionKey(m => m.Id)
-                .Property(m => m.Id).ToJsonProperty("id");
+            modelBuilder.Entity<Metadata>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.HasPartitionKey(m => m.Id);
+            });
 
-            modelBuilder.Entity<ReviewIndex>().ToContainer("MainContainer")
-                .HasPartitionKey(r => r.Id)
-                .Property(r => r.Id).ToJsonProperty("id");
+            modelBuilder.Entity<Questionnaire>(entity =>
+            {
+                entity.HasKey(q => q.Id);
+                entity.HasPartitionKey(q => q.PartitionKey);
+            });
 
-            modelBuilder.Entity<Questionnaire>().ToContainer("MainContainer")
-                .HasPartitionKey(q => q.Id)
-                .Property(q => q.Id).ToJsonProperty("id");
+            modelBuilder.Entity<Metadata>().HasDiscriminator<string>("docType").HasValue<Metadata>("Metadata");
+            modelBuilder.Entity<Questionnaire>().HasDiscriminator<string>("docType").HasValue<Questionnaire>("Questionnaire");
+
         }
 
     }
