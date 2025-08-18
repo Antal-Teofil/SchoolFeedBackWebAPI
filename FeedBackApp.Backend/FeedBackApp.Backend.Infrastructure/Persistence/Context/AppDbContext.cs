@@ -1,12 +1,14 @@
 ﻿
+using FeedBackApp.Core.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence
 {
     public class AppDBContext : DbContext
     {
-
-        // public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
+        public DbSet<Metadata> Metadatas { get; set; } = null!;
+        public DbSet<Questionnaire> Questionnaires { get; set; } = null!;
+        public DbSet<ReviewIndex> ReviewIndices { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
@@ -23,6 +25,17 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
 
             modelBuilder.HasDefaultContainer("MainContainer");
 
+            modelBuilder.Entity<Metadata>().ToContainer("MainContainer")
+                .HasPartitionKey(m => m.Id)
+                .Property(m => m.Id).ToJsonProperty("id");
+
+            modelBuilder.Entity<ReviewIndex>().ToContainer("MainContainer")
+                .HasPartitionKey(r => r.Id)
+                .Property(r => r.Id).ToJsonProperty("id");
+
+            modelBuilder.Entity<Questionnaire>().ToContainer("MainContainer")
+                .HasPartitionKey(q => q.Id)
+                .Property(q => q.Id).ToJsonProperty("id");
         }
 
     }
