@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedBackApp.Backend.Infrast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctionsAPI", "AzureFunctionsAPI\AzureFunctionsAPI.csproj", "{510C8633-3AA1-4589-AC43-CD5DA17EA30E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedBackApp.Tests", "FeedBackApp.Tests\FeedBackApp.Tests.csproj", "{2C6CACD4-0863-9048-DBD2-72320EF0B5BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{ED638BF0-22E3-4D1A-9549-185CFDDCD9DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{510C8633-3AA1-4589-AC43-CD5DA17EA30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{510C8633-3AA1-4589-AC43-CD5DA17EA30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{510C8633-3AA1-4589-AC43-CD5DA17EA30E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C6CACD4-0863-9048-DBD2-72320EF0B5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C6CACD4-0863-9048-DBD2-72320EF0B5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C6CACD4-0863-9048-DBD2-72320EF0B5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C6CACD4-0863-9048-DBD2-72320EF0B5BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED638BF0-22E3-4D1A-9549-185CFDDCD9DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED638BF0-22E3-4D1A-9549-185CFDDCD9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED638BF0-22E3-4D1A-9549-185CFDDCD9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED638BF0-22E3-4D1A-9549-185CFDDCD9DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
