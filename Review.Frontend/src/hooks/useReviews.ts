@@ -1,8 +1,9 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle , GetStudentByEmail} from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle , GetFormByEmail} from "@/api/ReviewApi"
 import { useParams } from "react-router-dom";
+import {StudentContext} from "@/models/StudentContext"
 
-export const useReviews = () => {
+export const useReviews = (email) => {
     const client = useQueryClient();
     const { questionnaireId, evaluationId } = useParams();
 
@@ -22,7 +23,8 @@ export const useReviews = () => {
         error: errorQuestionnairesSummary
     } = useQuery({
         queryKey: [`questionnairesSummary`, questionnaireId],
-        queryFn: GetQuestionnaireSummary(questionnaireId)
+        queryFn:() => GetQuestionnaireSummary(questionnaireId),
+        enabled: !!questionnaireId
     })
 
     const {
@@ -32,7 +34,19 @@ export const useReviews = () => {
         error: errorEvaluation
     } = useQuery({
         queryKey: [`evaluation`, evaluationId],
-        queryFn: GetEvaluation(evaluationId)
+        queryFn:() => GetEvaluation(evaluationId),
+        enabled: !!evaluationId
+    })
+
+    const{
+        data: form,
+        isLoading: isLoadingForm,
+        isError: isErrorForm,
+        error: errorForm
+    } =useQuery<StudentContext>({
+        queryKey: ['form',email],
+        queryFn:() => GetFormByEmail(email),
+        enabled: !!email,
     })
 
 
@@ -49,7 +63,8 @@ export const useReviews = () => {
         mutationFn: DeleteQuestionnaire,
         onSuccess: (questionnaireId) => {
             client.invalidateQueries({
-                queryKey: ['deletedQuestionnaire', questionnaireId]
+                queryKey: ['deletedQuestionnaire', questionnaireId],
+                enabled:questionnaireId
             });
         }
     })
@@ -58,29 +73,12 @@ export const useReviews = () => {
     mutationFn: LoginWithGoogle
     });
 
-    const { mutate: getStudentByEmail, isPending:isGettingStudent} =useMutation({
-     mutationFn:GetStudentByEmail
-    })
-
-
     return {
-        createQuestionnaires,
-        isCreatingQuestionnaire,
-        questionnairesSummary,
-        isLoadingQuestionnairesSummary,
-        isErrorQuestionnairesSummary,
-        errorQuestionnairesSummary,
-        evaluation,
-        isLoadingEvaluation,
-        isErrorEvaluation,
-        errorEvaluation,
-        updateEvaluation,
-        isUpdatingEvaluation,
-        deleteQuestionnaire,
-        isDeletingQuestionnaire,
-        loginWithGoogle,
-        isLoggingIn,
-        getStudentByEmail,
-        isGettingStudent,
+        createQuestionnaires,isCreatingQuestionnaire,
+        questionnairesSummary,isLoadingQuestionnairesSummary,isErrorQuestionnairesSummary,errorQuestionnairesSummary,
+        evaluation,isLoadingEvaluation,isErrorEvaluation,errorEvaluation,
+        updateEvaluation,isUpdatingEvaluation,deleteQuestionnaire,isDeletingQuestionnaire,
+        loginWithGoogle,isLoggingIn,
+        form,isLoadingForm,isErrorForm,errorForm
     }
 }

@@ -8,27 +8,18 @@ import { useEffect, useState } from "react";
 
 /*
 const subjects = ["Mathematics", "Physics","English"];
-const teachers = ["Prof. Ionescu","Mrs. Popescu","Mr. Marinescu"];*/
+const teachers = ["Prof. Ionescu","Mrs. Popescu","Mr. Marinescu"];
 
 type StudentContext = {
   grade: string
   teachers: string[],
   subjects: string[],
 }
-
-export default function StudentDashboard() {
-  const user = useAuthStore((state) => state.user);
-  const [context, setContext] = useState<StudentContext | null>(null);
-
-  /*const {
-  getStudentByEmail,
-  isGettingStudent,
-  } = useReviews();
-
+  
   useEffect(() => {
     if (!user?.email) return;
 
-    getStudentByEmail(user.email, {
+    getFormByEmail(user.email, {
       onSuccess: (data: StudentContext) => {
         setContext(data);
       },
@@ -36,26 +27,47 @@ export default function StudentDashboard() {
         console.error(err);
       },
     });
-    if(isGettingStudent)
+    if(isStudent)
     {
-      toast("IsLoading StudentContext");
+      toast("IsLoading FormContext");
     }
-  }, [user?.email, getStudentByEmail]);
-  */
+  }, [user?.email, getFormByEmail]);
+  
   useEffect(() => {
     setContext({
       grade: "11C",
       teachers: ["Prof. Ionescu", "Mrs. Popescu"],
       subjects: ["Mathematics", "Physics", "English"],
     });
-  }, []);
+  }, []);*/
 
-  if (!context) {
+export default function StudentDashboard() {
+  const user = useAuthStore((state) => state.user);
+  //const [context, setContext] = useState<StudentContext | null>(null);
+
+  const {
+  form: context,
+  isLoadingForm,
+  isErrorForm,
+  errorForm
+  } = useReviews(user.email);
+
+  
+  if (isLoadingForm) {
     return (
       <main className="container mx-auto px-6 py-10">
         <h1 className="text-2xl">Loading student context…</h1>
       </main>
-    );
+    )
+  }
+
+  if (isErrorForm || !context) {
+    return (
+      <main className="container mx-auto px-6 py-10">
+        <h1 className="text-2xl">Hiba történt a betöltéskor.</h1>
+        {String((errorForm as any)?.message || '')}
+      </main>
+    )
   }
 
   return (
@@ -75,7 +87,7 @@ export default function StudentDashboard() {
 
       <section className="mb-10">
         <Card>
-          <CardContent className="space-y-3 text-muted-foreground">
+          <CardContent className="space-y-3 text-muted-foreground py-6">
             <p>
               Kérünk, válaszoljatok néhány kérdésre a Tamási Áron Gimnázium oktatási tevékenységére vonatkozóan.
               A felmérés célja az oktatásra vonatkozó tapasztalatok felmérése, illetve ezekre alapozva a megfelelő
@@ -106,7 +118,7 @@ export default function StudentDashboard() {
 
       </section>
       <section>
-        <FeedbackForm studentEmail={user.email} subjects={context.subjects} teachers={context.teachers} />
+        <FeedbackForm studentEmail={user.email} subjects={context.subjects} teachers={context.teachers} evaluations={context.evaluations} />
       </section>
     </main>
   );

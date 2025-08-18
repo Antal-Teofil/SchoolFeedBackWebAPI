@@ -1,16 +1,10 @@
 import {create} from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-
-type User={
-    firstName: string
-    lastName : string
-    email : string
-    role : string
-} | null
+import {User} from "@/models/User"
 
 type AuthStore ={
-    user:User
-    setUser: (u:User) => void
+    user:User | null
+    setUser: (u:User | null) => void
     clearUser : () => void
 }
 
