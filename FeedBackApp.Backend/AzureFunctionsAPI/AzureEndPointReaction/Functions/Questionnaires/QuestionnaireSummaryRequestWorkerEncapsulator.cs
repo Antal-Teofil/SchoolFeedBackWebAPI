@@ -1,5 +1,4 @@
-﻿using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
-using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+﻿using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Azure.Functions.Worker;

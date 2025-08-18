@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace AzureEndPointReaction.Functions.QuestionnaireInterfaces
+namespace Application.Services.Interfaces
 {
     public interface IQuestionnaireWorker
     {
