@@ -1,7 +1,6 @@
 ﻿
 using FeedBackApp.Core.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence
 {
