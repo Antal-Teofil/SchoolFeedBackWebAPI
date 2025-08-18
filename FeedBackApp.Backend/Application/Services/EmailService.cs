@@ -42,4 +42,13 @@ public class EmailService : IEmailService
 
         await smtp.SendMailAsync(message);
     }
+
+    public async Task SendBulkEmailAsync(IEnumerable<string> toEmails, string subject, string body, string? attachmentPath = null)
+    {
+        foreach (var email in toEmails)
+        {
+            await SendEmailAsync(email, "", subject, body, attachmentPath);
+        }
+    }
+
 }
