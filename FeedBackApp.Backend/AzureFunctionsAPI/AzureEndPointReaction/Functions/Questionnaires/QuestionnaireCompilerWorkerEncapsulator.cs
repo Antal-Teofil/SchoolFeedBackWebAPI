@@ -1,6 +1,5 @@
 ﻿using System.Net;
-using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
-using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -9,10 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireCompilerWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireCompilerWorkerEncapsulator> logger) : IQuestionnaireWorker
+    public sealed class QuestionnaireCompilerWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireCompilerWorkerEncapsulator> logger, IEmailService emailService) : IQuestionnaireWorker
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireCompilerWorkerEncapsulator> _logger = logger;
+        private readonly IEmailService _emailService = emailService;
 
         [RequireAdmin]
         [Function("PerformQuestionnaireCompilation")]

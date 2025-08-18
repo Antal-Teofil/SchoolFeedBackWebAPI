@@ -20,6 +20,7 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\FeedBackApp.Backend.Infrastructure\FeedBackApp.Backend.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

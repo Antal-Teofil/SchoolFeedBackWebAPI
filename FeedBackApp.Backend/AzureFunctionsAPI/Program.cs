@@ -1,8 +1,7 @@
-﻿using Azure.Core.Serialization;
-using AzureEndPointReaction.Functions.QuestionnaireInterfaces;
+﻿using Application.Services;
+using Application.Services.Interfaces;
+using Azure.Core.Serialization;
 using AzureEndPointReaction.Functions.Questionnaires;
-using AzureFunctionsAPI.AzureEndPointReaction.Functions.QuestionnaireInterfaces;
-using AzureFunctionsAPI.AzureEndPointReaction.Functions.Services;
 using FeedBackApp.Backend.Infrastructure.Middleware;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -39,6 +38,7 @@ var host = new HostBuilder()
 
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEvaluationService, EvaluationService>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
