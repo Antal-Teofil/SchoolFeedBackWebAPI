@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Application.DTOs;
 using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -32,19 +33,20 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
-            var body = await new StreamReader(request.Body).ReadToEndAsync();
-
-            if (string.IsNullOrWhiteSpace(body))
-            {
-                var emptyResponse = request.CreateResponse(HttpStatusCode.BadRequest);
-                await emptyResponse.WriteAsJsonAsync(new { error = "Request body cannot be empty." }, cancellationToken: CancellationToken.None);
-                return emptyResponse;
-            }
-            /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new { message = "Post successful" });
+
+            var metadataDto = await request.ReadFromJsonAsync<MetadataDto>(cancellationToken: token);
+
+            if (metadataDto is null)
+            {
+                response.StatusCode = HttpStatusCode.BadRequest;
+                await response.WriteAsJsonAsync(new { error = "Invalid payload" });
+                return response;
+            }
+            await _service.ProcessMetadataAsync(metadataDto);
+
+            await response.WriteAsJsonAsync(new { message = "Metadata and questionnaires saved" });
             return response;
-            //
 
         }
     }

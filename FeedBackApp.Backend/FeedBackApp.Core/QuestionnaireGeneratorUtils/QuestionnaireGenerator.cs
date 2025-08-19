@@ -91,12 +91,14 @@ public sealed class QuestionnaireGenerator
         // Helper locals
         //static string? ReadTrimmedString(JToken? t) => (t as JValue)?.Value as string is string s ? s.Trim() : t?.Value<string>()?.Trim();
 
+        JsonSerializer.Create().Deserialize<>
+
         while (await jr.ReadAsync(cancellationToken).ConfigureAwait(false))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             if (jr.TokenType == JsonToken.PropertyName &&
-                string.Equals(jr.Value as string, "teachers", StringComparison.Ordinal))
+                string.Compare(jr.Value as string, "teacher", true, CultureInfo.InvariantCulture) == 0)
             {
                 foundTeachers = true;
 

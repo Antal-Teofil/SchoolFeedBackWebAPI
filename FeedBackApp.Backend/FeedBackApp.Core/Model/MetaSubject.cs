@@ -9,6 +9,6 @@ namespace FeedBackApp.Core.Model
         public string Name { get; set; } = string.Empty;
 
         [JsonPropertyName("students")]
-        public List<string> Students { get; set; } = new();
+        public IList<string> Students { get; set; } // = new List<string>();
     }
 }
