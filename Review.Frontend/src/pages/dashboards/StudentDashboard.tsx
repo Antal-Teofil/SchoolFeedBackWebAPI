@@ -4,6 +4,7 @@ import { useReviews } from "../../hooks/useReviews";
 import { toast } from "sonner";
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useEffect, useState } from "react";
+import { mockStudentContext } from "@/mocks/studentContext";
 
 
 /*
@@ -44,8 +45,13 @@ type StudentContext = {
 export default function StudentDashboard() {
   const user = useAuthStore((state) => state.user);
   //const [context, setContext] = useState<StudentContext | null>(null);
+  const context = mockStudentContext;
 
-  const {
+    useEffect(() => {
+    console.log("Mock student context:", context);
+  }, [context]);
+
+  /*const {
   form: context,
   isLoadingForm,
   isErrorForm,
@@ -68,7 +74,7 @@ export default function StudentDashboard() {
         {String((errorForm as any)?.message || '')}
       </main>
     )
-  }
+  }*/
 
   return (
     <main className="container mx-auto px-6 py-10">
@@ -118,7 +124,7 @@ export default function StudentDashboard() {
 
       </section>
       <section>
-        <FeedbackForm studentEmail={user.email} subjects={context.subjects} teachers={context.teachers} evaluations={context.evaluations} />
+        <FeedbackForm studentEmail={user.email} subjects={context.subjects} teachers={context.teachers} />
       </section>
     </main>
   );

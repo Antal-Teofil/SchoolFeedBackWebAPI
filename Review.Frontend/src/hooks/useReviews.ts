@@ -3,12 +3,12 @@ import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEva
 import { useParams } from "react-router-dom";
 import {StudentContext} from "@/models/StudentContext"
 
-export const useReviews = (email) => {
+export const useReviews = (email?) => {
     const client = useQueryClient();
     const { questionnaireId, evaluationId } = useParams();
 
     const { mutate: createQuestionnaires, isPending: isCreatingQuestionnaire } = useMutation({
-        mutationFn: CreateQuestionnaires,
+        mutationFn:(payload) => CreateQuestionnaires(payload),
         onSuccess: () => {
             client.invalidateQueries({
                 queryKey: ['questionnaires']
@@ -45,7 +45,7 @@ export const useReviews = (email) => {
         error: errorForm
     } =useQuery<StudentContext>({
         queryKey: ['form',email],
-        queryFn:() => GetFormByEmail(email),
+        queryFn:() => GetFormByEmail(email!),
         enabled: !!email,
     })
 
@@ -64,13 +64,12 @@ export const useReviews = (email) => {
         onSuccess: (questionnaireId) => {
             client.invalidateQueries({
                 queryKey: ['deletedQuestionnaire', questionnaireId],
-                enabled:questionnaireId
             });
         }
     })
 
     const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
-    mutationFn: LoginWithGoogle
+    mutationFn: (idToken:string) => LoginWithGoogle(idToken)
     });
 
     return {

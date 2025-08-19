@@ -51,8 +51,7 @@ export default function AdminDashboard() {
   }
 
   const deleteQuestionnaires = () => {
-    deleteQuestionnaire(
-      {}, // Pass questionnaireId if required
+    deleteQuestionnaire(undefined, 
       {
         onSuccess: () => toast.success("Questionnaires deleted successfully!"),
         onError: () => toast.error("Failed to delete questionnaires.")

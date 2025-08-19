@@ -1,5 +1,6 @@
 import axios from "axios"
 
+
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const apiClient = axios.create({
     baseURL: API_URL,
@@ -19,8 +20,8 @@ export const GetFormByEmail = async (email) => {
     return data;
 }
 
-export const CreateQuestionnaires = async () => {
-    const response = await apiClient.post(`/questionnaires`); //
+export const CreateQuestionnaires = async (payload) => {
+    const response = await apiClient.post(`/questionnaires`,payload); //
     return response.data;
 }
 
