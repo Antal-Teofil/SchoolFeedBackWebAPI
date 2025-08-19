@@ -1,44 +1,74 @@
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
+import { useNavigate } from 'react-router-dom'
+import { useReviews } from '@/hooks/useReviews'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-react'
 
-const Index = () => {
+export default function GoogleAuthApp() {
+  const navigate = useNavigate()
+  const setUser = useAuthStore((state) => state.setUser)
+
+  const { loginWithGoogle, isLoggingIn } = useReviews()
+
+  const onIdTokenSuccess = (resp: CredentialResponse) => {
+    const idToken = resp?.credential
+    if (!idToken) {
+      console.error("No ID token from Google")
+      return
+    }
+
+    loginWithGoogle(idToken, {
+      onSuccess: (user) => {
+        setUser(user)
+        if (user.role === 'Admin') {
+          navigate("/dashboard/admin")
+        } else if (user.role === 'Student') {
+          navigate("/dashboard/student/")
+        } else {
+          navigate("/no-access")
+        }
+      },
+      onError: (e) => {
+        if (e?.response?.status === 403) {
+          navigate("/no-access")
+        } else {
+          console.error(e)
+        }
+      }
+    })
+  }
+
   return (
-    <>
-      <Helmet>
-        <title>Class Feedback Portal</title>
-        <meta name="description" content="Students submit anonymous feedback. Teachers view insights and export Excel statistics." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
-      </Helmet>
-      <Header role="guest" />
-      <main className="min-h-[calc(100vh-4rem)] flex items-center">
-        <section className="container mx-auto px-4 grid gap-8 md:grid-cols-2 items-center">
-          <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">A simple, beautiful way to collect class feedback</h1>
-            <p className="text-lg text-muted-foreground max-w-prose">
-              Students can easily submit anonymous feedback by subject and teacher. Teachers see all feedback and export global statistics to Excel.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/student"><Button variant="hero" size="lg">I am a Student</Button></Link>
-              <Link to="/teacher"><Button variant="secondary" size="lg">I am a Teacher</Button></Link>
+    <main className="min-h-screen grid place-items-center px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Bejelentkezés</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Jelentkezz be Google-fiókkal
+          </p>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-4">
+          <GoogleLogin
+            onSuccess={onIdTokenSuccess}
+            onError={() => console.error("Login failed")}
+            useOneTap
+            auto_select
+            theme="outline"
+            size="large"
+            shape="pill"
+            text="continue_with"
+            logo_alignment="center"
+            width="280"
+          />
+          {isLoggingIn && (
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Bejelentkezés folyamatban…
             </div>
-          </div>
-          <div className="rounded-xl border bg-gradient-primary p-8 text-primary-foreground card-elevated">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-semibold">How it works</h2>
-              <ol className="space-y-2 text-base">
-                <li>1. Students select a subject and teacher.</li>
-                <li>2. They rate and write feedback (autosaves drafts).</li>
-                <li>3. Teachers view all anonymous feedback.</li>
-                <li>4. Export Excel with global statistics.</li>
-              </ol>
-            </div>
-          </div>
-        </section>
-      </main>
-    </>
-  );
-};
-
-export default Index;
+          )}
+        </CardContent>
+      </Card>
+    </main>
+  )
+}

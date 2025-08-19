@@ -36,6 +36,12 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* Brand extensions */
+    --primary-glow: 275 80% 60%;
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.35);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
@@ -53,13 +59,6 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
-    /* Enhanced design tokens */
-    --primary-glow: 222.2 84% 60%;
-    --accent-strong: 265 83% 58%;
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent-strong)));
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.30);
-    --shadow-glow: 0 0 32px hsl(var(--accent-strong) / 0.35);
-    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
