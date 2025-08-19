@@ -25,6 +25,6 @@ namespace FeedBackApp.Core.Model
         public string PartitionKey => $"{StudentEmail}_{TeacherEmail}_{SubjectName}";
 
         [JsonPropertyName("questionnaire")]
-        public List<QuestionAnswer> QuestionnaireResults { get; set; } = new();
+        public IList<QuestionAnswer> QuestionnaireResults { get; set; } = new List<QuestionAnswer>();
     }
 }

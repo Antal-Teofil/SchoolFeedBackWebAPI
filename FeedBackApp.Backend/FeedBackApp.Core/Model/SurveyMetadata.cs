@@ -15,15 +15,15 @@ namespace FeedBackApp.Core.Model
         public string EndDate { get; set; } = string.Empty;
 
         [JsonPropertyName("studentSets")]
-        public List<StudentSet> StudentSets { get; set; } = new();
+        public IList<StudentSet> StudentSets { get; set; } = new List<StudentSet>();
 
         [JsonPropertyName("questionnaireTemplate")]
-        public List<QuestionTemplate> QuestionnaireTemplate { get; set; } = new();
+        public IList<QuestionTemplate> QuestionnaireTemplate { get; set; } = new List<QuestionTemplate>();
 
         [JsonPropertyName("teachers")]
-        public List<MetaTeacher> Teachers { get; set; } = new();
+        public IList<MetaTeacher> Teachers { get; set; } = new List<MetaTeacher>();
 
         [JsonPropertyName("questionaireCreationParams")]
-        public List<QuestionnaireCreationParam> CreationParams { get; set; } = new();
+        public IList<QuestionnaireCreationParam> CreationParams { get; set; } = new List<QuestionnaireCreationParam>();
     }
 }
