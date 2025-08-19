@@ -91,7 +91,7 @@ public sealed class QuestionnaireGenerator
         // Helper locals
         //static string? ReadTrimmedString(JToken? t) => (t as JValue)?.Value as string is string s ? s.Trim() : t?.Value<string>()?.Trim();
 
-        JsonSerializer.Create().Deserialize<>
+        // JsonSerializer.Create().Deserialize<>
 
         while (await jr.ReadAsync(cancellationToken).ConfigureAwait(false))
         {
