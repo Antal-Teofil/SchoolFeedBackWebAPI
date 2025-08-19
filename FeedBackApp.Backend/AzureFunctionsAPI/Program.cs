@@ -4,7 +4,11 @@ using Azure.Core.Serialization;
 using AzureEndPointReaction.Functions.Questionnaires;
 using FeedBackApp.Backend.Infrastructure.Middleware;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
+using FeedBackApp.Backend.Infrastructure.Persistence;
+using FeedBackApp.Backend.Infrastructure.Persistence.Repository;
+using FeedBackApp.Core.Repositories;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,10 +40,21 @@ var host = new HostBuilder()
                 });
         });
 
+        services.AddDbContext<AppDBContext>(options =>
+        {
+            options.UseCosmos(
+                accountEndpoint: "https://localhost:8081",
+                accountKey: "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                databaseName: "SchoolDatabase"
+            );
+        });
+
+
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEvaluationService, EvaluationService>();
+        services.AddScoped<IQuestionnaireRepository, QuestionnaireRepository>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();

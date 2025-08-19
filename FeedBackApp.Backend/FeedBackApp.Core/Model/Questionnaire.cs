@@ -25,7 +25,7 @@ namespace FeedBackApp.Core.Model
         public string StudentEmail { get; set; } = string.Empty;
 
         [JsonPropertyName("answers")]
-        public Dictionary<string, QuestionAnswer> Answers { get; set; } = new();
+        public IDictionary<string, QuestionAnswer> Answers { get; set; } // = new Dictionary<string, QuestionAnswer>();
     }
 
 }

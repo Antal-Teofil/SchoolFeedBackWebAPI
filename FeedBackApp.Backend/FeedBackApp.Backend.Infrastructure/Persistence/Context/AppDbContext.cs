@@ -1,6 +1,8 @@
 ﻿
 using FeedBackApp.Core.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence
 {
@@ -9,7 +11,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
         public DbSet<Metadata> Metadatas { get; set; } = null!;
         public DbSet<Questionnaire> Questionnaires { get; set; } = null!;
 
-        //public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
@@ -23,6 +25,13 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            var dictQAConverter = new ValueConverter<
+                Dictionary<string, QuestionAnswer>,
+                string>(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                v => JsonSerializer.Deserialize<Dictionary<string, QuestionAnswer>>(v, (JsonSerializerOptions?)null) ?? new Dictionary<string, QuestionAnswer>()
+            );
 
             modelBuilder.HasDefaultContainer("MainContainer");
 
