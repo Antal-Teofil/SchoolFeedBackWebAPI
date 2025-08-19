@@ -1,31 +1,36 @@
 {
-  "startdate": "date1",
-  "enddate": "date2",
+  "startDate": "date1",
+  "endDate": "date2",
 
   "studentSets": [
     {
-      "setid": "XI. A",
+      "setId": "XI. A",
       "studentEmails": [ "a@gimi.ro", "b@gimi.ro" ]
     },
     {
-      "setid": "XI. B",
+      "setId": "XI. B",
       "studentEmails": [ "c@gimi.ro", "d@gimi.ro" ]
     },
     {
-      "setid": "XI. B - nemet kezdo",
+      "setId": "XI. B - nemet kezdo",
       "studentEmails": [ "c@gimi.ro" ]
     },
     {
-      "setid": "XI. B - nemet halado",
+      "setId": "XI. B - nemet halado",
       "studentEmails": [ "d@gimi.ro" ]
     }
   ],
 
-  "questionnaireTemplate": {
-    "q1": "typ1",
-    "q2": "typ2",
-    "q3": "typ3"
-  },
+  "questionnaireTemplate": [
+    {
+      "question":"q1",
+      "type":"type1"
+    },
+    {
+      "question":"q1",
+      "type":"type1"
+    }
+  ],
 
   "teachers": [
     {
@@ -36,18 +41,18 @@
       "email": "kovacs.maria2@gimi.ro",
       "name": "Kovács Mária2"
     }
-  ]
+  ],
 
   "questionaireCreationParams": [
     {
-      "teachermail": "kovacs.maria@gimi.ro",
+      "teacherMail": "kovacs.maria@gimi.ro",
       "subjectName": "Matematika",
-      "studentsetid": [ "XI. A", "X.A" ]
+      "studentSetId": [ "XI. A", "X.A" ]
     },
     {
-      "teachermail": "kovacs.maria2@gimi.ro",
+      "teacherMail": "kovacs.maria2@gimi.ro",
       "subjectName": "Nemet",
-      "studentsetid": [ "XI. B - nemet kezdo" ]
+      "studentSetId": [ "XI. B - nemet kezdo" ]
     }
 
   ]

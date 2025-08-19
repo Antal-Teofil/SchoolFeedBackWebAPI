@@ -10,8 +10,5 @@ namespace FeedBackApp.Core.Model
 
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
-
-        [JsonPropertyName("subjects")]
-        public IList<MetaSubject> Subjects { get; set; } // = new List<MetaSubject>();
     }
 }
