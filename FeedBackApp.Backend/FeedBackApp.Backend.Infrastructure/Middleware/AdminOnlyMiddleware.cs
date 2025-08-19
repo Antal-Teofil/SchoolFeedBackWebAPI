@@ -23,7 +23,7 @@ namespace FeedBackApp.Backend.Infrastructure.Middleware
             var tokenCookie = httpRequestData.Cookies.FirstOrDefault(c => c.Name == JwtCookieName);
             if (tokenCookie == null || string.IsNullOrWhiteSpace(tokenCookie.Value))
             {
-                await ReturnForbidden.ExecuteAsync(context, httpRequestData);
+                await ReturnForbidden.ExecuteAsync(context, httpRequestData,"Cookie not provided in the request.");
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace FeedBackApp.Backend.Infrastructure.Middleware
             // Validate the token
             if (!JwtRoleValidator.IsAdmin(token))
             {
-                await ReturnForbidden.ExecuteAsync(context, httpRequestData);
+                await ReturnForbidden.ExecuteAsync(context, httpRequestData,"Admin privileges required!");
                 return;
             }
 
