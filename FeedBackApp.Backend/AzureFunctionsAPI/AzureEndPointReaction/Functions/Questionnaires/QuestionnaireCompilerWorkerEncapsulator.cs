@@ -35,16 +35,6 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         {
             var response = request.CreateResponse(HttpStatusCode.OK);
 
-            var metadataDto = await request.ReadFromJsonAsync<MetadataDto>(cancellationToken: token);
-
-            if (metadataDto is null)
-            {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteAsJsonAsync(new { error = "Invalid payload" });
-                return response;
-            }
-            await _service.ProcessMetadataAsync(metadataDto);
-
             await response.WriteAsJsonAsync(new { message = "Metadata and questionnaires saved" });
             return response;
 
