@@ -19,12 +19,12 @@ export default function StudentDashboard() {
   }, [context, setContext]);
 
   if (!context) {
-  return (
-    <main className="container mx-auto px-6 py-10">
-      <h1 className="text-2xl">Loading student context…</h1>
-    </main>
-  )
-}
+    return (
+      <main className="container mx-auto px-6 py-10">
+        <h1 className="text-2xl">Loading student context…</h1>
+      </main>
+    )
+  }
 
   /*const {
     form,
@@ -59,14 +59,16 @@ export default function StudentDashboard() {
   return (
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
-        <div className="flex items-center justify-between">
-          <h1 className="ml-[5ch] text-3xl md:text-4xl font-bold tracking-tight text-zinc-800">
-            Üdv, <span className="font-bold text-primary">{user.firstName}</span>!
+        <div className="flex items-center justify-between gap-3 md:gap-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-zinc-800">
+            Üdv, <span className="text-primary">{user.firstName}</span>!
           </h1>
 
           <img
             src="/Image.png"
-            className="block shrink-0 mr-6 md:mr-10 mr-15"
+            className="
+    block shrink-0 object-contain h-auto
+    w-[120px]  sm:w-[180px]  md:w-[260px]  lg:w-[320px]  xl:w-[380px]  mr-0 md:mr-10"
           />
         </div>
       </header>
@@ -106,7 +108,7 @@ export default function StudentDashboard() {
       <section>
         <FeedbackForm studentEmail={user.email}
           subjects={context.subjects}
-          teachers={context.teachers} 
+          teachers={context.teachers}
           evaluations={context.evaluations} />
       </section>
     </main>
