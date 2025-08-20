@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,16 +9,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { StudentContext } from "@/models/StudentContext";
+import { Evaluation, EvaluationResponses } from "@/models/StudentContext"
 
 interface FeedbackFormProps {
   studentEmail:string;
   subjects: string[];
   teachers: string[];
+  evaluations: Evaluation[];
 }
 
 const grades = Array.from({ length: 8 }).map((_, i) => String(5 + i));
 
-export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormProps) {
+export function FeedbackForm({ studentEmail,subjects, teachers,evaluations}: FeedbackFormProps) {
 
   const [subject, setSubject] = useState<string>("");
   const [teacher, setTeacher] = useState<string>("");
@@ -52,7 +54,36 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
   const [q25, setQ25] = useState("");
   const [q26, setQ26] = useState("");
 
+  const currentEvaluation = useMemo(
+  () =>
+    evaluations?.find(
+      (e) => e.subject === subject && e.teacher === teacher
+    ),
+  [evaluations, subject, teacher]
+);
 
+// 3) Segédfüggvény: állapotok feltöltése a responses-ból (üres fallback-kel)
+const applyResponses = (r?: Partial<EvaluationResponses>) => {
+  setQ1(String(r?.q1 ?? ""));   setQ2(String(r?.q2 ?? ""));   setQ3(String(r?.q3 ?? ""));
+  setQ4(String(r?.q4 ?? ""));   setQ5(String(r?.q5 ?? ""));   setQ6(String(r?.q6 ?? ""));
+  setQ7(String(r?.q7 ?? ""));   setQ8(String(r?.q8 ?? ""));   setQ9(String(r?.q9 ?? ""));
+  setQ10(String(r?.q10 ?? "")); setQ11(String(r?.q11 ?? "")); setQ12(String(r?.q12 ?? ""));
+  setQ13(String(r?.q13 ?? "")); setQ14(String(r?.q14 ?? "")); setQ15(String(r?.q15 ?? ""));
+  setQ16(String(r?.q16 ?? "")); setQ17(String(r?.q17 ?? ""));
+  setQ18(String(r?.q18 ?? "")); setQ19(String(r?.q19 ?? ""));
+  setQ20(Array.isArray(r?.q20) ? (r?.q20 as string[]) : []);
+  setQ21(Array.isArray(r?.q21) ? (r?.q21 as string[]) : []);
+  setQ22(String(r?.q22 ?? "")); setQ23(String(r?.q23 ?? ""));
+  setQ24(String(r?.q24 ?? "")); setQ25(String(r?.q25 ?? "")); setQ26(String(r?.q26 ?? ""));
+};
+
+// 4) AUTOMATIKUS BETÖLTÉS: amikor subject vagy teacher változik
+useEffect(() => {
+  if (!subject || !teacher) return;
+  applyResponses(currentEvaluation?.responses);
+}, [subject, teacher, currentEvaluation]);
+
+console.log(currentEvaluation);
   const likertValues = ["1", "2", "3", "4", "5"];
 
   const isAttendingOutside = useMemo(
