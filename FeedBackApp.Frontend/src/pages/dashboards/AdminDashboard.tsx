@@ -88,20 +88,6 @@ export default function AdminDashboard() {
             <Calendar mode="single" selected={endDate} onSelect={setEndDate} />
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Allowed Grades</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            {grades.map((g) => (
-              <label key={g} className="flex items-center gap-2">
-                <Checkbox checked={allowed.includes(g)} onCheckedChange={() => toggleGrade(g)} />
-                <span>{g}</span>
-              </label>
-            ))}
-          </CardContent>
-        </Card>
       </section>
 
       <div className="mt-6 flex flex-row gap-4">
