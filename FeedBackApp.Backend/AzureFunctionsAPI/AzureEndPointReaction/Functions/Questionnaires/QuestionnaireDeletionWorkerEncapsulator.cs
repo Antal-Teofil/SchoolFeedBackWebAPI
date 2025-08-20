@@ -1,4 +1,5 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTOs;
+using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -26,12 +27,17 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             Required = true,
             Type = typeof(Guid)
         )]
+        [OpenApiResponseWithBody(
+            statusCode: HttpStatusCode.OK,
+            contentType: "application/json",
+            bodyType: typeof(DeletionResponseDTO)
+            )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
 
             /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new { message = "Delete successful" });
+            await response.WriteAsJsonAsync(new DeletionResponseDTO{Success=true, Message = "Delete successful" });
             return response;
 
         }
