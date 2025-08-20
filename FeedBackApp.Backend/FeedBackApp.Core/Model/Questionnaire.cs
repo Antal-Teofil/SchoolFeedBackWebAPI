@@ -22,7 +22,7 @@ namespace FeedBackApp.Core.Model
 
         // partition key = student+teacher+subject
         [JsonPropertyName("partitionKey")]
-        public string PartitionKey => $"{StudentEmail}_{TeacherEmail}_{SubjectName}" {get;set;} // freely modifyable
+        public string PartitionKey => $"{StudentEmail}_{TeacherEmail}_{SubjectName}"; // freely modifyable
 
         [JsonPropertyName("questionnaire")]
         public IList<QuestionAnswer> QuestionnaireResults { get; set; } = new List<QuestionAnswer>();

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.QuestionnaireDTOs;
+using Application.Extensions.QuestionnaireExtensions;
 using Application.Services.Interfaces;
 using FeedBackApp.Core.Repositories;
 
@@ -14,8 +15,8 @@ namespace Application.Services
 
         public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
         {
-            dto.ToModel();
-            return new CreationResponseDTO(await _repository.CompileAndSaveAsync(dto));
+            var metadata = dto.ToModel();
+            return new CreationResponseDTO(await _repository.CompileAndSaveAsync(metadata));
         }
     }
 }
