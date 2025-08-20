@@ -1,10 +1,14 @@
 ﻿using System.Net;
-using Application.DTOs;
+using Application.DTOs.QuestionnaireDTOs;
 using Application.Services.Interfaces;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions.Utils;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
@@ -33,11 +37,31 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
-            var response = request.CreateResponse(HttpStatusCode.OK);
+            try
+            {
+                var dto = await JsonUtil.ReadFromJsonAsync<CreateSurveyMetadataDto>(request);
 
-                await response.WriteAsJsonAsync(new CreationResponseDTO { Success = false, Message = "Invalid payload" });
-            await response.WriteAsJsonAsync(new CreationResponseDTO { Success = true, Message = "Metadata and questionnaires saved" });
-            return response;
+                if (dto == null)
+                {
+                    var badResponse = request.CreateResponse(HttpStatusCode.BadRequest);
+                    await badResponse.WriteStringAsync("Invalid or empty JSON body.");
+                    return badResponse;
+                }
+
+                var result = await _service.CompileAndSaveAsync(dto);
+
+                var response = request.CreateResponse(HttpStatusCode.OK);
+                await response.WriteAsJsonAsync(result);
+                return response;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Something unexpected happenned!");
+                var response = request.CreateResponse(HttpStatusCode.InternalServerError);
+                await response.WriteAsJsonAsync(new { error = e.Message });
+                return response;
+            }
 
         }
     }

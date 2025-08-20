@@ -1,5 +1,6 @@
 ﻿
 using FeedBackApp.Core.Model;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Text.Json;
@@ -22,6 +23,24 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasDefaultContainer("mainContainer");
+
+            modelBuilder.Entity<SurveyMetadata>()
+                .ToContainer("mainContainer")
+                .HasPartitionKey(m => m.Id)
+                .HasKey(m => m.Id);
+
+            modelBuilder.Entity<Questionnaire>()
+                .ToContainer("mainContainer")
+                .HasPartitionKey(q => q.PartitionKey)
+                .HasKey(q => q.Id); // maybe partitionkey is enough
+
+            modelBuilder.Entity<Questionnaire>()
+                .OwnsMany(q => q.QuestionnaireResults);
+
+            // add discriminator
+               
         }
 
     }

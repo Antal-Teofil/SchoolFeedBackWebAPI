@@ -1,5 +1,4 @@
-﻿
-namespace Application.DTOs
+﻿namespace Application.DTOs.QuestionnaireDTOs
 {
     public class QuestionnaireCreationParamDto
     {
