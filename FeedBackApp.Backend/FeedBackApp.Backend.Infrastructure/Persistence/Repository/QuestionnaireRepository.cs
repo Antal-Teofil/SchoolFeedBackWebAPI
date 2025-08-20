@@ -13,6 +13,24 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             _context = context;
         }
 
+        public async Task<bool> CompileAndSaveAsync(SurveyMetadata metadata)
+        {
+            try
+            {
+                _context.Add(metadata);
+                await _context.SaveChangesAsync();
 
+                foreach (var param in metadata.)
+                {
+                    
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }
