@@ -2,16 +2,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useReviews } from "@/hooks/useReviews";
 
-const grades = Array.from({ length: 8 }).map((_, i) => 5 + i);
-
 export default function AdminDashboard() {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [allowed, setAllowed] = useState<number[]>(grades);
 
   const {
     createQuestionnaires,
@@ -21,10 +16,6 @@ export default function AdminDashboard() {
     deleteQuestionnaire,
     isDeletingQuestionnaire
   } = useReviews();
-
-  const toggleGrade = (g: number) => {
-    setAllowed((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
-  };
 
   const exportExcel = () => {
     if (!questionnairesSummary) {
@@ -38,20 +29,26 @@ export default function AdminDashboard() {
   };
 
   const sendQuestionnaires = () => {
+    if (!endDate) {
+      toast.error("Please set an end date.");
+      return;
+    }
+
     createQuestionnaires(
-      { startDate, endDate, allowedGrades: allowed },
+      {
+        startDate: new Date().toISOString(),
+        endDate: endDate.toISOString()
+      },
       {
         onSuccess: () => toast.success("Questionnaires created and sent!"),
         onError: () => toast.error("Failed to create questionnaires.")
       }
     );
-    if (isCreatingQuestionnaire) {
-      toast("creating questionaries");
-    };
-  }
+  };
+
 
   const deleteQuestionnaires = () => {
-    deleteQuestionnaire(undefined, 
+    deleteQuestionnaire(undefined,
       {
         onSuccess: () => toast.success("Questionnaires deleted successfully!"),
         onError: () => toast.error("Failed to delete questionnaires.")
@@ -70,28 +67,18 @@ export default function AdminDashboard() {
         <p className="text-muted-foreground">Manage feedback windows, access, and exports.</p>
       </header>
 
-      <section className="grid gap-6 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Start Date</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
-          </CardContent>
-        </Card>
+      <CardContent>
+        <input
+          type="date"
+          className="border rounded p-2 w-full"
+          value={endDate ? endDate.toISOString().split("T")[0] : ""}
+          onChange={(e) => setEndDate(new Date(e.target.value))}
+        />
+      </CardContent>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>End Date</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Calendar mode="single" selected={endDate} onSelect={setEndDate} />
-          </CardContent>
-        </Card>
-      </section>
 
       <div className="mt-6 flex flex-row gap-4">
-        <Button onClick={exportExcel}>Export results to Excel</Button>
+        <Button onClick={exportExcel}>Export evaluations</Button>
         <Button onClick={sendQuestionnaires}>Send Questionnaires to students!</Button>
         <Button onClick={deleteQuestionnaires}>Delete Questionnaires</Button>
       </div>

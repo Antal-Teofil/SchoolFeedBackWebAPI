@@ -18,7 +18,6 @@ export default function GoogleAuthApp() {
       console.error("No ID token from Google")
       return
     }
-    console.log("clientId", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
     loginWithGoogle(idToken, {
       onSuccess: (user:User) => {
