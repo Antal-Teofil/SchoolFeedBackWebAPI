@@ -13,9 +13,7 @@ export default function StudentDashboard() {
 
 
   useEffect(() => {
-    if (context) {
       setContext(mockStudentContext);
-    }
   }, [context, setContext]);
 
   if (!context) {
