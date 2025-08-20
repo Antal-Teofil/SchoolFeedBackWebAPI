@@ -29,7 +29,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         [OpenApiResponseWithBody(
             statusCode: HttpStatusCode.OK, 
             contentType: "application/json", 
-            bodyType: typeof(object) // replace dto
+            bodyType: typeof(CreationResponseDTO) // replace dto
             )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
         {
@@ -40,12 +40,12 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             if (metadataDto is null)
             {
                 response.StatusCode = HttpStatusCode.BadRequest;
-                await response.WriteAsJsonAsync(new { error = "Invalid payload" });
+                await response.WriteAsJsonAsync(new CreationResponseDTO { Success = false, Message = "Invalid payload" });
                 return response;
             }
             await _service.ProcessMetadataAsync(metadataDto);
 
-            await response.WriteAsJsonAsync(new { message = "Metadata and questionnaires saved" });
+            await response.WriteAsJsonAsync(new CreationResponseDTO { Success = true, Message = "Metadata and questionnaires saved" });
             return response;
 
         }

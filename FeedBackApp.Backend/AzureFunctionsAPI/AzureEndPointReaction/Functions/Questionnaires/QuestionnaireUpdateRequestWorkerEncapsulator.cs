@@ -1,4 +1,5 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTOs;
+using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -28,7 +29,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         )]
         [OpenApiRequestBody(
             contentType: "application/json",
-            bodyType: typeof(object), // replace with update DTO
+            bodyType: typeof(UpdateResponseDTO), // replace with update DTO
             Required = true
         )]
         public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
@@ -38,12 +39,12 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             if (string.IsNullOrWhiteSpace(body))
             {
                 var emptyResponse = request.CreateResponse(HttpStatusCode.BadRequest);
-                await emptyResponse.WriteAsJsonAsync(new { error = "Request body cannot be empty." }, cancellationToken: CancellationToken.None);
+                await emptyResponse.WriteAsJsonAsync(new UpdateResponseDTO {Success=false, Message = "Request body cannot be empty." }, cancellationToken: CancellationToken.None);
                 return emptyResponse;
             }
             /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new { message = "Update successful" });
+            await response.WriteAsJsonAsync(new UpdateResponseDTO {Success=true, Message = "Update successful" });
             return response;
 
         }
