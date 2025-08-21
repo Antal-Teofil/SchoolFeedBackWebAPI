@@ -1,5 +1,6 @@
 ﻿
 using FeedBackApp.Core.Model.Enum;
+using Newtonsoft.Json.Converters;
 
 namespace FeedBackApp.Core.Model
 {

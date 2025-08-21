@@ -1,6 +1,7 @@
 ﻿
 using FeedBackApp.Core.Model;
 using FeedBackApp.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 {
@@ -68,6 +69,31 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             {
                 return false;
             }
+        }
+
+        public async Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId)
+        {
+            var questionnaires = await _context.Questionnaires
+                .Where(q => q.SurveyId == surveyId.ToString())
+                .ToListAsync();
+
+            if (!questionnaires.Any())
+                return false;
+
+            _context.Questionnaires.RemoveRange(questionnaires);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteSurveyMetadataAsync(Guid id)
+        {
+            var metadata = await _context.Surveys.FirstOrDefaultAsync(m => m.Id == id.ToString());
+            if (metadata == null)
+                return false;
+
+            _context.Remove(metadata);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

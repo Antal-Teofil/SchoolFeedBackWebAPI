@@ -1,4 +1,5 @@
-﻿using Application.DTOs.QuestionnaireDTOs;
+﻿using Application.DTOs;
+using Application.DTOs.QuestionnaireDTOs;
 using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -16,7 +17,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         private readonly ILogger<QuestionnaireDeletionWorkerEncapsulator> _logger = logger;
 
         [RequireAdmin]
-        [Function("PerformQuestionnarieDeletion")]
+        [Function("PerformQuestionnaireDeletion")]
         [OpenApiOperation(
             operationId: "PerformQuestionnaireDeletion",
             tags: new[] { "Questionnaires" }
@@ -31,15 +32,53 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             statusCode: HttpStatusCode.OK,
             contentType: "application/json",
             bodyType: typeof(DeletionResponseDTO)
-            )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        )]
+        [OpenApiResponseWithoutBody(HttpStatusCode.BadRequest)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.NotFound)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError)]
+        public async Task<HttpResponseData> ExecuteTaskAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request,
+            FunctionContext context)
         {
+            try
+            {
+                var routeData = context.BindingContext.BindingData;
+                if (!routeData.TryGetValue("id", out var idObj) || !Guid.TryParse(idObj?.ToString(), out Guid id))
+                {
+                    var badRequest = request.CreateResponse(HttpStatusCode.BadRequest);
+                    await badRequest.WriteAsJsonAsync(new DeletionResponseDTO
+                    {
+                        Success = false,
+                        Message = "Invalid or missing ID in the route."
+                    }, cancellationToken: token);
+                    return badRequest;
+                }
 
-            /*implementation in progress*/
-            var response = request.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new DeletionResponseDTO{Success=true, Message = "Delete successful" });
-            return response;
+                DeletionResponseDTO result = await _service.DeleteSurveyAsync(id);
 
+                if (!result.Success)
+                {
+                    var notFound = request.CreateResponse(HttpStatusCode.NotFound);
+                    await notFound.WriteAsJsonAsync(result, cancellationToken: token);
+                    return notFound;
+                }
+
+                var ok = request.CreateResponse(HttpStatusCode.OK);
+                await ok.WriteAsJsonAsync(result, cancellationToken: token);
+                return ok;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while deleting questionnaire");
+
+                var error = request.CreateResponse(HttpStatusCode.InternalServerError);
+                await error.WriteAsJsonAsync(new DeletionResponseDTO
+                {
+                    Success = false,
+                    Message = $"Error deleting questionnaire: {ex.Message}"
+                });
+                return error;
+            }
         }
     }
 }

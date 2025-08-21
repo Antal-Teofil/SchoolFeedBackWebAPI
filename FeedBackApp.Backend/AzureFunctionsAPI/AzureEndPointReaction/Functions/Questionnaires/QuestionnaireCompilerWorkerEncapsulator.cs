@@ -33,7 +33,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json", 
             bodyType: typeof(CreationResponseDTO) // replace dto
             )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context)
         {
             try
             {
@@ -58,6 +58,10 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                 _logger.LogError("Something unexpected happenned!");
                 var response = request.CreateResponse(HttpStatusCode.InternalServerError);
                 await response.WriteAsJsonAsync(new { error = e.Message });
+                await response.WriteAsJsonAsync(new CreationResponseDTO(false)
+                {
+                    Message = $"Error deleting questionnaire: {e.Message}"
+                });
                 return response;
             }
 
