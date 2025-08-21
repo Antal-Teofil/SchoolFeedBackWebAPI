@@ -6,7 +6,7 @@ namespace FeedBackApp.Core.Model
     public class Questionnaire
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = string.Empty;
 
         [JsonPropertyName("surveyId")]
         public string SurveyId { get; set; } = string.Empty;
@@ -19,10 +19,6 @@ namespace FeedBackApp.Core.Model
 
         [JsonPropertyName("subjectName")]
         public string SubjectName { get; set; } = string.Empty;
-
-        // partition key = student+teacher+subject
-        [JsonPropertyName("partitionKey")]
-        public string PartitionKey => $"{StudentEmail}_{TeacherEmail}_{SubjectName}"; // freely modifyable
 
         [JsonPropertyName("questionnaire")]
         public IList<QuestionAnswer> QuestionnaireResults { get; set; } = new List<QuestionAnswer>();

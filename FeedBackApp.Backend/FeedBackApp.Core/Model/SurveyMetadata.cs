@@ -6,7 +6,7 @@ namespace FeedBackApp.Core.Model
     public class SurveyMetadata
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = string.Empty;
 
         [JsonPropertyName("startDate")]
         public string StartDate { get; set; } = string.Empty;

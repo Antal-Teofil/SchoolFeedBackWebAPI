@@ -8,7 +8,7 @@ namespace Application.Extensions.QuestionnaireExtensions
         public static SurveyMetadata ToModel(this CreateSurveyMetadataDto dto) =>
             new()
             {
-                Id = new Guid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
                 StudentSets = dto.StudentSets?
