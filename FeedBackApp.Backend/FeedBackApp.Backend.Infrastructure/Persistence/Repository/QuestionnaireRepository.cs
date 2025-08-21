@@ -87,7 +87,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
         public async Task<bool> DeleteSurveyMetadataAsync(Guid id)
         {
-            var metadata = await _context.Set<SurveyMetadata>().FirstOrDefaultAsync(m => m.Id == id.ToString());
+            var metadata = await _context.Surveys.FirstOrDefaultAsync(m => m.Id == id.ToString());
             if (metadata == null)
                 return false;
 
