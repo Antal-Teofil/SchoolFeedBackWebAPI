@@ -1,14 +1,15 @@
 ﻿
-using System.Text.Json.Serialization;
+
+using Newtonsoft.Json;
 
 namespace FeedBackApp.Core.Model
 {
     public class StudentSet
     {
-        [JsonPropertyName("setId")]
+        [JsonProperty("setId")]
         public string SetId { get; set; } = string.Empty;
 
-        [JsonPropertyName("studentEmails")]
+        [JsonProperty("studentEmails")]
         public IList<string> StudentEmails { get; set; } = new List<string>();
     }
 }

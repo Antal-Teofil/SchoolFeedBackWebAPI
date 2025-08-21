@@ -27,8 +27,8 @@
       "type":"type1"
     },
     {
-      "question":"q1",
-      "type":"type1"
+      "question":"q2",
+      "type":"type2"
     }
   ],
 
@@ -47,7 +47,7 @@
     {
       "teacherMail": "kovacs.maria@gimi.ro",
       "subjectName": "Matematika",
-      "studentSetId": [ "XI. A", "X.A" ]
+      "studentSetId": [ "XI. A", "XI. B" ]
     },
     {
       "teacherMail": "kovacs.maria2@gimi.ro",

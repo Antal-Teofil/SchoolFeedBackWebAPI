@@ -1,24 +1,13 @@
-﻿
-using FeedBackApp.Core.Model;
-using Microsoft.Azure.Cosmos.Linq;
+﻿using FeedBackApp.Core.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Text.Json;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence
 {
     public class AppDBContext : DbContext
     {
+        public DbSet<SurveyMetadata> Surveys { get; set; }
+        public DbSet<Questionnaire> Questionnaires { get; set; }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        //    => optionsBuilder.UseCosmos(
-        //    accountEndpoint: "https://localhost:8081",
-        //    accountKey: "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
-        //    databaseName: "SchoolDatabase"
-        //);
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,14 +22,17 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
 
             modelBuilder.Entity<Questionnaire>()
                 .ToContainer("mainContainer")
-                .HasPartitionKey(q => q.PartitionKey)
-                .HasKey(q => q.Id); // maybe partitionkey is enough
+                .HasPartitionKey(q => q.Id)
+                .HasKey(q => q.Id);
+            
+            modelBuilder.Entity<SurveyMetadata>()
+                .HasDiscriminator<string>("DocumentType")
+                .HasValue<SurveyMetadata>("Survey");
 
             modelBuilder.Entity<Questionnaire>()
-                .OwnsMany(q => q.QuestionnaireResults);
+                .HasDiscriminator<string>("DocumentType")
+                .HasValue<Questionnaire>("Questionnaire");
 
-            // add discriminator
-               
         }
 
     }

@@ -1,14 +1,14 @@
 ﻿
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace FeedBackApp.Core.Model
 {
     public class MetaTeacher
     {
-        [JsonPropertyName("email")]
+        [JsonProperty("email")]
         public string Email { get; set; } = string.Empty;
 
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
     }
 }

@@ -4,11 +4,9 @@ using Application.Services.Interfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Utils;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
 
 namespace AzureEndPointReaction.Functions.Questionnaires

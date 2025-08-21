@@ -8,7 +8,14 @@ namespace FeedBackApp.Core.Model
         [JsonProperty("id")]
         public string Id { get; set; } = string.Empty;
 
+<<<<<<< HEAD
+        [JsonPropertyName("DocumentType")]
+        public string DocumentType { get; set; } = "Questionnaire";
+
+        [JsonPropertyName("surveyId")]
+=======
         [JsonProperty("surveyId")]
+>>>>>>> 64d81a4 (models adjuted to newtonsoft)
         public string SurveyId { get; set; } = string.Empty;
 
         [JsonProperty("teacherEmail")]
@@ -20,7 +27,12 @@ namespace FeedBackApp.Core.Model
         [JsonProperty("subjectName")]
         public string SubjectName { get; set; } = string.Empty;
 
+<<<<<<< HEAD
+        // freely modifyable
+        [JsonPropertyName("questionnaire")]
+=======
         [JsonProperty("questionnaire")]
+>>>>>>> 64d81a4 (models adjuted to newtonsoft)
         public IList<QuestionAnswer> QuestionnaireResults { get; set; } = new List<QuestionAnswer>();
     }
 }

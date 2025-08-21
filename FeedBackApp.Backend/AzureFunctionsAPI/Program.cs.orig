@@ -42,9 +42,15 @@ var host = new HostBuilder()
 
         services.AddDbContext<AppDBContext>(options =>
         {
+<<<<<<< HEAD
+            string connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+            options.UseCosmos(
+                connectionString,
+=======
             var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
             options.UseCosmos(
                 connectionString : connectionString,
+>>>>>>> 64d81a4 (models adjuted to newtonsoft)
                 databaseName: "SchoolDatabase"
             );
         });

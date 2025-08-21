@@ -30,18 +30,18 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                 {
                     foreach (var setId in param.StudentSetIds)
                     {
-                        var set = setById[setId];
+                        if (!setById.TryGetValue(setId, out var set))
+                            continue;
 
                         foreach (var studentEmail in set.StudentEmails)
                         {
                             var q = new Questionnaire
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}",
                                 SurveyId = metadata.Id,
                                 TeacherEmail = param.TeacherEmail,
                                 StudentEmail = studentEmail,
                                 SubjectName = param.SubjectName,
-                                // PartitionKey = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}",
                                 QuestionnaireResults = template
                                     .Select(t => new QuestionAnswer
                                     {
@@ -65,7 +65,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -73,13 +73,14 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
         public async Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId)
         {
+            var questionnaires = await _context.Questionnaires
+                .Where(q => q.SurveyId == surveyId.ToString())
+                .ToListAsync();
 
-            var questionnaires = _context.Set<Questionnaire>().Where(q => q.SurveyId == surveyId.ToString());
+            if (!questionnaires.Any())
+                return false;
 
-            if (!await questionnaires.AnyAsync())
-                return false; 
-
-            _context.RemoveRange(questionnaires);
+            _context.Questionnaires.RemoveRange(questionnaires);
             await _context.SaveChangesAsync();
             return true;
         }

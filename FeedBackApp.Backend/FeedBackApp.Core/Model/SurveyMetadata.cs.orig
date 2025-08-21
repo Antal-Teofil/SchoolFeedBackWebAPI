@@ -9,7 +9,14 @@ namespace FeedBackApp.Core.Model
         [JsonProperty("id")]
         public string Id { get; set; } = string.Empty;
 
+<<<<<<< HEAD
+        [JsonPropertyName("DocumentType")]
+        public string DocumentType { get; set; } = "Survey";
+
+        [JsonPropertyName("startDate")]
+=======
         [JsonProperty("startDate")]
+>>>>>>> 64d81a4 (models adjuted to newtonsoft)
         public string StartDate { get; set; } = string.Empty;
 
         [JsonProperty("endDate")]
@@ -25,6 +32,6 @@ namespace FeedBackApp.Core.Model
         public IList<MetaTeacher> Teachers { get; set; } = new List<MetaTeacher>();
 
         [JsonProperty("questionaireCreationParams")]
-        public IList<QuestionnaireCreationParam> CreationParams { get; set; } = new List<QuestionnaireCreationParam>();
+        public IList<QuestionnaireCreationParam> QuestionaireCreationParams { get; set; } = new List<QuestionnaireCreationParam>();
     }
 }
