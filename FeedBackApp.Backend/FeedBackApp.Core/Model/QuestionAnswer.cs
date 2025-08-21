@@ -1,18 +1,20 @@
 ﻿
 using FeedBackApp.Core.Model.Enum;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FeedBackApp.Core.Model
 {
     public class QuestionAnswer
     {
-        [JsonPropertyName("question")]
+        [JsonProperty("question")]
         public string Question { get; set; } = string.Empty;
 
-        [JsonPropertyName("type")]
-        public QuestionType Type { get; set; } = QuestionType.Type1;
+        [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public QuestionType Type { get; set; }
 
-        [JsonPropertyName("answer")]
+        [JsonProperty("answer")]
         public string? Answer { get; set; } = null;
     }
 }

@@ -42,13 +42,12 @@ var host = new HostBuilder()
 
         services.AddDbContext<AppDBContext>(options =>
         {
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
             options.UseCosmos(
-                accountEndpoint: "https://localhost:8081",
-                accountKey: "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                connectionString : connectionString,
                 databaseName: "SchoolDatabase"
             );
         });
-
 
         // DI regisztrációid
         // services.AddScoped<IMyService, MyService>();
@@ -75,5 +74,12 @@ var host = new HostBuilder()
         // app.UseWhen(ctx => true, branch => { /* branch middleware-k */ });
     })
     .Build();
+
+// add creation permission for cosmosDb
+using (var scope = host.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+    await dbContext.Database.EnsureCreatedAsync();
+}
 
 await host.RunAsync();

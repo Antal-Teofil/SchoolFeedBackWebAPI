@@ -1,17 +1,17 @@
 ﻿
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace FeedBackApp.Core.Model
 {
     public class QuestionnaireCreationParam
     {
-        [JsonPropertyName("teacherEmail")]
+        [JsonProperty("teacherEmail")]
         public string TeacherEmail { get; set; } = string.Empty;
 
-        [JsonPropertyName("subjectName")]
+        [JsonProperty("subjectName")]
         public string SubjectName { get; set; } = string.Empty;
 
-        [JsonPropertyName("studentSetId")]
+        [JsonProperty("studentSetId")]
         public IList<string> StudentSetIds { get; set; } = new List<string>();
     }
 }

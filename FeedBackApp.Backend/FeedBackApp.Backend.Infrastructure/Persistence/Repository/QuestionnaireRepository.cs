@@ -25,7 +25,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
                 var questionnaires = new List<Questionnaire>();
 
-                foreach (var param in metadata.CreationParams)
+                foreach (var param in metadata.QuestionaireCreationParams)
                 {
                     foreach (var setId in param.StudentSetIds)
                     {
