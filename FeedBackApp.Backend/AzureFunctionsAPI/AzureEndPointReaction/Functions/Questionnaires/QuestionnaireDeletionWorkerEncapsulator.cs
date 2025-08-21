@@ -55,7 +55,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                     return badRequest;
                 }
 
-                DeletionResponseDTO result = await _service.DeleteQuestionnairesAsync(id);
+                DeletionResponseDTO result = await _service.DeleteSurveyAsync(id);
 
                 if (!result.Success)
                 {

@@ -5,6 +5,6 @@ namespace Application.Services.Interfaces
     public interface IQuestionnaireService
     {
         public Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto);
-        public Task<DeletionResponseDTO> DeleteQuestionnairesAsync(Guid id);
+        public Task<DeletionResponseDTO> DeleteSurveyAsync(Guid id);
     }
 }

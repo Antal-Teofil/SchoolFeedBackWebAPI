@@ -1,6 +1,7 @@
 ﻿
 using FeedBackApp.Core.Model;
 using FeedBackApp.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 {
@@ -70,9 +71,28 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             }
         }
 
-        public Task<bool> DeleteQuestionnairesAsync(Guid id)
+        public async Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId)
         {
-            throw new NotImplementedException();
+
+            var questionnaires = _context.Set<Questionnaire>().Where(q => q.SurveyId == surveyId.ToString());
+
+            if (!await questionnaires.AnyAsync())
+                return false; 
+
+            _context.RemoveRange(questionnaires);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteSurveyMetadataAsync(Guid id)
+        {
+            var metadata = await _context.Set<SurveyMetadata>().FirstOrDefaultAsync(m => m.Id == id.ToString());
+            if (metadata == null)
+                return false;
+
+            _context.Remove(metadata);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
