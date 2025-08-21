@@ -4,6 +4,7 @@
     {
         public bool Success { get; set; }
         
+        public string Message { get; set; }
         public CreationResponseDTO(bool success)
         {
             Success = success;
