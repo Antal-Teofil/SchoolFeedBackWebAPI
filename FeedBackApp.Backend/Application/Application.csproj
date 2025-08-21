@@ -7,16 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="QuestionnaireExtensions\**" />
+    <EmbeddedResource Remove="QuestionnaireExtensions\**" />
+    <None Remove="QuestionnaireExtensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FeedBackApp.Backend.Infrastructure\FeedBackApp.Backend.Infrastructure.csproj" />
     <ProjectReference Include="..\FeedBackApp.Core\FeedBackApp.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="QuestionnaireExtensions\" />
   </ItemGroup>
 
 </Project>

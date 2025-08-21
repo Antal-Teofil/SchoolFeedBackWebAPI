@@ -7,9 +7,9 @@ namespace FeedBackApp.Core.Model
     {
         public string Id { get; set; } = string.Empty;
 
-        public string StartDate { get; set; } = string.Empty;
+        public DateOnly StartDate { get; set; }
 
-        public string EndDate { get; set; } = string.Empty;
+        public DateOnly EndDate { get; set; }
 
         public IList<StudentSet> StudentSets { get; set; } = new List<StudentSet>();
 

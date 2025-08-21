@@ -5,10 +5,10 @@ namespace Application.DTOs.QuestionnaireDTOs
     public class CreateSurveyMetadataDto
     {
         [JsonProperty("startDate")]
-        public string StartDate { get; set; } = string.Empty;
+        public DateOnly StartDate { get; set; }
 
         [JsonProperty("endDate")]
-        public string EndDate { get; set; } = string.Empty;
+        public DateOnly EndDate { get; set; }
 
         [JsonProperty("studentSets")]
         public List<StudentSetDto> StudentSets { get; set; } = new();
