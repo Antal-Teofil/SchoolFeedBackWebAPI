@@ -69,5 +69,10 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                 return false;
             }
         }
+
+        public Task<bool> DeleteQuestionnairesAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
