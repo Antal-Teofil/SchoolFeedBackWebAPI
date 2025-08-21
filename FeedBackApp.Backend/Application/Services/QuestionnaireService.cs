@@ -2,19 +2,29 @@
 using Application.Extensions.QuestionnaireExtensions;
 using Application.Services.Interfaces;
 using FeedBackApp.Core.Repositories;
+using FluentValidation;
 
 namespace Application.Services
 {
     public class QuestionnaireService : IQuestionnaireService
     {
         private readonly IQuestionnaireRepository _repository;
-        public QuestionnaireService(IQuestionnaireRepository repository)
+        IValidator<CreateSurveyMetadataDto> _validator;
+        public QuestionnaireService(IQuestionnaireRepository repository, IValidator<CreateSurveyMetadataDto> validator)
         {
             _repository = repository;
+            _validator = validator;
         }
 
         public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
         {
+
+            var validationResult = await _validator.ValidateAsync(dto);
+            if(!validationResult.IsValid)
+            {
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return new CreationResponseDTO(false, errors);
+            }
             var metadata = dto.ToModel();
             try
             {

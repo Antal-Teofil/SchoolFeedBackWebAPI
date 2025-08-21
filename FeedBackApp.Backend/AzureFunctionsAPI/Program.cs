@@ -1,5 +1,6 @@
 ﻿using Application.Services;
 using Application.Services.Interfaces;
+using Application.Validation;
 using Azure.Core.Serialization;
 using AzureEndPointReaction.Functions.Questionnaires;
 using FeedBackApp.Backend.Infrastructure.Middleware;
@@ -7,6 +8,7 @@ using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using FeedBackApp.Backend.Infrastructure.Persistence;
 using FeedBackApp.Backend.Infrastructure.Persistence.Repository;
 using FeedBackApp.Core.Repositories;
+using FluentValidation;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -60,6 +62,8 @@ var host = new HostBuilder()
         services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireSummaryRequestWorkerEncapsulator>();
         services.AddScoped<IQuestionnaireWorker, QuestionnaireUpdateRequestWorkerEncapsulator>();
+
+        services.AddValidatorsFromAssemblyContaining<CreateSurveyMetadataValidator>();
 
         services.AddSingleton<AdminOnlyMiddleware>();
         services.AddSingleton<StudentOnlyMiddleware>();

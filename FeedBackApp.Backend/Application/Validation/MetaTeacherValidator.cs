@@ -15,7 +15,7 @@ namespace Application.Validation
             RuleFor(dto => dto.Email).NotEmpty().WithMessage("Teacher email can not be empty")
                 .EmailAddress().WithMessage("Incorrect teacher email adress format");
             RuleFor(dto => dto.Name).NotEmpty().WithMessage("Teacher name can not be empty")
-                .MaximumLength(100).WithMessage("Teacher name can not exceed 100 characters")
+                .MaximumLength(100).WithMessage("Teacher name can not exceed 100 characters");
         }
     }
 }
