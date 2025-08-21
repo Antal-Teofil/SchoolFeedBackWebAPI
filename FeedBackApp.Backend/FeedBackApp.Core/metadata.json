@@ -1,6 +1,6 @@
 {
-  "startDate": "date1",
-  "endDate": "date2",
+  "startDate": "2025-08-21",
+  "endDate": "2025-09-01",
 
   "studentSets": [
     {
@@ -10,25 +10,17 @@
     {
       "setId": "XI. B",
       "studentEmails": [ "c@gimi.ro", "d@gimi.ro" ]
-    },
-    {
-      "setId": "XI. B - nemet kezdo",
-      "studentEmails": [ "c@gimi.ro" ]
-    },
-    {
-      "setId": "XI. B - nemet halado",
-      "studentEmails": [ "d@gimi.ro" ]
     }
   ],
 
   "questionnaireTemplate": [
     {
-      "question":"q1",
-      "type":"type1"
+      "question": "How satisfied are you with the course?",
+      "type": "LikertScaleOneToFive"
     },
     {
-      "question":"q2",
-      "type":"type2"
+      "question": "Any suggestions for improvement?",
+      "type": "MultipleChoice"
     }
   ],
 
@@ -43,18 +35,16 @@
     }
   ],
 
-  "questionaireCreationParams": [
+  "questionnaireCreationParams": [
     {
-      "teacherMail": "kovacs.maria@gimi.ro",
+      "teacherEmail": "kovacs.maria@gimi.ro",
       "subjectName": "Matematika",
-      "studentSetId": [ "XI. A", "XI. B" ]
+      "studentSetIds": [ "XI. A", "XI. B" ]
     },
     {
-      "teacherMail": "kovacs.maria2@gimi.ro",
+      "teacherEmail": "kovacs.maria2@gimi.ro",
       "subjectName": "Nemet",
-      "studentSetId": [ "XI. B - nemet kezdo" ]
+      "studentSetIds": [ "XI. B" ]
     }
-
   ]
-
 }

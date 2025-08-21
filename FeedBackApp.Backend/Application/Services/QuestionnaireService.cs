@@ -16,7 +16,11 @@ namespace Application.Services
         public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
         {
             var metadata = dto.ToModel();
-            return new CreationResponseDTO(await _repository.CompileAndSaveAsync(metadata));
+            if(await _repository.CompileAndSaveAsync(metadata))
+            {
+                return new CreationResponseDTO(true, "Creation successfull!");
+            }
+            return new CreationResponseDTO(false, "Creation failed!");
         }
     }
 }
