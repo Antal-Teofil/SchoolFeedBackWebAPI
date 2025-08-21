@@ -36,7 +36,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                         {
                             var q = new Questionnaire
                             {
-                                Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}",
+                                Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}_{metadata.Id}",
                                 SurveyId = metadata.Id,
                                 TeacherEmail = param.TeacherEmail,
                                 StudentEmail = studentEmail,

@@ -18,7 +18,7 @@ namespace Application.Services
             var metadata = dto.ToModel();
             if(await _repository.CompileAndSaveAsync(metadata))
             {
-                return new CreationResponseDTO(true, "Creation successfull!");
+                return new CreationResponseDTO(true, "Creation successful!");
             }
             return new CreationResponseDTO(false, "Creation failed!");
         }
