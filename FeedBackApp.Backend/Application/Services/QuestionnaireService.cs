@@ -16,11 +16,17 @@ namespace Application.Services
         public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
         {
             var metadata = dto.ToModel();
-            if(await _repository.CompileAndSaveAsync(metadata))
+            try
             {
+                await _repository.CompileAndSaveAsync(metadata);
+            
                 return new CreationResponseDTO(true, "Creation successful!");
             }
-            return new CreationResponseDTO(false, "Creation failed!");
+            catch (Exception e)
+            {
+                return new CreationResponseDTO(false, $"Creation failed: {e.Message}");
+            }
+            
         }
         public async Task<DeletionResponseDTO> DeleteSurveyAsync(Guid id)
         {
@@ -32,27 +38,27 @@ namespace Application.Services
                 if (surveyDeleted || questionnairesDeleted)
                 {
                     return new DeletionResponseDTO
-                    {
-                        Success = true,
-                        Message = $"Survey {id} and related questionnaires were deleted successfully."
-                    };
+                    (
+                        true,
+                       $"Survey {id} and related questionnaires were deleted successfully."
+                    );
                 }
                 else
                 {
                     return new DeletionResponseDTO
-                    {
-                        Success = false,
-                        Message = $"Survey {id} not found (no survey metadata or questionnaires)."
-                    };
+                    (
+                        false,
+                        $"Survey {id} not found (no survey metadata or questionnaires)."
+                    );
                 }
             }
             catch (Exception ex)
             {
                 return new DeletionResponseDTO
-                {
-                    Success = false,
-                    Message = $"Error deleting survey {id}: {ex.Message}"
-                };
+                (
+                    false,
+                    $"Error deleting survey {id}: {ex.Message}"
+                );
             }
         }
     }

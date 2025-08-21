@@ -47,10 +47,10 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                 {
                     var badRequest = request.CreateResponse(HttpStatusCode.BadRequest);
                     await badRequest.WriteAsJsonAsync(new DeletionResponseDTO
-                    {
-                        Success = false,
-                        Message = "Invalid or missing ID in the route."
-                    }, cancellationToken: token);
+                    (
+                         false,
+                        "Invalid or missing ID in the route."
+                    ));
                     return badRequest;
                 }
 
@@ -59,12 +59,12 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                 if (!result.Success)
                 {
                     var notFound = request.CreateResponse(HttpStatusCode.NotFound);
-                    await notFound.WriteAsJsonAsync(result, cancellationToken: token);
+                    await notFound.WriteAsJsonAsync(result);
                     return notFound;
                 }
 
                 var ok = request.CreateResponse(HttpStatusCode.OK);
-                await ok.WriteAsJsonAsync(result, cancellationToken: token);
+                await ok.WriteAsJsonAsync(result);
                 return ok;
             }
             catch (Exception ex)
@@ -73,10 +73,10 @@ namespace AzureEndPointReaction.Functions.Questionnaires
 
                 var error = request.CreateResponse(HttpStatusCode.InternalServerError);
                 await error.WriteAsJsonAsync(new DeletionResponseDTO
-                {
-                    Success = false,
-                    Message = $"Error deleting questionnaire: {ex.Message}"
-                });
+                (
+                    false,
+                    $"Error deleting questionnaire: {ex.Message}"
+                ));
                 return error;
             }
         }

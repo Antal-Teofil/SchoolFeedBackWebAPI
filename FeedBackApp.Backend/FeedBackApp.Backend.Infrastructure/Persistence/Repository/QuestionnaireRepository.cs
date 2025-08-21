@@ -14,60 +14,51 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<bool> CompileAndSaveAsync(SurveyMetadata metadata)
+        public async Task CompileAndSaveAsync(SurveyMetadata metadata)
         {
-            try
+            _context.Add(metadata);
+            await _context.SaveChangesAsync();
+
+            var setById = metadata.StudentSets.ToDictionary(s => s.SetId);
+            var template = metadata.QuestionnaireTemplate;
+
+            var questionnaires = new List<Questionnaire>();
+
+            foreach (var param in metadata.CreationParams)
             {
-                _context.Add(metadata);
-                await _context.SaveChangesAsync();
-
-                var setById = metadata.StudentSets.ToDictionary(s => s.SetId);
-                var template = metadata.QuestionnaireTemplate;
-
-                var questionnaires = new List<Questionnaire>();
-
-                foreach (var param in metadata.CreationParams)
+                foreach (var setId in param.StudentSetIds)
                 {
-                    foreach (var setId in param.StudentSetIds)
+                    if (!setById.TryGetValue(setId, out var set))
+                        continue;
+
+                    foreach (var studentEmail in set.StudentEmails)
                     {
-                        if (!setById.TryGetValue(setId, out var set))
-                            continue;
-
-                        foreach (var studentEmail in set.StudentEmails)
+                        var q = new Questionnaire
                         {
-                            var q = new Questionnaire
-                            {
-                                Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}_{metadata.Id}",
-                                SurveyId = metadata.Id,
-                                TeacherEmail = param.TeacherEmail,
-                                StudentEmail = studentEmail,
-                                SubjectName = param.SubjectName,
-                                QuestionnaireResults = template
-                                    .Select(t => new QuestionAnswer
-                                    {
-                                        Question = t.Question,
-                                        Type = t.Type,
-                                        Answer = null
-                                    })
-                                    .ToList()
-                            };
+                            Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}_{metadata.Id}",
+                            SurveyId = metadata.Id,
+                            TeacherEmail = param.TeacherEmail,
+                            StudentEmail = studentEmail,
+                            SubjectName = param.SubjectName,
+                            QuestionnaireResults = template
+                                .Select(t => new QuestionAnswer
+                                {
+                                    Question = t.Question,
+                                    Type = t.Type,
+                                    Answer = null
+                                })
+                                .ToList()
+                        };
 
-                            questionnaires.Add(q);
-                        }
+                        questionnaires.Add(q);
                     }
                 }
-
-                if (questionnaires.Count > 0)
-                {
-                    _context.AddRange(questionnaires);
-                    await _context.SaveChangesAsync();
-                }
-
-                return true;
             }
-            catch (Exception)
+
+            if (questionnaires.Count > 0)
             {
-                return false;
+                _context.AddRange(questionnaires);
+                await _context.SaveChangesAsync();
             }
         }
 

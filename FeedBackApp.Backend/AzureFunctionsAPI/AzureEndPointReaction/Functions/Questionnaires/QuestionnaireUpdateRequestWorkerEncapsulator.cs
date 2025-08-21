@@ -44,7 +44,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             if (string.IsNullOrWhiteSpace(body))
             {
                 var emptyResponse = request.CreateResponse(HttpStatusCode.BadRequest);
-                await emptyResponse.WriteAsJsonAsync(new UpdateResponseDTO {Success=false, Message = "Request body cannot be empty." }, cancellationToken: CancellationToken.None);
+                await emptyResponse.WriteAsJsonAsync(new UpdateResponseDTO {Success=false, Message = "Request body cannot be empty." });
                 return emptyResponse;
             }
             /*implementation in progress*/
