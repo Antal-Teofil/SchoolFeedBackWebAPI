@@ -32,7 +32,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             bodyType: typeof(UpdateResponseDTO), // replace with update DTO
             Required = true
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context)
         {
             var body = await new StreamReader(request.Body).ReadToEndAsync();
 

@@ -38,8 +38,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError)]
         public async Task<HttpResponseData> ExecuteTaskAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request,
-            FunctionContext context,
-            CancellationToken token)
+            FunctionContext context)
         {
             try
             {
@@ -77,7 +76,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                 {
                     Success = false,
                     Message = $"Error deleting questionnaire: {ex.Message}"
-                }, cancellationToken: token);
+                });
                 return error;
             }
         }

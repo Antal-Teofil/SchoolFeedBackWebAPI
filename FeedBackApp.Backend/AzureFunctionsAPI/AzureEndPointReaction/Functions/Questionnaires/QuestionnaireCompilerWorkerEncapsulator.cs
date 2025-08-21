@@ -33,7 +33,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json", 
             bodyType: typeof(CreationResponseDTO) // replace dto
             )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
                 await response.WriteAsJsonAsync(new CreationResponseDTO(false)
                 {
                     Message = $"Error deleting questionnaire: {e.Message}"
-                }, cancellationToken: token);
+                });
                 return response;
             }
 
