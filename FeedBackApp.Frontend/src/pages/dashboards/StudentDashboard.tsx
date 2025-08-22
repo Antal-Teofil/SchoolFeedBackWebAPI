@@ -5,61 +5,18 @@ import { toast } from "sonner";
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useEffect, useState } from "react";
 import { mockStudentContext } from "@/mocks/studentContext";
-
-
-/*
-const subjects = ["Mathematics", "Physics","English"];
-const teachers = ["Prof. Ionescu","Mrs. Popescu","Mr. Marinescu"];
-
-type StudentContext = {
-  grade: string
-  teachers: string[],
-  subjects: string[],
-}
-  
-  useEffect(() => {
-    if (!user?.email) return;
-
-    getFormByEmail(user.email, {
-      onSuccess: (data: StudentContext) => {
-        setContext(data);
-      },
-      onError: (err) => {
-        console.error(err);
-      },
-    });
-    if(isStudent)
-    {
-      toast("IsLoading FormContext");
-    }
-  }, [user?.email, getFormByEmail]);
-  
-  useEffect(() => {
-    setContext({
-      grade: "11C",
-      teachers: ["Prof. Ionescu", "Mrs. Popescu"],
-      subjects: ["Mathematics", "Physics", "English"],
-    });
-  }, []);*/
+import { useStudentContextStore } from "@/stores/useStudentContextStore";
 
 export default function StudentDashboard() {
   const user = useAuthStore((state) => state.user);
-  //const [context, setContext] = useState<StudentContext | null>(null);
-  const context = mockStudentContext;
+  const { context, setContext } = useStudentContextStore();
 
-    useEffect(() => {
-    console.log("Mock student context:", context);
-  }, [context]);
 
-  /*const {
-  form: context,
-  isLoadingForm,
-  isErrorForm,
-  errorForm
-  } = useReviews(user.email);
+  useEffect(() => {
+      setContext(mockStudentContext);
+  }, []);
 
-  
-  if (isLoadingForm) {
+  if (!context) {
     return (
       <main className="container mx-auto px-6 py-10">
         <h1 className="text-2xl">Loading student context…</h1>
@@ -67,7 +24,28 @@ export default function StudentDashboard() {
     )
   }
 
-  if (isErrorForm || !context) {
+  /*const {
+    form,
+    isLoadingForm,
+    isErrorForm,
+    errorForm
+  } = useReviews(user.email);
+
+  useEffect(() => {
+    if(form) {
+      setContext(form);
+    }
+  },[form,setContext]);
+
+ if (isLoadingForm && !context) {
+    return (
+      <main className="container mx-auto px-6 py-10">
+        <h1 className="text-2xl">Loading student context…</h1>
+      </main>
+    )
+  }
+
+  if ((isErrorForm || !context) && !isLoadingForm) {
     return (
       <main className="container mx-auto px-6 py-10">
         <h1 className="text-2xl">Hiba történt a betöltéskor.</h1>
@@ -79,14 +57,16 @@ export default function StudentDashboard() {
   return (
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
-        <div className="flex items-center justify-between">
-        <h1 className="ml-[5ch] text-3xl md:text-4xl font-bold tracking-tight text-zinc-800">
-            Üdv, <span className="font-bold text-primary">{user.firstName}</span>!
+        <div className="flex items-center justify-between gap-3 md:gap-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-zinc-800">
+            Üdv, <span className="text-primary">{user.firstName}</span>!
           </h1>
 
           <img
             src="/Image.png"
-            className="block shrink-0 mr-6 md:mr-10 mr-15"
+            className="
+    block shrink-0 object-contain h-auto
+    w-[120px]  sm:w-[180px]  md:w-[260px]  lg:w-[320px]  xl:w-[380px]  mr-0 md:mr-10"
           />
         </div>
       </header>
@@ -124,7 +104,10 @@ export default function StudentDashboard() {
 
       </section>
       <section>
-        <FeedbackForm studentEmail={user.email} subjects={context.subjects} teachers={context.teachers} />
+        <FeedbackForm studentEmail={user.email}
+          subjects={context.subjects}
+          teachers={context.teachers}
+          evaluations={context.evaluations} />
       </section>
     </main>
   );
