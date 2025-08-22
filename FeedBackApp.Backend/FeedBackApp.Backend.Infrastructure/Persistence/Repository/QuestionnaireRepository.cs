@@ -45,7 +45,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                             QuestionnaireResults = template
                                 .Select(t => new QuestionAnswer
                                 {
-                                    Answer = null,
+                                    Answer = string.Empty,
                                     QuestionId = t.Id
                                 })
                                 .ToList()
