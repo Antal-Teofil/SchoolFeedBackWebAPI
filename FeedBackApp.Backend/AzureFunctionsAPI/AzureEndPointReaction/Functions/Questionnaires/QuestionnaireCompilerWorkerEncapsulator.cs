@@ -33,7 +33,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json", 
             bodyType: typeof(CreationResponseDTO) // replace dto
             )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request, FunctionContext context)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "surveys")] HttpRequestData request, FunctionContext context)
         {
             try
             {
