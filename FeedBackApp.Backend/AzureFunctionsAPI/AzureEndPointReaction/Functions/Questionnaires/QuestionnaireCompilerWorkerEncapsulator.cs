@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Application.DTOs.QuestionnaireDTOs;
+using Application.DTOs.Questionnaire;
 using Application.Services.Interfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Utils;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireCompilerWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireCompilerWorkerEncapsulator> logger, IEmailService emailService) : IQuestionnaireWorker
+    public sealed class QuestionnaireCompilerWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireCompilerWorkerEncapsulator> logger, IEmailService emailService)
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireCompilerWorkerEncapsulator> _logger = logger;
@@ -33,7 +33,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json", 
             bodyType: typeof(CreationResponseDTO) // replace dto
             )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "surveys")] HttpRequestData request, FunctionContext context)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "questionnaires")] HttpRequestData request)
         {
             try
             {
@@ -41,6 +41,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
 
                 if (dto == null)
                 {
+                    _logger.LogError("Invalid or empty JSON body");
                     var badResponse = request.CreateResponse(HttpStatusCode.BadRequest);
                     await badResponse.WriteStringAsync("Invalid or empty JSON body.");
                     return badResponse;
@@ -55,7 +56,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             }
             catch (Exception e)
             {
-                _logger.LogError("Something unexpected happenned!");
+                _logger.LogError("Something unexpected happenned!",e.Message);
                 var response = request.CreateResponse(HttpStatusCode.InternalServerError);
                 await response.WriteAsJsonAsync(new CreationResponseDTO(false, $"Error creating questionnaire: {e.Message}"));
                 return response;

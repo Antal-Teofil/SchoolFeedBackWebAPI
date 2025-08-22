@@ -1,4 +1,4 @@
-﻿using Application.DTOs.QuestionnaireDTOs;
+﻿using Application.DTOs.Questionnaire;
 
 namespace Application.Services.Interfaces
 {
