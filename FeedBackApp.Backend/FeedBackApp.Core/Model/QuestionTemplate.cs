@@ -7,6 +7,6 @@ namespace FeedBackApp.Core.Model
     {
         public string Question { get; set; } = string.Empty;
 
-        public QuestionType Type { get; set; }
+        public QuestionType? Type { get; set; }
     }
 }

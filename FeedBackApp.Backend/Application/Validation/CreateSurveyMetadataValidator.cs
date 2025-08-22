@@ -9,9 +9,9 @@ namespace Application.Validation
         public CreateSurveyMetadataValidator() 
         {
             RuleFor(dto => dto.StartDate).NotEmpty().WithMessage("Start date can not be empty")
-                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Start date can not be in the future");
+                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Start date can not be in the future. Found: {PropertyValue}");
             RuleFor(dto => dto.EndDate).NotEmpty().WithMessage("End date can not be empty")
-                .GreaterThanOrEqualTo(DateTime.UtcNow).WithMessage("End date must be a future date");
+                .GreaterThanOrEqualTo(DateTime.UtcNow).WithMessage("End date must be a future date. Found: {PropertyValue}");
             RuleFor(dto => dto.StudentSets).NotEmpty().WithMessage("Student sets can not be empty");
             RuleForEach(dto => dto.StudentSets)
                 .SetValidator(new StudentSetValidator());

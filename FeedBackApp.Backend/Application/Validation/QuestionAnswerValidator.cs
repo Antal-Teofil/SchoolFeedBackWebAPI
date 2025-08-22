@@ -14,17 +14,10 @@ namespace Application.Validation
         {
             RuleFor(a => a.Question)
                 .NotEmpty().WithMessage("Question text cannot be empty")
-                .MaximumLength(500).WithMessage("Question text cannot exceed 500 characters");
+                .MaximumLength(500).WithMessage("Question text cannot exceed 500 characters. Found: {PropertyValue}");
 
             RuleFor(a => a.Type)
-                .IsInEnum().WithMessage("Invalid question type");
-
-
-            When(a => a.Type != FeedBackApp.Core.Model.Enum.QuestionType.OpenEnded, () =>
-            {
-                RuleFor(a => a.Answer)
-                    .NotEmpty().WithMessage("Answer is required for this question type");
-            });
+                .IsInEnum().WithMessage("Invalid question type: {PropertyValue}");
         }
     }
 }

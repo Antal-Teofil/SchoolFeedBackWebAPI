@@ -9,6 +9,6 @@ namespace Application.DTOs.QuestionnaireDTOs
         public string Question { get; set; } = string.Empty;
 
         [JsonProperty("type")]
-        public QuestionType Type { get; set; }
+        public QuestionType? Type { get; set; }
     }
 }

@@ -13,8 +13,10 @@ namespace Application.Validation
         public QuestionTemplateValidator() 
         {
             RuleFor(dto => dto.Question).NotEmpty().WithMessage("Question text can not be empty")
-                .MaximumLength(500).WithMessage("Question can not be longer than 500 characters");
-            RuleFor(dto => dto.Type).IsInEnum().WithMessage("Invalid question type");
+                .MaximumLength(500).WithMessage("Question can not be longer than 500 characters: {PropertyValue}");
+            RuleFor(dto => dto.Type)
+                .NotNull().WithMessage("Question type is required")
+                .IsInEnum().WithMessage("Invalid question type: {PropertyValue}");
         }
     }
 }

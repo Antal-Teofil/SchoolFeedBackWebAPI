@@ -17,15 +17,15 @@ namespace Application.Validation
 
             RuleFor(q => q.TeacherEmail)
                 .NotEmpty().WithMessage("Teacher email cannot be empty")
-                .EmailAddress().WithMessage("Invalid teacher email format");
+                .EmailAddress().WithMessage("Invalid teacher email format: {PropertyValue}");
 
             RuleFor(q => q.StudentEmail)
                 .NotEmpty().WithMessage("Student email cannot be empty")
-                .EmailAddress().WithMessage("Invalid student email format");
+                .EmailAddress().WithMessage("Invalid student email format: {PropertyValue}");
 
             RuleFor(q => q.SubjectName)
                 .NotEmpty().WithMessage("Subject name cannot be empty")
-                .MaximumLength(200).WithMessage("Subject name cannot exceed 200 characters");
+                .MaximumLength(200).WithMessage("Subject name cannot exceed 200 characters. Found: {PropertyValue}");
 
             RuleFor(q => q.QuestionnaireResults)
                 .NotEmpty().WithMessage("Questionnaire must contain at least one answer");
