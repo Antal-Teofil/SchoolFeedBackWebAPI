@@ -11,9 +11,9 @@ public class EmailService : IEmailService
     private readonly string _appPassword;
     public EmailService()
     {
-        _fromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS");
-        _fromName = Environment.GetEnvironmentVariable("EMAIL_FROM_NAME");
-        _appPassword = Environment.GetEnvironmentVariable("EMAIL_APP_PASSWORD");
+        _fromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? throw new InvalidOperationException("EMAIL_FROM_ADDRESS environment variable is not set.");
+        _fromName = Environment.GetEnvironmentVariable("EMAIL_FROM_NAME") ?? throw new InvalidOperationException("EMAIL_FROM_NAME environment variable is not set.");
+        _appPassword = Environment.GetEnvironmentVariable("EMAIL_APP_PASSWORD") ?? throw new InvalidOperationException("EMAIL_APP_PASSWORD environment variable is not set.");
     }
 
     public async Task SendEmailAsync(string toEmail, string toName, string subject, string body, string? attachmentPath = null)

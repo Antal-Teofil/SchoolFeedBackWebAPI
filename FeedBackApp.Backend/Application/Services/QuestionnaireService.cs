@@ -1,64 +1,75 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Questionnaire;
+using Application.Extensions.QuestionnaireExtensions;
 using Application.Services.Interfaces;
-using FeedBackApp.Core.Model;
-using FeedBackApp.Core.Model.Enum;
 using FeedBackApp.Core.Repositories;
-using Newtonsoft.Json.Linq;
+using FluentValidation;
 
 namespace Application.Services
 {
     public class QuestionnaireService : IQuestionnaireService
     {
         private readonly IQuestionnaireRepository _repository;
-        public QuestionnaireService(IQuestionnaireRepository repository)
+        private readonly IValidator<CreateSurveyMetadataDto> _validator;
+        public QuestionnaireService(IQuestionnaireRepository repository, IValidator<CreateSurveyMetadataDto> validator)
         {
             _repository = repository;
+            _validator = validator;
         }
 
-        public async Task ProcessMetadataAsync(MetadataDto dto)
+        public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
         {
-            var metadata = new Metadata
+
+            var validationResult = await _validator.ValidateAsync(dto);
+            if(!validationResult.IsValid)
             {
-                Id = Guid.NewGuid().ToString(),
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
-                Teachers = dto.Teachers.Select(t => new MetaTeacher
-                {
-                    Email = t.Email,
-                    Name = t.Name,
-                    Subjects = t.Subjects.Select(s => new MetaSubject
-                    {
-                        Name = s.Name,
-                        Students = s.Students
-                    }).ToList()
-                }).ToList(),
-                Questionnaire = dto.Questionnaire
-            };
-
-            await _repository.SaveMetadataAsync(metadata);
-
-            foreach (var teacher in metadata.Teachers)
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return new CreationResponseDTO(false, errors);
+            }
+            var metadata = dto.ToModel();
+            try
             {
-                foreach (var subject in teacher.Subjects)
-                {
-                    foreach (var student in subject.Students)
-                    {
-                        var questionnaire = new Questionnaire
-                        {
-                            Id = $"qnr_{student}_{teacher.Email}_{subject.Name}",
-                            TeacherEmail = teacher.Email,
-                            TeacherName = teacher.Name,
-                            SubjectName = subject.Name,
-                            StudentEmail = student,
-                            Answers = metadata.Questionnaire.ToDictionary(
-                                q => q.Key,
-                                q => new QuestionAnswer { Type = (QuestionType)Enum.Parse(typeof(QuestionType), q.Value) } // hmmm
-                            )
-                        };
+                await _repository.CompileAndSaveAsync(metadata);
+            
+                return new CreationResponseDTO(true, "Creation successful!");
+            }
+            catch (Exception e)
+            {
+                return new CreationResponseDTO(false, $"Creation failed: {e.Message}");
+            }
+            
+        }
+        public async Task<DeletionResponseDTO> DeleteSurveyAsync(Guid id)
+        {
+            try
+            {
+                bool surveyDeleted = await _repository.DeleteSurveyMetadataAsync(id);
+                bool questionnairesDeleted = await _repository.DeleteQuestionnairesBySurveyIdAsync(id);
+                bool questionTemplateDeleted = await _repository.DeleteQuestionTemplateBySurveyIdAsync(id);
 
-                        await _repository.SaveQuestionnaireAsync(questionnaire);
-                    }
+                if (surveyDeleted && questionnairesDeleted && questionTemplateDeleted)
+                {
+                    return new DeletionResponseDTO
+                    (
+                        true,
+                       $"Survey {id} and related questionnaires were deleted successfully."
+                    );
                 }
+                else
+                {
+                    return new DeletionResponseDTO
+                    (
+                        false,
+                        $"Survey {id} not found (no survey metadata or questionnaires)."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return new DeletionResponseDTO
+                (
+                    false,
+                    $"Error deleting survey {id}: {ex.Message}"
+                );
             }
         }
     }

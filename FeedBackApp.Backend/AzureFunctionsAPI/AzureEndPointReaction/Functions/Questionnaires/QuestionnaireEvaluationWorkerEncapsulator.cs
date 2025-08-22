@@ -32,7 +32,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json",
             bodyType: typeof(object) // replace with actual evaluation DTO
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context, CancellationToken token)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "evaluations/{id:guid}")] HttpRequestData request, Guid id)
         {
             /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);

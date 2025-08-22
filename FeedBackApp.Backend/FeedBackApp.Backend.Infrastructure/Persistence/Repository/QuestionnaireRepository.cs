@@ -1,6 +1,7 @@
 ﻿
 using FeedBackApp.Core.Model;
 using FeedBackApp.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 {
@@ -13,26 +14,95 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             _context = context;
         }
 
-        public async Task<Metadata?> GetMetadataAsync(string id)
+        public async Task CompileAndSaveAsync(SurveyMetadata metadata)
         {
-            return await _context.Set<Metadata>().FindAsync(id);
-        }
+            var setById = metadata.StudentSets.ToDictionary(s => s.SetId);
+            var template = metadata.QuestionTemplates;
 
-        public async Task<Questionnaire?> GetQuestionnaireAsync(string id)
-        {
-            return await _context.Set<Questionnaire>().FindAsync(id);
-        }
+            QuestionnaireTemplate tempForSave = new QuestionnaireTemplate(metadata.Id, template);
 
-        public async Task SaveMetadataAsync(Metadata metadata)
-        {
-            _context.Set<Metadata>().Add(metadata);
+            _context.Add(metadata);
+            _context.Add(tempForSave);
+
+            var questionnaires = new List<Questionnaire>();
+
+            foreach (var param in metadata.CreationParams)
+            {
+                foreach (var setId in param.StudentSetIds)
+                {
+                    if (!setById.TryGetValue(setId, out var set))
+                        continue;
+
+                    foreach (var studentEmail in set.StudentEmails)
+                    {
+                        var q = new Questionnaire
+                        {
+                            Id = $"{studentEmail}_{param.TeacherEmail}_{param.SubjectName}_{metadata.Id}",
+                            SurveyId = metadata.Id,
+                            TeacherEmail = param.TeacherEmail,
+                            StudentEmail = studentEmail,
+                            SubjectName = param.SubjectName,
+                            QuestionnaireResults = template
+                                .Select(t => new QuestionAnswer
+                                {
+                                    Answer = string.Empty,
+                                    QuestionId = t.Id
+                                })
+                                .ToList()
+                        };
+
+                        questionnaires.Add(q);
+                    }
+                }
+            }
+
+            if (questionnaires.Count > 0)
+            {
+                _context.AddRange(questionnaires);
+            }
             await _context.SaveChangesAsync();
         }
 
-        public async Task SaveQuestionnaireAsync(Questionnaire questionnaire)
+        public async Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId)
         {
-            _context.Set<Questionnaire>().Add(questionnaire);
+            var questionnaires = await _context.Questionnaires
+                .Where(q => q.SurveyId == surveyId.ToString())
+                .ToListAsync();
+
+            if (!questionnaires.Any())
+                return false;
+
+            _context.Questionnaires.RemoveRange(questionnaires);
             await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool> DeleteQuestionTemplateBySurveyIdAsync(Guid surveyId)
+        {
+            var questionTemplate = await _context.QuestionnnareTemplates
+                .FirstAsync(q => q.Id == $"questiontemplates_{surveyId}");
+
+            if(questionTemplate == null)
+            {
+                return false;
+            }
+
+            _context.Remove(questionTemplate);
+            await _context.SaveChangesAsync();
+            return true;
+                
+        }
+
+        public async Task<bool> DeleteSurveyMetadataAsync(Guid id)
+        {
+            var metadata = await _context.Surveys.FirstOrDefaultAsync(m => m.Id == id.ToString());
+            if (metadata == null)
+                return false;
+
+            _context.Remove(metadata);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

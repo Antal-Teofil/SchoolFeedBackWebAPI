@@ -1,31 +1,38 @@
 {
-  "startdate": "date1",
-  "enddate": "date2",
+  "startDate": "2025-08-21",
+  "endDate": "2025-09-01",
 
   "studentSets": [
     {
-      "setid": "XI. A",
+      "setId": "XI. A",
       "studentEmails": [ "a@gimi.ro", "b@gimi.ro" ]
     },
     {
-      "setid": "XI. B",
+      "setId": "XI. B",
       "studentEmails": [ "c@gimi.ro", "d@gimi.ro" ]
-    },
-    {
-      "setid": "XI. B - nemet kezdo",
-      "studentEmails": [ "c@gimi.ro" ]
-    },
-    {
-      "setid": "XI. B - nemet halado",
-      "studentEmails": [ "d@gimi.ro" ]
     }
   ],
 
-  "questionnaireTemplate": {
-    "q1": "typ1",
-    "q2": "typ2",
-    "q3": "typ3"
-  },
+  "questionnaireTemplate": [
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "LikertScaleOneToFive"
+    },
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "MultinomialSingleChoicee",
+      "answerOptions" :["igen", "nem", ""]
+    },
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "MultipleChoice",
+      "answerOptions" :["igen", "nem", "nem nyilatkozok"]
+    },
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "OpenEnded"
+    }
+  ],
 
   "teachers": [
     {
@@ -36,20 +43,18 @@
       "email": "kovacs.maria2@gimi.ro",
       "name": "Kovács Mária2"
     }
-  ]
+  ],
 
-  "questionaireCreationParams": [
+  "questionnaireCreationParams": [
     {
-      "teachermail": "kovacs.maria@gimi.ro",
+      "teacherEmail": "kovacs.maria@gimi.ro",
       "subjectName": "Matematika",
-      "studentsetid": [ "XI. A", "X.A" ]
+      "studentSetIds": [ "XI. A", "XI. B" ]
     },
     {
-      "teachermail": "kovacs.maria2@gimi.ro",
+      "teacherEmail": "kovacs.maria2@gimi.ro",
       "subjectName": "Nemet",
-      "studentsetid": [ "XI. B - nemet kezdo" ]
+      "studentSetIds": [ "XI. B" ]
     }
-
   ]
-
 }

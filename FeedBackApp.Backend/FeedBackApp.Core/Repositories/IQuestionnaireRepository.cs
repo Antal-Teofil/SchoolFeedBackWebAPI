@@ -5,9 +5,9 @@ namespace FeedBackApp.Core.Repositories
 {
     public interface IQuestionnaireRepository
     {
-        Task SaveMetadataAsync(Metadata metadata);
-        Task SaveQuestionnaireAsync(Questionnaire questionnaire);
-        Task<Metadata?> GetMetadataAsync(string id);
-        Task<Questionnaire?> GetQuestionnaireAsync(string id);
+        Task CompileAndSaveAsync(SurveyMetadata metadata);
+        Task<bool> DeleteSurveyMetadataAsync(Guid id);
+        Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId);
+        Task<bool> DeleteQuestionTemplateBySurveyIdAsync(Guid surveyId);
     }
 }

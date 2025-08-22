@@ -1,10 +1,10 @@
-﻿
-using Application.DTOs;
+﻿using Application.DTOs.Questionnaire;
 
 namespace Application.Services.Interfaces
 {
     public interface IQuestionnaireService
     {
-        Task ProcessMetadataAsync(MetadataDto dto);
+        public Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto);
+        public Task<DeletionResponseDTO> DeleteSurveyAsync(Guid id);
     }
 }
