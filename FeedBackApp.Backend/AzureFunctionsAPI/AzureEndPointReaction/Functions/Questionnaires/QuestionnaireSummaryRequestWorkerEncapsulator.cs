@@ -10,7 +10,7 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireSummaryRequestWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> logger)
+    public sealed class QuestionnaireSummaryRequestWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> logger) :IQuestionnaireWorker
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> _logger = logger;

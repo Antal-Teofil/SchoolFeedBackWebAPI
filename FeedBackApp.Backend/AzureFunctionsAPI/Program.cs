@@ -44,7 +44,8 @@ var host = new HostBuilder()
 
         services.AddDbContext<AppDBContext>(options =>
         {
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionString")
+    ?? throw new InvalidOperationException("ConnectionString environment variable is not set.");
             options.UseCosmos(
                 connectionString : connectionString,
                 databaseName: "SchoolDatabase"
