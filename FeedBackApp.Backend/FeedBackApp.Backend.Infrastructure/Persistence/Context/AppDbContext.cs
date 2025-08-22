@@ -7,6 +7,8 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
     {
         public DbSet<SurveyMetadata> Surveys { get; set; }
         public DbSet<Questionnaire> Questionnaires { get; set; }
+        public DbSet<QuestionnaireTemplate> QuestionnnareTemplates { get; set; }
+
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +26,11 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
                 .ToContainer("mainContainer")
                 .HasPartitionKey(q => q.Id)
                 .HasKey(q => q.Id);
+
+            modelBuilder.Entity<QuestionnaireTemplate>()
+                .ToContainer("mainContainer")
+                .HasPartitionKey(q => q.Id)
+                .HasKey(q => q.Id);
             
             modelBuilder.Entity<SurveyMetadata>()
                 .HasDiscriminator<string>("DocumentType")
@@ -32,6 +39,10 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
             modelBuilder.Entity<Questionnaire>()
                 .HasDiscriminator<string>("DocumentType")
                 .HasValue<Questionnaire>("Questionnaire");
+
+            modelBuilder.Entity<QuestionnaireTemplate>()
+               .HasDiscriminator<string>("DocumentType")
+               .HasValue<QuestionnaireTemplate>("QuestionTemaplate");
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.QuestionnaireDTOs;
 using FeedBackApp.Core.Model;
+using Grpc.Core;
 
 namespace Application.Extensions.QuestionnaireExtensions
 {
@@ -11,16 +12,16 @@ namespace Application.Extensions.QuestionnaireExtensions
                 Id = Guid.NewGuid().ToString(),
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
-                StudentSets = dto.StudentSets?
+                StudentSets = dto.StudentSets
                     .Select(s => s.ToModel())
                     .ToList() ?? new List<StudentSet>(),
-                QuestionnaireTemplate = dto.QuestionnaireTemplate?
+                QuestionTemplates = dto.QuestionTemplates
                     .Select(q => q.ToModel())
                     .ToList() ?? new List<QuestionTemplate>(),
-                Teachers = dto.Teachers?
+                Teachers = dto.Teachers
                     .Select(t => t.ToModel())
                     .ToList() ?? new List<MetaTeacher>(),
-                CreationParams = dto.CreationParams?
+                CreationParams = dto.CreationParams
                     .Select(c => c.ToModel())
                     .ToList() ?? new List<QuestionnaireCreationParam>()
 
@@ -30,16 +31,16 @@ namespace Application.Extensions.QuestionnaireExtensions
             {
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
-                StudentSets = model.StudentSets?
+                StudentSets = model.StudentSets
                     .Select(s => s.ToDto())
                     .ToList() ?? new List<StudentSetDto>(),
-                QuestionnaireTemplate = model.QuestionnaireTemplate?
+                QuestionTemplates = model.QuestionTemplates
                     .Select(q => q.ToDto())
                     .ToList() ?? new List<QuestionTemplateDto>(),
-                Teachers = model.Teachers?
+                Teachers = model.Teachers
                     .Select(t => t.ToDto())
                     .ToList() ?? new List<MetaTeacherDto>(),
-                CreationParams = model.CreationParams?
+                CreationParams = model.CreationParams
                     .Select(c => c.ToDto())
                     .ToList() ?? new List<QuestionnaireCreationParamDto>()
             };
@@ -57,20 +58,6 @@ namespace Application.Extensions.QuestionnaireExtensions
                 SetId = model.SetId,
                 StudentEmails = [.. model.StudentEmails]
             };
-
-        public static QuestionTemplate ToModel(this QuestionTemplateDto dto) =>
-            new()
-            {
-                Question = dto.Question,
-                Type = dto.Type
-            };
-        public static QuestionTemplateDto ToDto(this QuestionTemplate model) =>
-            new()
-            {
-                Question = model.Question,
-                Type = model.Type
-            };
-
         public static MetaTeacher ToModel(this MetaTeacherDto dto) =>
             new()
             {
@@ -105,7 +92,7 @@ namespace Application.Extensions.QuestionnaireExtensions
                 TeacherEmail = dto.TeacherEmail,
                 StudentEmail = dto.StudentEmail,
                 SubjectName = dto.SubjectName,
-                QuestionnaireResults = dto.QuestionnaireResults?
+                QuestionnaireResults = dto.QuestionnaireResults
                     .Select(q => q.ToModel())
                     .ToList() ?? new List<QuestionAnswer>(),
             };
@@ -116,24 +103,35 @@ namespace Application.Extensions.QuestionnaireExtensions
                 TeacherEmail = model.TeacherEmail,
                 StudentEmail = model.StudentEmail,
                 SubjectName = model.SubjectName,
-                QuestionnaireResults = model.QuestionnaireResults?
+                QuestionnaireResults = model.QuestionnaireResults
                     .Select(q => q.ToDto())
                     .ToList() ?? new List<QuestionAnswerDto>()
             };
         public static QuestionAnswerDto ToDto(this QuestionAnswer model) =>
             new()
             {
-                Question = model.Question,
-                Type = model.Type,
-                Answer = model.Answer,
+                Answer = model.Answer
 
             };
         public static QuestionAnswer ToModel(this QuestionAnswerDto dto) =>
             new()
             {
+                Answer = dto.Answer,
+            };
+
+        public static QuestionTemplate ToModel(this QuestionTemplateDto dto) =>
+            new()
+            {
                 Question = dto.Question,
                 Type = dto.Type,
-                Answer = dto.Answer,
+                AnswerOptions = dto.AnswerOptions
+            };
+        public static QuestionTemplateDto ToDto(this QuestionTemplate model) =>
+            new()
+            {
+                Question = model.Question,
+                Type = model.Type,
+                AnswerOptions = model.AnswerOptions
             };
     };
 

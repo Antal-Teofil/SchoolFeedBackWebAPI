@@ -14,7 +14,7 @@ namespace Application.DTOs.QuestionnaireDTOs
         public List<StudentSetDto> StudentSets { get; set; } = new();
 
         [JsonProperty("questionnaireTemplate")]
-        public List<QuestionTemplateDto> QuestionnaireTemplate { get; set; } = new();
+        public List<QuestionTemplateDto> QuestionTemplates { get; set; } = new();
 
         [JsonProperty("teachers")]
         public List<MetaTeacherDto> Teachers { get; set; } = new();

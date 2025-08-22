@@ -1,6 +1,4 @@
-﻿
-using Newtonsoft.Json;
-namespace FeedBackApp.Core.Model
+﻿namespace FeedBackApp.Core.Model
 {
     public class StudentSet
     {

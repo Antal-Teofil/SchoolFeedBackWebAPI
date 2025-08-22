@@ -1,7 +1,4 @@
-﻿
-using Newtonsoft.Json;
-
-namespace FeedBackApp.Core.Model
+﻿namespace FeedBackApp.Core.Model
 {
     public class SurveyMetadata
     {
@@ -13,7 +10,7 @@ namespace FeedBackApp.Core.Model
 
         public IList<StudentSet> StudentSets { get; set; } = new List<StudentSet>();
 
-        public IList<QuestionTemplate> QuestionnaireTemplate { get; set; } = new List<QuestionTemplate>();
+        public IList<QuestionTemplate> QuestionTemplates { get; set; } = new List<QuestionTemplate>();
 
         public IList<MetaTeacher> Teachers { get; set; } = new List<MetaTeacher>();
 

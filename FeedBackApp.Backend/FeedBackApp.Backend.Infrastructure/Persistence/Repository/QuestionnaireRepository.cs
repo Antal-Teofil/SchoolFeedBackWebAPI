@@ -16,11 +16,14 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
         public async Task CompileAndSaveAsync(SurveyMetadata metadata)
         {
-            _context.Add(metadata);
-            await _context.SaveChangesAsync();
-
             var setById = metadata.StudentSets.ToDictionary(s => s.SetId);
-            var template = metadata.QuestionnaireTemplate;
+            var template = metadata.QuestionTemplates;
+
+            QuestionnaireTemplate tempForSave = new QuestionnaireTemplate(metadata.Id, template);
+
+            _context.Add(metadata);
+            _context.Add(tempForSave);
+            await _context.SaveChangesAsync();
 
             var questionnaires = new List<Questionnaire>();
 
@@ -43,9 +46,8 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                             QuestionnaireResults = template
                                 .Select(t => new QuestionAnswer
                                 {
-                                    Question = t.Question,
-                                    Type = t.Type,
-                                    Answer = null
+                                    Answer = null,
+                                    QuestionId = t.Id
                                 })
                                 .ToList()
                         };

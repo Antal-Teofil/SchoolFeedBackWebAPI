@@ -19,8 +19,18 @@
       "type": "LikertScaleOneToFive"
     },
     {
-      "question": "Any suggestions for improvement?",
-      "type": "MultipleChoice"
+      "question": "How satisfied are you with the course?",
+      "type": "MultinomialSingleChoicee",
+      "answerOptions" :["igen", "nem", ""]
+    },
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "MultipleChoice",
+      "answerOptions" :["igen", "nem", "nem nyilatkozok"]
+    },
+    {
+      "question": "How satisfied are you with the course?",
+      "type": "OpenEnded"
     }
   ],
 
