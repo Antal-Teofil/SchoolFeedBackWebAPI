@@ -1,4 +1,4 @@
-﻿using Application.DTOs.QuestionnaireDTOs;
+using Application.DTOs.QuestionnaireDTOs;
 using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -29,7 +29,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         )]
         [OpenApiRequestBody(
             contentType: "application/json",
-            bodyType: typeof(object), // replace with update DTO
+            bodyType: typeof(UpdateResponseDTO), // replace with update DTO
             Required = true
         )]
         [OpenApiResponseWithBody(

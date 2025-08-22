@@ -1,0 +1,31 @@
+name: Run JWT Role Validator Tests
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ./FeedBackApp.Backend/FeedBackApp.Backend.sln
+
+      - name: Build
+        run: dotnet build ./FeedBackApp.Backend/FeedBackApp.Backend.sln --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test ./FeedBackApp.Backend/FeedBackApp.Backend.sln --no-build --configuration Release --verbosity normal

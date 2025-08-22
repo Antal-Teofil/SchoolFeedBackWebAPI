@@ -1,24 +1,24 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { StudentContext } from "@/models/StudentContext";
+import { Evaluation, EvaluationResponses } from "@/models/StudentContext"
+import ClassroomSection from "@/components/feedback/sections/ClassroomSection"
+import OutsideEducationSection from "@/components/feedback/sections/OutsideEducationSection"
+import AttendanceSection from "./sections/AttendanceSection";
+
+type EvaluationStatus = "Draft" | "Submitted";
 
 interface FeedbackFormProps {
-  studentEmail:string;
+  studentEmail: string;
   subjects: string[];
   teachers: string[];
+  evaluations: Evaluation[];
 }
 
-const grades = Array.from({ length: 8 }).map((_, i) => String(5 + i));
-
-export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormProps) {
+export function FeedbackForm({ studentEmail, subjects, teachers, evaluations }: FeedbackFormProps) {
 
   const [subject, setSubject] = useState<string>("");
   const [teacher, setTeacher] = useState<string>("");
@@ -44,23 +44,59 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
   const [q19, setQ19] = useState("");
   const [q20, setQ20] = useState<string[]>([]);
   const [q21, setQ21] = useState<string[]>([]);
-
   const [q22, setQ22] = useState("");
   const [q23, setQ23] = useState("");
-
   const [q24, setQ24] = useState("");
   const [q25, setQ25] = useState("");
   const [q26, setQ26] = useState("");
 
+  const currentEvaluation = useMemo(
+    () =>
+      evaluations?.find(
+        (e) => e.subject === subject && e.teacher === teacher
+      ),
+    [evaluations, subject, teacher]
+  );
 
+  const applyResponses = (r?: Partial<EvaluationResponses>) => {
+    setQ1(String(r?.q1 ?? "")); setQ2(String(r?.q2 ?? "")); setQ3(String(r?.q3 ?? ""));
+    setQ4(String(r?.q4 ?? "")); setQ5(String(r?.q5 ?? "")); setQ6(String(r?.q6 ?? ""));
+    setQ7(String(r?.q7 ?? "")); setQ8(String(r?.q8 ?? "")); setQ9(String(r?.q9 ?? ""));
+    setQ10(String(r?.q10 ?? "")); setQ11(String(r?.q11 ?? "")); setQ12(String(r?.q12 ?? ""));
+    setQ13(String(r?.q13 ?? "")); setQ14(String(r?.q14 ?? "")); setQ15(String(r?.q15 ?? ""));
+    setQ16(String(r?.q16 ?? "")); setQ17(String(r?.q17 ?? ""));
+    setQ18(String(r?.q18 ?? "")); setQ19(String(r?.q19 ?? ""));
+    setQ20(Array.isArray(r?.q20) ? (r?.q20 as string[]) : []);
+    setQ21(Array.isArray(r?.q21) ? (r?.q21 as string[]) : []);
+    setQ22(String(r?.q22 ?? "")); setQ23(String(r?.q23 ?? ""));
+    setQ24(String(r?.q24 ?? "")); setQ25(String(r?.q25 ?? "")); setQ26(String(r?.q26 ?? ""));
+  };
+
+  useEffect(() => {
+    if (!subject || !teacher) return;
+    applyResponses(currentEvaluation?.responses);
+  }, [subject, teacher, currentEvaluation]);
+
+  const evaluationId = currentEvaluation?.id;
   const likertValues = ["1", "2", "3", "4", "5"];
+
+  const qValues = useMemo(
+    () => [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17],
+    [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17]
+  );
+  const setQValues = useMemo(
+    () => [setQ1, setQ2, setQ3, setQ4, setQ5, setQ6, setQ7, setQ8, setQ9, setQ10, setQ11, setQ12, setQ13, setQ14, setQ15, setQ16, setQ17],
+    []
+  );
 
   const isAttendingOutside = useMemo(
     () => q19 === "1" || q19 === "2",
     [q19]
   );
 
-  const getFormData = () => ({
+  const getFormData = (status: EvaluationStatus) => ({
+    evaluationId,
+    status,
     studentEmail,
     subject,
     teacher,
@@ -76,7 +112,8 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
     if (!(q19 === "1" || q19 === "2")) {
       setQ20([]);
     }
-    const data = getFormData();
+
+    const data = getFormData("Draft");
     console.log("Draft saved:", JSON.stringify(data, null, 2));
   };
 
@@ -129,7 +166,7 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
     }
 
     toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
-    const data = getFormData();
+    const data = getFormData("Submitted");
     console.log("submit saved:", JSON.stringify(data, null, 2));
   };
 
@@ -172,433 +209,28 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
           </div>
         </section>
 
-        <section className="space-y-6">
-          <header>
-            <h2 className="text-xl font-semibold">Osztálytermi tevékenység</h2>
-            <p className="text-sm text-muted-foreground">1 = egyáltalán nem értek egyet, 5 = teljes mértékben egyetértek</p>
-          </header>
+        <ClassroomSection
+          qValues={qValues}
+          setQValues={setQValues}
+          likertValues={likertValues}
+        />
 
-          <div className="space-y-5">
-            <div className="space-y-2">
-              <Label>1) A Tanár érthetően magyarázza a tananyagot.</Label>
-              <RadioGroup value={q1} onValueChange={setQ1} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q1-${v}`} value={v} />
-                    <Label htmlFor={`q1-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+        <OutsideEducationSection
+          q18={q18} setQ18={setQ18}
+          q19={q19} setQ19={setQ19}
+          q20={q20} setQ20={setQ20}
+          q21={q21} setQ21={setQ21}
+          q22={q22} setQ22={setQ22}
+          q23={q23} setQ23={setQ23}
+          isAttendingOutside={isAttendingOutside}
+          toggleMulti={toggleMulti}
+        />
 
-            <div className="space-y-2">
-              <Label>2) A Tanár olyan magyarázatokat ad, amelyek segítenek a hatékony tanulásban.</Label>
-              <RadioGroup value={q2} onValueChange={setQ2} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q2-${v}`} value={v} />
-                    <Label htmlFor={`q2-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>3) A tanórai feladatok érdekesek.</Label>
-              <RadioGroup value={q3} onValueChange={setQ3} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q3-${v}`} value={v} />
-                    <Label htmlFor={`q3-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>4) A Tanár bátorítja és bevonja a teljes osztályközösséget a tanórák tevékenységébe.</Label>
-              <RadioGroup value={q4} onValueChange={setQ4} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q4-${v}`} value={v} />
-                    <Label htmlFor={`q4-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>5) A Tanár szorgalmazza a diákok közötti együttműködést.</Label>
-              <RadioGroup value={q5} onValueChange={setQ5} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q5-${v}`} value={v} />
-                    <Label htmlFor={`q5-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>6) A Tanár motivál, hogy ezeken az órákon részt vegyek.</Label>
-              <RadioGroup value={q6} onValueChange={setQ6} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q6-${v}`} value={v} />
-                    <Label htmlFor={`q6-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>7) A Tanár digitális eszközöket használ a tanításhoz.</Label>
-              <RadioGroup value={q7} onValueChange={setQ7} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q7-${v}`} value={v} />
-                    <Label htmlFor={`q7-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>8) Kielégítő tájékoztatást kapok a képességeim felmérésének módjairól, illetve ismereteim felmérésének kritériumairól.</Label>
-              <RadioGroup value={q8} onValueChange={setQ8} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q8-${v}`} value={v} />
-                    <Label htmlFor={`q8-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>9) A Tanár támogatja a tanulók közti versenyszellemet.</Label>
-              <RadioGroup value={q9} onValueChange={setQ9} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q9-${v}`} value={v} />
-                    <Label htmlFor={`q9-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>10) A tanulókat bátorítja gondolataik kifejezésére és a véleményalkotásra.</Label>
-              <RadioGroup value={q10} onValueChange={setQ10} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q10-${v}`} value={v} />
-                    <Label htmlFor={`q10-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>11) Az órákon kellemes a hangulat.</Label>
-              <RadioGroup value={q11} onValueChange={setQ11} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q11-${v}`} value={v} />
-                    <Label htmlFor={`q11-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>12) Biztonságban és komfortosan érzem magam az órákon.</Label>
-              <RadioGroup value={q12} onValueChange={setQ12} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q12-${v}`} value={v} />
-                    <Label htmlFor={`q12-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>13) A tananyag elsajátításának üteme számomra:</Label>
-              <RadioGroup value={q13} onValueChange={setQ13} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q13-${v}`} value={v} />
-                    <Label htmlFor={`q13-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              <p className="text-xs text-muted-foreground">1 = nagyon lassú, 3 = megfelelő, 5 = nagyon gyors</p>
-            </div>
-
-            <div className="space-y-2">
-              <Label>14) A Tanárt érdekli, hogy én jól érezzem magam az órákon.</Label>
-              <RadioGroup value={q14} onValueChange={setQ14} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q14-${v}`} value={v} />
-                    <Label htmlFor={`q14-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>15) Nagy erőfeszítésembe kerül az otthoni felkészülés, hogy ebből a tárgyból jó eredményeket érjek el.</Label>
-              <RadioGroup value={q15} onValueChange={setQ15} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q15-${v}`} value={v} />
-                    <Label htmlFor={`q15-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>16) A Tanár figyelembe veszi és betartja a Tanulók Statútumát.</Label>
-              <RadioGroup value={q16} onValueChange={setQ16} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q16-${v}`} value={v} />
-                    <Label htmlFor={`q16-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>17) Ezen az órán ideges vagyok, gyomoridegem van.</Label>
-              <RadioGroup value={q17} onValueChange={setQ17} className="grid grid-cols-5 gap-2">
-                {likertValues.map((v) => (
-                  <div key={v} className="flex items-center space-x-2">
-                    <RadioGroupItem id={`q17-${v}`} value={v} />
-                    <Label htmlFor={`q17-${v}`}>{v}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <header>
-            <h2 className="text-xl font-semibold">Iskolán kívüli oktatás</h2>
-          </header>
-
-          <div className="space-y-2">
-            <Label>18) A Tanár részesít külön foglalkozásban,hogy felkészítsen vizsgára/versenyre/szereplésre:</Label>
-            <RadioGroup
-              value={["1", "2", "3"].includes(q18) ? q18 : ""}
-              onValueChange={(val) => setQ18(val)} 
-              className="grid gap-2"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-1" value="1" />
-                <Label htmlFor="q18-1">igen, elkéreztetve más Tanárok óráiról</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-2" value="2" />
-                <Label htmlFor="q18-2">igen, iskolaidőn kívül</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q18-3" value="3" />
-                <Label htmlFor="q18-3">nincs külön foglalkozás ebből a tantárgyból</Label>
-              </div>
-            </RadioGroup>
-
-            <div className="pt-2">
-              <Input
-                type="text"
-                placeholder="Egyéb, írd le röviden..."
-                value={!["1", "2", "3"].includes(q18) ? q18 : ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val) {
-                    setQ18(val);
-                  } else {
-                    setQ18("");
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>19) Ebből a tantárgyból iskolán kívül:</Label>
-            <RadioGroup value={q19} onValueChange={setQ19} className="grid gap-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-maganora" value="1" />
-                <Label htmlFor="q19-maganora">magánórára, egyéni felkészítőre járok</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-csoportos" value="2" />
-                <Label htmlFor="q19-csoportos">csoportos felkészülésen veszek részt</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q19-nem" value="3" />
-                <Label htmlFor="q19-nem">nem veszek részt iskolán kívüli oktatásban ebből a tantárgyból</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {isAttendingOutside && (
-            <div className="space-y-2">
-              <Label>20) Az iskolán kívüli oktatáson azért veszek részt, mert:</Label>
-              <div className="grid gap-2">
-                {[
-                  { id: "1", label: "nagyon tetszik a téma, el szeretnék mélyülni még jobban az ismeretekben" },
-                  { id: "2", label: "szükségesnek érzem, mert nagyon le vagyok maradva az osztáytársakhoz képest" },
-                  { id: "3", label: "úgy érzem, hogy az iskolai oktatás/felkészítés nem elég a vizsgák sikerességéhez/jó jegyek eléréséhez" },
-                  { id: "4", label: "a szüleim ragaszkodnak hozzá, hogy magánórára járjak" },
-                  { id: "5", label: "túl sok a szabadidőm, nincs mivel kitöltsem" },
-                ].map((opt) => (
-                  <div key={opt.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`q20-${opt.id}`}
-                      checked={q20.includes(opt.id)}
-                      onCheckedChange={(checked) =>
-                        toggleMulti(opt.id, (updater) => setQ20(updater))
-                      }
-                    />
-                    <Label htmlFor={`q20-${opt.id}`}>{opt.label}</Label>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">Válassz legalább egyet.</p>
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <Label>21) Szeretném, ha ebből a tantárgyból:</Label>
-            <div className="grid gap-2">
-              {[
-                { id: "1", label: "gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot" },
-                { id: "2", label: "kevesebb házifeladat lenne" },
-                { id: "3", label: "kedvesebb/barátibb lenne a tanárunk" },
-                { id: "4", label: "több információt kapnék, ami felhasználhatnék a mindennapokban is" },
-                { id: "5", label: "Teljesen elégedett vagyok a mostani helyzettel" },
-              ].map((opt) => (
-                <div key={opt.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`q21-${opt.id}`}
-                    checked={q21.includes(opt.id)}
-                    onCheckedChange={() => toggleMulti(opt.id, (updater) => setQ21(updater))}
-                  />
-                  <Label htmlFor={`q21-${opt.id}`}>{opt.label}</Label>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground">Válassz legalább egyet.</p>
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="q22">
-              22) Kérünk, fogalmazd meg röviden, mi volt a legjobb ezen az órán?
-            </Label>
-            <Textarea
-              id="q22"
-              value={q22}
-              onChange={(e) => setQ22(e.target.value)}
-              placeholder="Rövid válasz..."
-              maxLength={400}
-            />
-            <p className="text-sm text-gray-500">
-              {q22.length}/400 karakter (min. 50)
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="q23">
-              23) Kérünk, fogalmazd meg röviden, mi nem tetszett ezen az órán?
-            </Label>
-            <Textarea
-              id="q23"
-              value={q23}
-              onChange={(e) => setQ23(e.target.value)}
-              placeholder="Rövid válasz..."
-              maxLength={400}
-            />
-            <p className="text-sm text-gray-500">
-              {q23.length}/400 karakter (min. 50)
-            </p>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <header>
-            <h2 className="text-xl font-semibold">Jelenlét és elmaradt tanórák</h2>
-          </header>
-
-          <div className="space-y-2">
-            <Label>24) Ebben a tanévben jelen voltam a tantárgyban megtartott:</Label>
-            <RadioGroup value={q24} onValueChange={setQ24} className="grid gap-2 md:grid-cols-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-25" value="1" />
-                <Label htmlFor="q24-25">órák 25%-án</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-50" value="2" />
-                <Label htmlFor="q24-50">órák 50%-án</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-75" value="3" />
-                <Label htmlFor="q24-75">órák 75%-án</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q24-90" value="4" />
-                <Label htmlFor="q24-90">órák több mint 90%-án</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label>25) Válaszd ki a tantárgyra vonatkozó helyes megállapítást:</Label>
-            <RadioGroup value={q25} onValueChange={setQ25} className="grid gap-2 md:grid-cols-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-25" value="1" />
-                <Label htmlFor="q25-25">az órák legfeljebb 25%-a volt megtartva</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-50" value="2" />
-                <Label htmlFor="q25-50">az órák legfeljebb 50%-a volt megtartva</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-75" value="3" />
-                <Label htmlFor="q25-75">az órák legfeljebb 75%-a volt megtartva</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q25-90" value="4" />
-                <Label htmlFor="q25-90">az órák legalább 90%-a meg volt tartva</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label>26) Válaszd ki a gyakoribb megállapítást arra az esetre, ha a Tanárod nem tudta megtartani az órát:</Label>
-            <RadioGroup value={q26} onValueChange={setQ26} className="grid gap-2 md:grid-cols-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-helyettes" value="1" />
-                <Label htmlFor="q26-helyettes">volt helyettesítő tanár</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-lyukas" value="2" />
-                <Label htmlFor="q26-lyukas">nem volt helyettesítés, lyukas óra lett belőle</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="q26-atren" value="3" />
-                <Label htmlFor="q26-atren">átrendeződött az órarend, így egy órával később/hamarabb mentünk/jöttünk az iskolából</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </section>
+        <AttendanceSection
+        q24={q24} setQ24={setQ24}
+        q25={q25} setQ25={setQ25}
+        q26={q26} setQ26={setQ26}
+        />
 
         <div className="flex gap-3">
           <Button variant="secondary" onClick={onSaveDraft}>Piszkozat mentése</Button>
@@ -606,6 +238,5 @@ export function FeedbackForm({ studentEmail,subjects, teachers}: FeedbackFormPro
         </div>
       </CardContent>
     </Card>
-
   );
 }
