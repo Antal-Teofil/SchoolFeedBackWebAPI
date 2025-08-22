@@ -57,7 +57,6 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             {
                 _logger.LogError("Something unexpected happenned!");
                 var response = request.CreateResponse(HttpStatusCode.InternalServerError);
-                await response.WriteAsJsonAsync(new { error = e.Message });
                 await response.WriteAsJsonAsync(new CreationResponseDTO(false, $"Error creating questionnaire: {e.Message}"));
                 return response;
             }

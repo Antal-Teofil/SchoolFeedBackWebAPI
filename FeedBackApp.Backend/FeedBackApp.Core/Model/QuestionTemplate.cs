@@ -7,7 +7,7 @@ namespace FeedBackApp.Core.Model
     {
         public string Id { get; set; } = string.Empty;
         public string Question { get; set; } = string.Empty;
-        public QuestionType Type { get; set; }
+        public QuestionType? Type { get; set; }
         public IList<string>? AnswerOptions { get; set; } = new List<string>();
     }
 }
