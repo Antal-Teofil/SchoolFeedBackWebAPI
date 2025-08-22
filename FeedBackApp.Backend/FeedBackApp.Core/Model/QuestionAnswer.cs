@@ -5,6 +5,6 @@ namespace FeedBackApp.Core.Model
     {
         public string QuestionId { get; set; } = string.Empty;
 
-        public string? Answer { get; set; } = null;
+        public string Answer { get; set; } = string.Empty;
     }
 }

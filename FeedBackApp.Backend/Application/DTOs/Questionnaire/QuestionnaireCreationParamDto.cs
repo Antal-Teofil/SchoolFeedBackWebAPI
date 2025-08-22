@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Application.DTOs.QuestionnaireDTOs
+namespace Application.DTOs.Questionnaire
 {
     public class QuestionnaireCreationParamDto
     {

@@ -1,10 +1,9 @@
-﻿using Application.DTOs.QuestionnaireDTOs;
+﻿using Application.DTOs.Questionnaire;
 using FeedBackApp.Core.Model;
-using Grpc.Core;
 
 namespace Application.Extensions.QuestionnaireExtensions
 {
-    public static class SurveyMetadataMapper
+    public static class SurveyMetadataMappingExtension
     {
         public static SurveyMetadata ToModel(this CreateSurveyMetadataDto dto) =>
             new()
