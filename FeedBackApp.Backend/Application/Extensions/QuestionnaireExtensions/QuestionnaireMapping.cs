@@ -1,6 +1,5 @@
 ﻿using Application.DTOs.QuestionnaireDTOs;
 using FeedBackApp.Core.Model;
-using Grpc.Core;
 
 namespace Application.Extensions.QuestionnaireExtensions
 {
@@ -92,6 +91,7 @@ namespace Application.Extensions.QuestionnaireExtensions
                 TeacherEmail = dto.TeacherEmail,
                 StudentEmail = dto.StudentEmail,
                 SubjectName = dto.SubjectName,
+                Status = false,
                 QuestionnaireResults = dto.QuestionnaireResults
                     .Select(q => q.ToModel())
                     .ToList() ?? new List<QuestionAnswer>(),
@@ -102,7 +102,7 @@ namespace Application.Extensions.QuestionnaireExtensions
                 SurveyId = model.SurveyId,
                 TeacherEmail = model.TeacherEmail,
                 StudentEmail = model.StudentEmail,
-                SubjectName = model.SubjectName,
+                SubjectName = model.SubjectName, 
                 QuestionnaireResults = model.QuestionnaireResults
                     .Select(q => q.ToDto())
                     .ToList() ?? new List<QuestionAnswerDto>()
