@@ -15,8 +15,8 @@ namespace Application.Validation
             RuleFor(dto => dto.StudentSets).NotEmpty().WithMessage("Student sets can not be empty");
             RuleForEach(dto => dto.StudentSets)
                 .SetValidator(new StudentSetValidator());
-            RuleFor(dto => dto.QuestionnaireTemplate).NotEmpty().WithMessage("Questionnaire template must be provided");
-            RuleForEach(dto => dto.QuestionnaireTemplate)
+            RuleFor(dto => dto.QuestionTemplates).NotEmpty().WithMessage("Question templates must be provided");
+            RuleForEach(dto => dto.QuestionTemplates)
                 .SetValidator(new QuestionTemplateValidator());
             RuleFor(dto => dto.Teachers).NotEmpty().WithMessage("Teacher list can not be empty");
             RuleForEach(dto => dto.Teachers)

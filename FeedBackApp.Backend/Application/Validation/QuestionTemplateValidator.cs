@@ -1,10 +1,6 @@
 ﻿using Application.DTOs.QuestionnaireDTOs;
+using FeedBackApp.Core.Model.Enum;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Validation
 {
@@ -17,6 +13,16 @@ namespace Application.Validation
             RuleFor(dto => dto.Type)
                 .NotNull().WithMessage("Question type is required")
                 .IsInEnum().WithMessage("Invalid question type: {PropertyValue}");
+            When(dto => dto.Type == QuestionType.MultinomialSingleChoice
+                     || dto.Type == QuestionType.MultipleChoice, () =>
+                     {
+                         RuleFor(dto => dto.AnswerOptions)
+                             .NotNull().WithMessage("Answer options are required for single- or multiple-choice questions questions")
+                             .Must(options => options != null && options.Any(o => !string.IsNullOrWhiteSpace(o)))
+                                 .WithMessage("Answer options must contain at least one non-empty option for single- or multiple-choice questions")
+                             .Must(options => options!.All(o => !string.IsNullOrWhiteSpace(o)))
+                                 .WithMessage("Answer options cannot contain empty values for single- or multiple-choice questions");
+                     });
         }
     }
 }
