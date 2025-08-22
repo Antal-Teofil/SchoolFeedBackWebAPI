@@ -78,6 +78,22 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             return true;
         }
 
+        public async Task<bool> DeleteQuestionTemplateBySurveyIdAsync(Guid surveyId)
+        {
+            var questionTemplate = await _context.QuestionnnareTemplates
+                .FirstAsync(q => q.Id == $"questiontemplates_{surveyId}");
+
+            if(questionTemplate == null)
+            {
+                return false;
+            }
+
+            _context.Remove(questionTemplate);
+            await _context.SaveChangesAsync();
+            return true;
+                
+        }
+
         public async Task<bool> DeleteSurveyMetadataAsync(Guid id)
         {
             var metadata = await _context.Surveys.FirstOrDefaultAsync(m => m.Id == id.ToString());
@@ -88,5 +104,6 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
     }
 }

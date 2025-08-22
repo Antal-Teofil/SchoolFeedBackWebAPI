@@ -34,8 +34,9 @@ namespace Application.Services
             {
                 bool surveyDeleted = await _repository.DeleteSurveyMetadataAsync(id);
                 bool questionnairesDeleted = await _repository.DeleteQuestionnairesBySurveyIdAsync(id);
+                bool questionTemplateDeleted = await _repository.DeleteQuestionTemplateBySurveyIdAsync(id);
 
-                if (surveyDeleted || questionnairesDeleted)
+                if (surveyDeleted || questionnairesDeleted || questionTemplateDeleted)
                 {
                     return new DeletionResponseDTO
                     (

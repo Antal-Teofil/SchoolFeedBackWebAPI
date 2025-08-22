@@ -8,5 +8,6 @@ namespace FeedBackApp.Core.Repositories
         public Task CompileAndSaveAsync(SurveyMetadata metadata);
         Task<bool> DeleteSurveyMetadataAsync(Guid id);
         Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId);
+        Task<bool> DeleteQuestionTemplateBySurveyIdAsync(Guid surveyId);
     }
 }
