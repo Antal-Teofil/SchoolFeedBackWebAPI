@@ -12,6 +12,6 @@ export type Evaluation = {
 export type StudentContext = {
     class: string;
     subjects: string[];
-    teachers: string[];
+    teachersBySubject:Record<string,string[]>;
     evaluations: Evaluation[];
 }

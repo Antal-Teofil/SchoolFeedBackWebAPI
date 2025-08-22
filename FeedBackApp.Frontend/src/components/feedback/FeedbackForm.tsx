@@ -11,14 +11,14 @@ import AttendanceSection from "./sections/AttendanceSection";
 import { toBackendPayload } from "@/utils/toBackendPayload";
 
 
-interface FeedbackFormProps {
+type FeedbackFormProps = {
   subjects: string[];
   teachersBySubject: Record<string, string[]>;
   evaluations: Evaluation[];
   onAfterChange?: () => void;
 }
 
-export function FeedbackForm({subjects, teachersBySubject, evaluations, onAfterChange }: FeedbackFormProps) {
+export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfterChange }: FeedbackFormProps) {
 
   const [subject, setSubject] = useState<string>("");
   const [teacher, setTeacher] = useState<string>("");
@@ -88,7 +88,7 @@ export function FeedbackForm({subjects, teachersBySubject, evaluations, onAfterC
     applyResponses(currentEvaluation?.responses);
   }, [subject, teacher, currentEvaluation]);
 
-  const evaluationId = currentEvaluation?.id;
+  const id = currentEvaluation?.id;
   const likertValues = ["1", "2", "3", "4", "5"];
 
   const qValues = useMemo(
@@ -174,7 +174,7 @@ export function FeedbackForm({subjects, teachersBySubject, evaluations, onAfterC
     }
 
     const data = collectResponses();
-    const payload=toBackendPayload(evaluationId,data,"Unsubmitted");
+    const payload = toBackendPayload(id, data, "Unsubmitted");
     console.log("Draft saved:", JSON.stringify(payload, null, 2));
     onAfterChange?.();
   };
@@ -183,8 +183,8 @@ export function FeedbackForm({subjects, teachersBySubject, evaluations, onAfterC
     const err = validate();
     if (err !== null) return;
     toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
-    const data =collectResponses();
-    const payload=toBackendPayload(evaluationId,data,"Submitted");
+    const data = collectResponses();
+    const payload = toBackendPayload(id, data, "Submitted");
     console.log("submit saved:", JSON.stringify(payload, null, 2));
     onAfterChange?.();
   };

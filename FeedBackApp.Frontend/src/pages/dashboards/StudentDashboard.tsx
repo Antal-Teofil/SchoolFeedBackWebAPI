@@ -14,7 +14,6 @@ export default function StudentDashboard() {
 
   const refreshContext = useCallback(async () => {
     try {
-      //const url = `${import.meta.env.BASE_URL}mock/form.json`;
       const res = await fetch("/mock/form.json", { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.json();
