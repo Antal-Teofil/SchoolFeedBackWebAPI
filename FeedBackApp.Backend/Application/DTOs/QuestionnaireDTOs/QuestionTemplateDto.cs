@@ -11,7 +11,7 @@ namespace Application.DTOs.QuestionnaireDTOs
 
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public QuestionType Type { get; set; }
+        public QuestionType? Type { get; set; }
 
         [JsonProperty("answerOptions")]
         public IList<string>? AnswerOptions { get; set; } = new List<string>();
