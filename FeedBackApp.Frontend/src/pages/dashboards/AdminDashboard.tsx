@@ -40,6 +40,11 @@ export default function AdminDashboard() {
       toast.error("Please set both start and end date.");
       return;
     }
+    if(startDate>=endDate){
+      toast.error("Start date must be sooner than end date.");
+      console.log("ejnye bejnye");
+      return;
+    }
     console.log(startDate);
     console.log(endDate);
     createQuestionnaires(
@@ -114,12 +119,14 @@ export default function AdminDashboard() {
       </header>
 
       <CardContent>
+        <label>Start Date:</label>
         <input
           type="date"
           className="border rounded p-2 w-full mb-4"
           value={startDate ? startDate.toISOString().split("T")[0] : ""}
           onChange={(e) => setStartDate(new Date(e.target.value))}
         />
+        <label>End Date:</label>
         <input
           type="date"
           className="border rounded p-2 w-full mb-4"
