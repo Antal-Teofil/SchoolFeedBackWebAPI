@@ -1,8 +1,7 @@
-﻿
-using Application.DTOs.Questionnaire;
+﻿using Application.DTOs.Questionnaire;
 using FluentValidation;
 
-namespace Application.Validation
+namespace Application.Validation.CreateValidation
 {
     public class CreateSurveyMetadataValidator : AbstractValidator<CreateSurveyMetadataDTO>
     {

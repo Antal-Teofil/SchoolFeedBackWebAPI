@@ -2,7 +2,7 @@
 using FeedBackApp.Core.Model.Enum;
 using FluentValidation;
 
-namespace Application.Validation
+namespace Application.Validation.CreateValidation
 {
     public class QuestionTemplateValidator : AbstractValidator<QuestionTemplateDTO>
     {
