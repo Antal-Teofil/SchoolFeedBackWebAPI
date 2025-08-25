@@ -5,6 +5,6 @@ namespace Application.DTOs.GetQuestionnairesDTOs
     {
         public string Name { get; set; }
         public string Id { get; set; }
-
+        public List<AnswerDTO> Answers { get; set; } = new List<AnswerDTO>();
     }
 }
