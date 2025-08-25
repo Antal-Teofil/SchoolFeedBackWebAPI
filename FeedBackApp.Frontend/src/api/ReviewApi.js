@@ -20,33 +20,32 @@ export const GetFormByEmail = async (email) => {
     const {data} =await apiClient.get('/students/context' ,{params: {email}});
     return data;
 }
-
 export const CreateQuestionnaires = async (payload) => {
-    const response = await apiClient.post(`/questionnaires`,payload); 
+    const response = await apiClient.post(`/questionnaires`, payload); 
     return response.data;
-}
+};
 
 export const GetQuestionnaireSummary = async (questionnaireId) => {
-    const response = await apiClient.get(`/questionnaires/${questionnaireId}`) //globalisan az osszes statisztika admin keri le
+    const response = await apiClient.get(`/questionnaires/${questionnaireId}`);
     return response.data;
-}
-
-export const ExportQuestionnaire = async (questionnaireId) => {
-  const { data } = await apiClient.get(`/questionnaires/${questionnaireId}/export`);
-  return data;
 };
 
 export const GetEvaluation = async (evaluationId) => {
-    const response = await apiClient.get(`/evaluations/${evaluationId}`)  //minden tanarnak a sajat tantargya ertekelese
+    const response = await apiClient.get(`/evaluations/${evaluationId}`);
     return response.data;
-}
+};
+
+export const DeleteQuestionnaire = async (questionnaireId) => {
+    const response = await apiClient.delete(`/questionnaires/${questionnaireId}`);
+    return response.data;
+};
+
+export const StartQuestionnaire = async (questionnaireId) => {
+    const response = await apiClient.post(`/questionnaires/${questionnaireId}/start`);
+    return response.data;
+};
 
 export const UpdateEvaluation = async (evaluationId) => {
     const response = await apiClient.patch(`/evaluations/${evaluationId}`) //minden questionnal
-    return response.data;
-}
-
-export const DeleteQuestionnaire = async (questionnaireId) => {
-    const response = await apiClient.delete(`/questionnaires/${questionnaireId}`) //admin deletel mindent a db bol
     return response.data;
 }
