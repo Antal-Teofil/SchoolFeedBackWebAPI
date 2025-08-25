@@ -182,7 +182,7 @@ export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfter
   const onSubmit = () => {
     const err = validate();
     if (err !== null) return;
-    toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
+    toast("Küldésre kész.");
     const data = collectResponses();
     const payload = toBackendPayload(id, data, "Submitted");
     console.log("submit saved:", JSON.stringify(payload, null, 2));
