@@ -3,10 +3,10 @@ import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useReviews } from "@/hooks/useReviews";
-import { Console } from "console";
 
 export default function AdminDashboard() {
   const [endDate, setEndDate] = useState<Date | undefined>();
+  const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState<string | undefined>();
 
   const {
     createQuestionnaires,
@@ -17,33 +17,28 @@ export default function AdminDashboard() {
     isDeletingQuestionnaire
   } = useReviews();
 
-  // ==========================
-  // Export (console log)
-  // ==========================
+  const mockQuestionnaires = [
+    { id: "q1", title: "Math Evaluation Spring 2025" },
+    { id: "q2", title: "Physics Midterm Survey" },
+    { id: "q3", title: "Chemistry Final Feedback" }
+  ];
+
+  const displayedQuestionnaires = questionnairesSummary || mockQuestionnaires;
+
   const exportExcel = () => {
-    if (!questionnairesSummary) {
+    if (!displayedQuestionnaires) {
       toast.error("No questionnaire summary available to export.");
       return;
     }
-
-    console.log("Questionnaire summary:", questionnairesSummary);
-
-    if (isLoadingQuestionnairesSummary) {
-      toast("Exporting results to Excel...");
-    } else {
-      toast.success("Export ready! Check console.");
-    }
+    console.log("Questionnaire summary:", displayedQuestionnaires);
+    toast.success("Export ready! Check console.");
   };
 
-  // ==========================
-  // Send Questionnaires
-  // ==========================
   const sendQuestionnaires = () => {
     if (!endDate) {
       toast.error("Please set an end date.");
       return;
     }
-
     createQuestionnaires(
       {
         startDate: new Date().toISOString(),
@@ -55,7 +50,6 @@ export default function AdminDashboard() {
           toast.success("Questionnaires created and sent!");
         },
         onError: () => {
-          console.log(endDate);
           console.log("Failed to create questionnaires.");
           toast.error("Failed to create questionnaires.");
         }
@@ -63,30 +57,23 @@ export default function AdminDashboard() {
     );
   };
 
-  // ==========================
-  // Delete Questionnaires
-  // ==========================
-  const deleteQuestionnaires = () => {
-    // Globális törlés, ha az API engedi, különben végig kell menni a summary-n
-    deleteQuestionnaire(undefined, {
+  const deleteSelectedQuestionnaire = () => {
+    if (!selectedQuestionnaireId) {
+      toast.error("Select a questionnaire first!");
+      return;
+    }
+    deleteQuestionnaire(selectedQuestionnaireId, {
       onSuccess: () => {
-        console.log("Questionnaires deleted successfully!");
-        toast.success("Questionnaires deleted successfully!");
+        console.log("Deleted questionnaire:", selectedQuestionnaireId);
+        toast.success("Deleted questionnaire!");
       },
       onError: () => {
-        console.log("Failed to delete questionnaires.");
-        toast.error("Failed to delete questionnaires.");
+        console.log("Failed to delete questionnaire:", selectedQuestionnaireId);
+        toast.error("Failed to delete questionnaire.");
       }
     });
-
-    if (isDeletingQuestionnaire) {
-      toast("Deleting questionnaires...");
-    }
   };
 
-  // ==========================
-  // JSX
-  // ==========================
   return (
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
@@ -97,19 +84,36 @@ export default function AdminDashboard() {
       <CardContent>
         <input
           type="date"
-          className="border rounded p-2 w-full"
+          className="border rounded p-2 w-full mb-4"
           value={endDate ? endDate.toISOString().split("T")[0] : ""}
           onChange={(e) => setEndDate(new Date(e.target.value))}
-        />
+        /></CardContent>
+      <div className="mt-6 flex flex-row gap-4">
+        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire}>
+          Send Questionnaires
+        </Button>
+      </div>
+      <br/>
+      <CardContent>
+        <select
+          className="border rounded p-2 w-full"
+          value={selectedQuestionnaireId}
+          onChange={(e) => setSelectedQuestionnaireId(e.target.value)}
+        >
+          <option value="">-- Select a questionnaire --</option>
+          {displayedQuestionnaires?.map((q: any) => (
+            <option key={q.id} value={q.id}>
+              {q.title || q.id}
+            </option>
+          ))}
+        </select>
       </CardContent>
 
       <div className="mt-6 flex flex-row gap-4">
         <Button onClick={exportExcel}>Export evaluations</Button>
-        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire}>
-          Send Questionnaires to students!
-        </Button>
-        <Button onClick={deleteQuestionnaires} disabled={isDeletingQuestionnaire}>
-          Delete Questionnaires
+
+        <Button onClick={deleteSelectedQuestionnaire} disabled={!selectedQuestionnaireId || isDeletingQuestionnaire}>
+          Delete Selected Questionnaire
         </Button>
       </div>
     </main>

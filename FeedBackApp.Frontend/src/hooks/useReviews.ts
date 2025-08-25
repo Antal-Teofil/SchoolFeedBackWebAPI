@@ -60,7 +60,7 @@ export const useReviews = (email?) => {
     })
 
     const { mutate: deleteQuestionnaire, isPending: isDeletingQuestionnaire } = useMutation({
-        mutationFn: DeleteQuestionnaire,
+        mutationFn:  (questionnaireId: string) => DeleteQuestionnaire(questionnaireId),
         onSuccess: (questionnaireId) => {
             client.invalidateQueries({
                 queryKey: ['deletedQuestionnaire', questionnaireId],
