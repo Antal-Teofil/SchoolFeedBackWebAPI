@@ -2,7 +2,7 @@
 {
     public class GetQuestionnairesResponseDTO
     {
-        public string Class { get; set; }
-        IList<SubjectDTO> Subjects { get; set; }
+        public string @Class { get; set; }
+        public List<SubjectDTO> Subjects { get; set; }
     }
 }
