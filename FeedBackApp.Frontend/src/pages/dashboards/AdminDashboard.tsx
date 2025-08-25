@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
+import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useReviews } from "@/hooks/useReviews";
 
 export default function AdminDashboard() {
   const [endDate, setEndDate] = useState<Date | undefined>();
+  const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState<string | undefined>();
 
   const {
     createQuestionnaires,
@@ -14,18 +14,35 @@ export default function AdminDashboard() {
     questionnairesSummary,
     isLoadingQuestionnairesSummary,
     deleteQuestionnaire,
-    isDeletingQuestionnaire
+    isDeletingQuestionnaire,
+    exportQuestionnaire,
+    isExporting
   } = useReviews();
 
+  const mockQuestionnaires = [
+    { id: "q1", title: "Math Evaluation Spring 2025" },
+    { id: "q2", title: "Physics Midterm Survey" },
+    { id: "q3", title: "Chemistry Final Feedback" }
+  ];
+
+  const displayedQuestionnaires = questionnairesSummary || mockQuestionnaires;
+
   const exportExcel = () => {
-    if (!questionnairesSummary) {
-      toast.error("No questionnaire summary available to export.");
-      return;
+     if (!selectedQuestionnaireId) {
+    toast.error("Select a questionnaire first!");
+    return;
+  }
+
+  exportQuestionnaire(selectedQuestionnaireId, {
+    onSuccess: () => {
+      console.log("Exported questionnaire:", selectedQuestionnaireId);
+      toast.success("Exported questionnaire!");
+    },
+    onError: () => {
+      console.log("Failed to export questionnaire:", selectedQuestionnaireId);
+      toast.error("Failed to export questionnaire.");
     }
-    console.log("Questionnaire summary:", questionnairesSummary);
-    if (isLoadingQuestionnairesSummary) {
-      toast("Exporting results to Excel...");
-    }
+  });
   };
 
   const sendQuestionnaires = () => {
@@ -33,34 +50,42 @@ export default function AdminDashboard() {
       toast.error("Please set an end date.");
       return;
     }
-
     createQuestionnaires(
       {
         startDate: new Date().toISOString(),
         endDate: endDate.toISOString()
       },
       {
-        onSuccess: () => toast.success("Questionnaires created and sent!"),
-        onError: () => toast.error("Failed to create questionnaires.")
+        onSuccess: () => {
+          console.log("Questionnaires created and sent!");
+          toast.success("Questionnaires created and sent!");
+        },
+        onError: () => {
+          console.log("Failed to create questionnaires.");
+          toast.error("Failed to create questionnaires.");
+        }
       }
     );
   };
 
-
-  const deleteQuestionnaires = () => {
-    deleteQuestionnaire(undefined,
-      {
-        onSuccess: () => toast.success("Questionnaires deleted successfully!"),
-        onError: () => toast.error("Failed to delete questionnaires.")
+  const deleteSelectedQuestionnaire = () => {
+    if (!selectedQuestionnaireId) {
+      toast.error("Select a questionnaire first!");
+      return;
+    }
+    deleteQuestionnaire(selectedQuestionnaireId, {
+      onSuccess: () => {
+        console.log("Deleted questionnaire:", selectedQuestionnaireId);
+        toast.success("Deleted questionnaire!");
+      },
+      onError: () => {
+        console.log("Failed to delete questionnaire:", selectedQuestionnaireId);
+        toast.error("Failed to delete questionnaire.");
       }
-    );
-    if (isDeletingQuestionnaire) {
-      toast("creating questionaries");
-    };
-  }
+    });
+  };
 
   return (
-
     <main className="container mx-auto px-6 py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -70,17 +95,32 @@ export default function AdminDashboard() {
       <CardContent>
         <input
           type="date"
-          className="border rounded p-2 w-full"
+          className="border rounded p-2 w-full mb-4"
           value={endDate ? endDate.toISOString().split("T")[0] : ""}
           onChange={(e) => setEndDate(new Date(e.target.value))}
-        />
+        /></CardContent>
+      <div className="mt-6 flex flex-row gap-4">
+        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire||!endDate}>Send Questionnaires</Button>
+      </div>
+      <br/>
+      <CardContent>
+        <select
+          className="border rounded p-2 w-full"
+          value={selectedQuestionnaireId}
+          onChange={(e) => setSelectedQuestionnaireId(e.target.value)}
+        >
+          <option value="">-- Select a questionnaire --</option>
+          {displayedQuestionnaires?.map((q: any) => (
+            <option key={q.id} value={q.id}>
+              {q.title || q.id}
+            </option>
+          ))}
+        </select>
       </CardContent>
 
-
       <div className="mt-6 flex flex-row gap-4">
-        <Button onClick={exportExcel}>Export evaluations</Button>
-        <Button onClick={sendQuestionnaires}>Send Questionnaires to students!</Button>
-        <Button onClick={deleteQuestionnaires}>Delete Questionnaires</Button>
+        <Button onClick={exportExcel} disabled={!selectedQuestionnaireId || isExporting}>Export evaluations</Button>
+        <Button onClick={deleteSelectedQuestionnaire} disabled={!selectedQuestionnaireId || isDeletingQuestionnaire}>Delete Selected Questionnaire</Button>
       </div>
     </main>
   );

@@ -30,6 +30,11 @@ export const GetQuestionnaireSummary = async (questionnaireId) => {
     return response.data;
 }
 
+export const ExportQuestionnaire = async (questionnaireId) => {
+  const { data } = await apiClient.get(`/questionnaires/${questionnaireId}/export`);
+  return data;
+};
+
 export const GetEvaluation = async (evaluationId) => {
     const response = await apiClient.get(`/evaluations/${evaluationId}`)  //minden tanarnak a sajat tantargya ertekelese
     return response.data;

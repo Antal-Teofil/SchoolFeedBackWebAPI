@@ -193,6 +193,7 @@ export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfter
 
   const onSubmit = () => {
     const err = validate();
+   
     if (err !== null) return;
 
     const data = collectResponses();
