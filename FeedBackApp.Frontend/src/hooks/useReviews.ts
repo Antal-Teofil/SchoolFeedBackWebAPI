@@ -1,14 +1,14 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle , GetFormByEmail} from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle, GetFormByEmail, ExportQuestionnaire } from "@/api/ReviewApi"
 import { useParams } from "react-router-dom";
-import {StudentContext} from "@/models/StudentContext"
+import { StudentContext } from "@/models/StudentContext"
 
 export const useReviews = (email?) => {
     const client = useQueryClient();
     const { questionnaireId, evaluationId } = useParams();
 
     const { mutate: createQuestionnaires, isPending: isCreatingQuestionnaire } = useMutation({
-        mutationFn:(payload: { startDate: string; endDate: string }) => CreateQuestionnaires(payload),
+        mutationFn: (payload: { startDate: string; endDate: string }) => CreateQuestionnaires(payload),
         onSuccess: () => {
             console.log("elert idaig");
             client.invalidateQueries({
@@ -24,7 +24,7 @@ export const useReviews = (email?) => {
         error: errorQuestionnairesSummary
     } = useQuery({
         queryKey: [`questionnairesSummary`, questionnaireId],
-        queryFn:() => GetQuestionnaireSummary(questionnaireId),
+        queryFn: () => GetQuestionnaireSummary(questionnaireId),
     })
 
     const {
@@ -34,18 +34,22 @@ export const useReviews = (email?) => {
         error: errorEvaluation
     } = useQuery({
         queryKey: [`evaluation`, evaluationId],
-        queryFn:() => GetEvaluation(evaluationId),
+        queryFn: () => GetEvaluation(evaluationId),
         enabled: !!evaluationId
     })
 
-    const{
+    const { mutate: exportQuestionnaire, isPending: isExporting } = useMutation({
+        mutationFn: (questionnaireId: string) => ExportQuestionnaire(questionnaireId),
+    });
+
+    const {
         data: form,
         isLoading: isLoadingForm,
         isError: isErrorForm,
         error: errorForm
-    } =useQuery<StudentContext>({
-        queryKey: ['form',email],
-        queryFn:() => GetFormByEmail(email!),
+    } = useQuery<StudentContext>({
+        queryKey: ['form', email],
+        queryFn: () => GetFormByEmail(email!),
         enabled: !!email,
     })
 
@@ -60,7 +64,7 @@ export const useReviews = (email?) => {
     })
 
     const { mutate: deleteQuestionnaire, isPending: isDeletingQuestionnaire } = useMutation({
-        mutationFn:  (questionnaireId: string) => DeleteQuestionnaire(questionnaireId),
+        mutationFn: (questionnaireId: string) => DeleteQuestionnaire(questionnaireId),
         onSuccess: (questionnaireId) => {
             client.invalidateQueries({
                 queryKey: ['deletedQuestionnaire', questionnaireId],
@@ -68,16 +72,17 @@ export const useReviews = (email?) => {
         }
     })
 
-    const { mutate: loginWithGoogle, isPending: isLoggingIn} = useMutation({
-    mutationFn: (idToken:string) => LoginWithGoogle(idToken)
+    const { mutate: loginWithGoogle, isPending: isLoggingIn } = useMutation({
+        mutationFn: (idToken: string) => LoginWithGoogle(idToken)
     });
 
     return {
-        createQuestionnaires,isCreatingQuestionnaire,
-        questionnairesSummary,isLoadingQuestionnairesSummary,isErrorQuestionnairesSummary,errorQuestionnairesSummary,
-        evaluation,isLoadingEvaluation,isErrorEvaluation,errorEvaluation,
-        updateEvaluation,isUpdatingEvaluation,deleteQuestionnaire,isDeletingQuestionnaire,
-        loginWithGoogle,isLoggingIn,
-        form,isLoadingForm,isErrorForm,errorForm
+        createQuestionnaires, isCreatingQuestionnaire,
+        questionnairesSummary, isLoadingQuestionnairesSummary, isErrorQuestionnairesSummary, errorQuestionnairesSummary,
+        evaluation, isLoadingEvaluation, isErrorEvaluation, errorEvaluation,
+        updateEvaluation, isUpdatingEvaluation, deleteQuestionnaire, isDeletingQuestionnaire,
+        loginWithGoogle, isLoggingIn,
+        form, isLoadingForm, isErrorForm, errorForm,
+        exportQuestionnaire,isExporting
     }
 }

@@ -14,7 +14,9 @@ export default function AdminDashboard() {
     questionnairesSummary,
     isLoadingQuestionnairesSummary,
     deleteQuestionnaire,
-    isDeletingQuestionnaire
+    isDeletingQuestionnaire,
+    exportQuestionnaire,
+    isExporting
   } = useReviews();
 
   const mockQuestionnaires = [
@@ -26,12 +28,21 @@ export default function AdminDashboard() {
   const displayedQuestionnaires = questionnairesSummary || mockQuestionnaires;
 
   const exportExcel = () => {
-    if (!displayedQuestionnaires) {
-      toast.error("No questionnaire summary available to export.");
-      return;
+     if (!selectedQuestionnaireId) {
+    toast.error("Select a questionnaire first!");
+    return;
+  }
+
+  exportQuestionnaire(selectedQuestionnaireId, {
+    onSuccess: () => {
+      console.log("Exported questionnaire:", selectedQuestionnaireId);
+      toast.success("Exported questionnaire!");
+    },
+    onError: () => {
+      console.log("Failed to export questionnaire:", selectedQuestionnaireId);
+      toast.error("Failed to export questionnaire.");
     }
-    console.log("Questionnaire summary:", displayedQuestionnaires);
-    toast.success("Export ready! Check console.");
+  });
   };
 
   const sendQuestionnaires = () => {
@@ -89,9 +100,7 @@ export default function AdminDashboard() {
           onChange={(e) => setEndDate(new Date(e.target.value))}
         /></CardContent>
       <div className="mt-6 flex flex-row gap-4">
-        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire}>
-          Send Questionnaires
-        </Button>
+        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire||!endDate}>Send Questionnaires</Button>
       </div>
       <br/>
       <CardContent>
@@ -110,11 +119,8 @@ export default function AdminDashboard() {
       </CardContent>
 
       <div className="mt-6 flex flex-row gap-4">
-        <Button onClick={exportExcel}>Export evaluations</Button>
-
-        <Button onClick={deleteSelectedQuestionnaire} disabled={!selectedQuestionnaireId || isDeletingQuestionnaire}>
-          Delete Selected Questionnaire
-        </Button>
+        <Button onClick={exportExcel} disabled={!selectedQuestionnaireId || isExporting}>Export evaluations</Button>
+        <Button onClick={deleteSelectedQuestionnaire} disabled={!selectedQuestionnaireId || isDeletingQuestionnaire}>Delete Selected Questionnaire</Button>
       </div>
     </main>
   );
