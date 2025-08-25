@@ -1,5 +1,7 @@
+using Application.DTOs;
 using Application.DTOs.Questionnaire;
 using Application.Services.Interfaces;
+using AzureFunctionsAPI.AzureEndPointReaction.Functions.Utils;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -37,20 +39,33 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json",
             bodyType: typeof(UpdateResponseDTO)
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, Guid id)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "questionnaire/{id:guid}")] HttpRequestData request, Guid id)
         {
-            var body = await new StreamReader(request.Body).ReadToEndAsync();
-
-            if (string.IsNullOrWhiteSpace(body))
+            try
             {
-                var emptyResponse = request.CreateResponse(HttpStatusCode.BadRequest);
-                await emptyResponse.WriteAsJsonAsync(new UpdateResponseDTO {Success=false, Message = "Request body cannot be empty." });
-                return emptyResponse;
+                var dto = JsonUtil.ReadFromJsonAsync<UpdateQuestionnaireDTO>(request);
+
+                if (dto == null)
+                {
+                    _logger.LogError("Invalid or empty JSON body");
+                    var badResponse = request.CreateResponse(HttpStatusCode.BadRequest);
+                    await badResponse.WriteStringAsync("Invalid or empty JSON body.");
+                    return badResponse;
+                }
+
+                var result = await _service.UpdateQuestionnaire(id, dto);
+
+                var response = request.CreateResponse(HttpStatusCode.OK);
+                await response.WriteAsJsonAsync(result);
+                return response;
             }
-            /*implementation in progress*/
-            var response = request.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new UpdateResponseDTO {Success=true, Message = "Update successful" });
-            return response;
+            catch(Exception e)
+            {
+                _logger.LogError("Something unexpected happenned!", e.Message);
+                var response = request.CreateResponse(HttpStatusCode.InternalServerError);
+                await response.WriteAsJsonAsync(new UpdateResponseDTO(false, $"Error updating questionnaire: {e.Message}"));
+                return response;
+            }
 
         }
     }
