@@ -10,6 +10,7 @@ export const useReviews = (email?) => {
     const { mutate: createQuestionnaires, isPending: isCreatingQuestionnaire } = useMutation({
         mutationFn:(payload: { startDate: string; endDate: string }) => CreateQuestionnaires(payload),
         onSuccess: () => {
+            console.log("elert idaig");
             client.invalidateQueries({
                 queryKey: ['questionnaires']
             });
