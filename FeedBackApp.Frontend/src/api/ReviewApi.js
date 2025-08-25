@@ -1,6 +1,5 @@
 import axios from "axios"
 
-
 const API_URL = import.meta.env.VITE_API_BASE_URL
 
 const apiClient = axios.create({
@@ -36,9 +35,9 @@ export const GetEvaluation = async (evaluationId) => {
     return response.data;
 }
 
-export const UpdateEvaluation = async (evaluationId) => {
-    const response = await apiClient.patch(`/evaluations/${evaluationId}`) //minden questionnal
-    return response.data;
+export const PerformQuestionnaireUpdate = async (id,payload) => {
+    const {data} = await apiClient.patch(`/evaluations/${id}`,payload) //minden questionnal
+    return data;
 }
 
 export const DeleteQuestionnaire = async (questionnaireId) => {

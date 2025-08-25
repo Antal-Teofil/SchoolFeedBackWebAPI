@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, UpdateEvaluation, DeleteQuestionnaire, LoginWithGoogle , GetFormByEmail} from "@/api/ReviewApi"
+import { CreateQuestionnaires, GetQuestionnaireSummary, GetEvaluation, PerformQuestionnaireUpdate, DeleteQuestionnaire, LoginWithGoogle , GetFormByEmail} from "@/api/ReviewApi"
 import { useParams } from "react-router-dom";
 import {StudentContext} from "@/models/StudentContext"
 
@@ -49,11 +49,11 @@ export const useReviews = (email?) => {
     })
 
 
-    const { mutate: updateEvaluation, isPending: isUpdatingEvaluation } = useMutation({
-        mutationFn: UpdateEvaluation,
-        onSuccess: (evaluationId) => {
+    const { mutate: performQuestionnaireUpdate, isPending: isPerformQuestionnaireUpdating } = useMutation({
+        mutationFn: PerformQuestionnaireUpdate,
+        onSuccess: (id) => {
             client.invalidateQueries({
-                queryKey: ['updatedEvaluation', evaluationId]
+                queryKey: ['questionnaireUpdate', id]
             });
         }
     })
@@ -75,7 +75,8 @@ export const useReviews = (email?) => {
         createQuestionnaires,isCreatingQuestionnaire,
         questionnairesSummary,isLoadingQuestionnairesSummary,isErrorQuestionnairesSummary,errorQuestionnairesSummary,
         evaluation,isLoadingEvaluation,isErrorEvaluation,errorEvaluation,
-        updateEvaluation,isUpdatingEvaluation,deleteQuestionnaire,isDeletingQuestionnaire,
+        performQuestionnaireUpdate,isPerformQuestionnaireUpdating,
+        deleteQuestionnaire,isDeletingQuestionnaire,
         loginWithGoogle,isLoggingIn,
         form,isLoadingForm,isErrorForm,errorForm
     }

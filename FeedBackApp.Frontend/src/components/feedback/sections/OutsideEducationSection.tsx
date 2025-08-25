@@ -10,9 +10,9 @@ type OutsideEducationSectionProps = {
     q19: string;
     setQ19: (val: string) => void;
     q20: string[];
-    setQ20: React.Dispatch<React.SetStateAction<string[]>>;
+    setQ20: (val: string[]) => void;
     q21: string[];
-    setQ21: React.Dispatch<React.SetStateAction<string[]>>;
+    setQ21: (val: string[]) => void;
     q22: string;
     setQ22: (val: string) => void;
     q23: string;
@@ -41,7 +41,7 @@ export default function OutsideEducationSection({
             </header>
 
             <div className="space-y-2">
-                <Label>18) A Tanár részesít külön foglalkozásban,, hogy felkészítsen vizsgára/versenyre/szereplésre:</Label>
+                <Label>18) A Tanár részesít külön foglalkozásban, hogy felkészítsen vizsgára/versenyre/szereplésre:</Label>
                 <RadioGroup value={["1", "2", "3"].includes(q18) ? q18 : ""} onValueChange={setQ18}>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem id="q18-1" value="1" />
@@ -79,7 +79,7 @@ export default function OutsideEducationSection({
                     </div>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem id="q19-3" value="3" />
-                        <Label htmlFor="q19-3"> nem veszek részt iskolán kívüli oktatásban ebből a tantárgyból</Label>
+                        <Label htmlFor="q19-3">nem veszek részt iskolán kívüli oktatásban ebből a tantárgyból</Label>
                     </div>
                 </RadioGroup>
             </div>
@@ -90,7 +90,7 @@ export default function OutsideEducationSection({
                     {[
                         { id: "1", label: "nagyon tetszik a téma, el szeretnék mélyülni még jobban az ismeretekben" },
                         { id: "2", label: "szükségesnek érzem, mert nagyon le vagyok maradva az osztáytársakhoz képest" },
-                        { id: "3", label: " úgy érzem, hogy az iskolai oktatás/felkészítés nem elég a vizsgák sikerességéhez/jó jegyek eléréséhez" },
+                        { id: "3", label: "úgy érzem, hogy az iskolai oktatás/felkészítés nem elég a vizsgák sikerességéhez/jó jegyek eléréséhez" },
                         { id: "4", label: "a szüleim ragaszkodnak hozzá, hogy magánórára járjak " },
                         { id: "5", label: "túl sok a szabadidőm, nincs mivel kitöltsem" },
                     ].map(opt => (
@@ -109,7 +109,7 @@ export default function OutsideEducationSection({
             <div className="space-y-2">
                 <Label>21) Szeretném, ha ebből a tantárgyból:</Label>
                 {[
-                    { id: "1", label: " gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot" },
+                    { id: "1", label: "gyakorlati szempontok szerint is megközelítenénk órákon a tananyagot" },
                     { id: "2", label: "kevesebb házifeladat lenne" },
                     { id: "3", label: "kedvesebb/barátibb lenne a tanárunk" },
                     { id: "4", label: "több információt kapnék, ami felhasználhatnék a mindennapokban is" },
@@ -135,7 +135,7 @@ export default function OutsideEducationSection({
                     maxLength={300}
                 />
                 <p className="text-sm text-gray-500">
-                    {q22.length}/400 karakter (min. 50) </p>
+                    {q22.length}/300 karakter (min. 50) </p>
             </div>
 
             <div className="space-y-2">
@@ -147,7 +147,7 @@ export default function OutsideEducationSection({
                     maxLength={300}
                 />
                 <p className="text-sm text-gray-500">
-                    {q23.length}/400 karakter (min. 50) </p>
+                    {q23.length}/300 karakter (min. 50) </p>
             </div>
         </section>
     )

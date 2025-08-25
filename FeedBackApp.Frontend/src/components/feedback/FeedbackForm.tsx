@@ -9,7 +9,7 @@ import ClassroomSection from "@/components/feedback/sections/ClassroomSection"
 import OutsideEducationSection from "@/components/feedback/sections/OutsideEducationSection"
 import AttendanceSection from "./sections/AttendanceSection";
 import { toBackendPayload } from "@/utils/toBackendPayload";
-
+import { useReviews } from "@/hooks/useReviews";
 
 type FeedbackFormProps = {
   subjects: string[];
@@ -19,7 +19,7 @@ type FeedbackFormProps = {
 }
 
 export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfterChange }: FeedbackFormProps) {
-
+  const { performQuestionnaireUpdate, isPerformQuestionnaireUpdating } = useReviews();
   const [subject, setSubject] = useState<string>("");
   const [teacher, setTeacher] = useState<string>("");
 
@@ -55,11 +55,11 @@ export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfter
     [subject, teachersBySubject]
   );
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (teacher && !teachersForSubject.includes(teacher)) {
       setTeacher("");
     }
-  }, [teachersForSubject, teacher]);
+  }, [teachersForSubject, teacher]); */
 
   const currentEvaluation = useMemo(
     () =>
@@ -176,15 +176,40 @@ export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfter
     const data = collectResponses();
     const payload = toBackendPayload(id, data, "Unsubmitted");
     console.log("Draft saved:", JSON.stringify(payload, null, 2));
+   /* performQuestionnaireUpdate(
+      { id, payload },
+      {
+        onSuccess: () => {
+          toast("Piszkozat sikeresen mentve!");
+          onAfterChange?.();
+        },
+        onError: () => {
+          toast("Hiba történt a piszkozat mentése közben!");
+        }
+      }
+    )*/
     onAfterChange?.();
   };
 
   const onSubmit = () => {
     const err = validate();
     if (err !== null) return;
-    toast("Küldésre kész. Supabase engedélyezésével anonim módon tudjuk tárolni.");
+
     const data = collectResponses();
     const payload = toBackendPayload(id, data, "Submitted");
+
+   /* performQuestionnaireUpdate(
+      {id,payload},
+      {
+        onSuccess: () => {
+          toast("Kérdőív beküldve!");
+          onAfterChange?.();
+        },
+        onError: () => {
+          toast("Hiba történt a beküldés közben!");
+        }
+      }
+    )*/
     console.log("submit saved:", JSON.stringify(payload, null, 2));
     onAfterChange?.();
   };
@@ -252,8 +277,8 @@ export function FeedbackForm({ subjects, teachersBySubject, evaluations, onAfter
         />
 
         <div className="flex gap-3">
-          <Button variant="secondary" onClick={onSaveDraft}>Piszkozat mentése</Button>
-          <Button variant="default" onClick={onSubmit}>Beküldés</Button>
+          <Button variant="secondary" onClick={onSaveDraft} disabled={isPerformQuestionnaireUpdating}>Piszkozat mentése</Button>
+          <Button variant="default" onClick={onSubmit} disabled={isPerformQuestionnaireUpdating}>Beküldés</Button>
         </div>
       </CardContent>
     </Card>

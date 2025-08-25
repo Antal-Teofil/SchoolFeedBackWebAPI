@@ -10,7 +10,7 @@ export function toBackendPayload(id: string, r: EvaluationResponses,status: stri
       ? value.map((s) => String(s)).join(",")
       : String(value ?? "").trim();
 
-    if (answer) responses.push({ question, answer }); 
+    responses.push({ question, answer }); 
   }
   return {id,status,responses};
 }
