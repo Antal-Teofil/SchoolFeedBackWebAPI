@@ -1,14 +1,11 @@
-using Application.Services.Interfaces;
-using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FeedBackApp.Backend.Infrastructure.Middleware.Utils
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
 namespace AzureFunctionsAPI.AzureEndPointReaction.Functions.Questionnaires;
 
-public class QuestionnaireGetRequestWorkerEncapsulator :IQuestionnaireWorker
+public class QuestionnaireGetRequestWorkerEncapsulator
 {
     private readonly ILogger<QuestionnaireGetRequestWorkerEncapsulator> _logger;
 
@@ -19,8 +16,26 @@ public class QuestionnaireGetRequestWorkerEncapsulator :IQuestionnaireWorker
 
     [RequireStudent]
     [Function("GetQuestionnaires")]
-    public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "questionnaires")] HttpRequestData request, FunctionContext context)
+    public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "questionnaires")] HttpRequestData request)
     {
-        throw new NotImplementedException();
+        var principal = request.FunctionContext.GetUser();
+
+        if (principal == null)
+        {
+            var unauthorizedResponse = request.CreateResponse(HttpStatusCode.Unauthorized);
+            return unauthorizedResponse;
+        }
+
+        // Extract the email claim
+        var email = principal.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+
+        if (string.IsNullOrEmpty(email))
+        {
+            var badResponse = request.CreateResponse(HttpStatusCode.BadRequest);
+            await badResponse.WriteStringAsync("Email not found in token.");
+            return badResponse;
+        }
+
+        _logger.LogInformation("Student email: {Email}", email);
     }
 }
