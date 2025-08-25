@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace AzureFunctionsAPI.AzureEndPointReaction.Functions.Questionnaires;
 
-public class QuestionnaireGetRequestWorkerEncapsulator
+public class QuestionnaireGetRequestWorkerEncapsulator : IQuestionnaireWorker
 {
     private readonly ILogger<QuestionnaireGetRequestWorkerEncapsulator> _logger;
     private readonly IQuestionnaireService _questionnaireService;
