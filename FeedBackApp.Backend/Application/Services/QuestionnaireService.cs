@@ -9,14 +9,14 @@ namespace Application.Services
     public class QuestionnaireService : IQuestionnaireService
     {
         private readonly IQuestionnaireRepository _repository;
-        private readonly IValidator<CreateSurveyMetadataDto> _validator;
-        public QuestionnaireService(IQuestionnaireRepository repository, IValidator<CreateSurveyMetadataDto> validator)
+        private readonly IValidator<CreateSurveyMetadataDTO> _validator;
+        public QuestionnaireService(IQuestionnaireRepository repository, IValidator<CreateSurveyMetadataDTO> validator)
         {
             _repository = repository;
             _validator = validator;
         }
 
-        public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDto dto)
+        public async Task<CreationResponseDTO> CompileAndSaveAsync(CreateSurveyMetadataDTO dto)
         {
 
             var validationResult = await _validator.ValidateAsync(dto);
@@ -38,6 +38,7 @@ namespace Application.Services
             }
             
         }
+
         public async Task<DeletionResponseDTO> DeleteSurveyAsync(Guid id)
         {
             try
@@ -69,6 +70,40 @@ namespace Application.Services
                 (
                     false,
                     $"Error deleting survey {id}: {ex.Message}"
+                );
+            }
+        }
+
+        public async Task<UpdateResponseDTO> UpdateQuestionnaire(string id, UpdateQuestionnaireDTO dto)
+        {
+            try
+            {
+                var questionnaire = dto.ToModel();
+                bool questionnaireUpdated = await _repository.UpdateQuestionnaire(id, questionnaire);
+
+                if (questionnaireUpdated)
+                {
+                    return new UpdateResponseDTO
+                    (
+                        true,
+                       $"Questionnaire {id} was updated successfully."
+                    );
+                }
+                else
+                {
+                    return new UpdateResponseDTO
+                    (
+                        false,
+                        $"Questionnaire {id} not found"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return new UpdateResponseDTO
+                (
+                    false,
+                    $"Error updateing questionnaire {id}: {ex.Message}"
                 );
             }
         }

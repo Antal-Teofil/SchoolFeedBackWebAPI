@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Application.Validation
 {
-    public class CreateSurveyMetadataValidator : AbstractValidator<CreateSurveyMetadataDto>
+    public class CreateSurveyMetadataValidator : AbstractValidator<CreateSurveyMetadataDTO>
     {
         public CreateSurveyMetadataValidator() 
         {

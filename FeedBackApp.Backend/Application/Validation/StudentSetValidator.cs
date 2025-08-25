@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.Validation
 {
-    public class StudentSetValidator : AbstractValidator<StudentSetDto>
+    public class StudentSetValidator : AbstractValidator<StudentSetDTO>
     {
         public StudentSetValidator() 
         {

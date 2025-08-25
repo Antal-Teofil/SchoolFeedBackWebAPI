@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.Validation
 {
-    public class QuestionnaireCreationParamValidator : AbstractValidator<QuestionnaireCreationParamDto>
+    public class QuestionnaireCreationParamValidator : AbstractValidator<QuestionnaireCreationParamDTO>
     {
         public QuestionnaireCreationParamValidator()
         {

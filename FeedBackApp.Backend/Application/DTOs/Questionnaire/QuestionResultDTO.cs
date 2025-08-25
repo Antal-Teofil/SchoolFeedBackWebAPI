@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Application.DTOs.Questionnaire
 {
-    public class QuestionnaireResult
+    public class QuestionResultDTO
     {
         [JsonProperty("questionId")]
         public string QuestionId { get; set; } = string.Empty;

@@ -42,7 +42,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence
 
             modelBuilder.Entity<QuestionnaireTemplate>()
                .HasDiscriminator<string>("DocumentType")
-               .HasValue<QuestionnaireTemplate>("QuestionTemaplate");
+               .HasValue<QuestionnaireTemplate>("QuestionTemplate");
 
         }
 

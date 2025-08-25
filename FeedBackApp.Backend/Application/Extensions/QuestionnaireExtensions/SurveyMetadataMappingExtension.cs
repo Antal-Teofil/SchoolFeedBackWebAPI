@@ -133,6 +133,20 @@ namespace Application.Extensions.QuestionnaireExtensions
                 Type = model.Type,
                 AnswerOptions = [..model.AnswerOptions]
             };
+         public static Questionnaire ToModel(this UpdateQuestionnaireDTO dto) =>
+            new()
+            {
+                QuestionnaireResults = dto.QuestionnaireResult
+                    .Select(q => q.ToModel())
+                    .ToList()
+            };
+        public static QuestionAnswer ToModel(this QuestionResultDTO dto) =>
+            new()
+            {
+                Answer = dto.Answer,
+                QuestionId = dto.QuestionId
+            };
+            
     };
 
     }

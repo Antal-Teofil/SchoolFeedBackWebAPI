@@ -104,5 +104,31 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             return true;
         }
 
+        public async Task<bool> UpdateQuestionnaire(string id, Questionnaire questionnaire)
+        {
+            var q = await _context.Questionnaires.FindAsync(id);
+
+            if(q == null)
+            {
+                return false;
+            }
+
+            foreach(var answer in questionnaire.QuestionnaireResults)
+            {
+                var exAnswer = q.QuestionnaireResults.FirstOrDefault(x => x.QuestionId == answer.QuestionId);
+                
+                if(exAnswer != null)
+                {
+                    exAnswer.Answer = answer.Answer;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Application.Validation
 {
-    public class QuestionTemplateValidator : AbstractValidator<QuestionTemplateDto>
+    public class QuestionTemplateValidator : AbstractValidator<QuestionTemplateDTO>
     {
         public QuestionTemplateValidator() 
         {

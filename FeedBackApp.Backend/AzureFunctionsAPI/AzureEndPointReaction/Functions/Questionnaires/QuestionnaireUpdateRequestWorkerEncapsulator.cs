@@ -1,4 +1,3 @@
-using Application.DTOs;
 using Application.DTOs.Questionnaire;
 using Application.Services.Interfaces;
 using AzureFunctionsAPI.AzureEndPointReaction.Functions.Utils;
@@ -12,9 +11,9 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireUpdateRequestWorkerEncapsulator(IEvaluationService service, ILogger<QuestionnaireUpdateRequestWorkerEncapsulator> logger) : IQuestionnaireWorker
+    public sealed class QuestionnaireUpdateRequestWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireUpdateRequestWorkerEncapsulator> logger)
     {
-        private readonly IEvaluationService _service = service;
+        private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireUpdateRequestWorkerEncapsulator> _logger = logger;
 
         [RequireStudent]
@@ -31,7 +30,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         )]
         [OpenApiRequestBody(
             contentType: "application/json",
-            bodyType: typeof(object), // replace with update DTO
+            bodyType: typeof(UpdateQuestionnaireDTO),
             Required = true
         )]
         [OpenApiResponseWithBody(
@@ -39,11 +38,11 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json",
             bodyType: typeof(UpdateResponseDTO)
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "questionnaire/{id:guid}")] HttpRequestData request, Guid id)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "questionnaire/{id}")] HttpRequestData request, string id)
         {
             try
             {
-                var dto = JsonUtil.ReadFromJsonAsync<UpdateQuestionnaireDTO>(request);
+                var dto = await JsonUtil.ReadFromJsonAsync<UpdateQuestionnaireDTO>(request);
 
                 if (dto == null)
                 {
