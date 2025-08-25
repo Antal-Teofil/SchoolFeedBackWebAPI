@@ -3,8 +3,15 @@ import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useReviews } from "@/hooks/useReviews";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { Navigate } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const user = useAuthStore((s) => s.user);
+  console.log(user);
+  if (!user) return <Navigate to="/" replace />;
+  if (user.role !== "Admin") return <Navigate to="/no-access" replace />
+
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState<string | undefined>();
 
@@ -28,21 +35,21 @@ export default function AdminDashboard() {
   const displayedQuestionnaires = questionnairesSummary || mockQuestionnaires;
 
   const exportExcel = () => {
-     if (!selectedQuestionnaireId) {
-    toast.error("Select a questionnaire first!");
-    return;
-  }
-
-  exportQuestionnaire(selectedQuestionnaireId, {
-    onSuccess: () => {
-      console.log("Exported questionnaire:", selectedQuestionnaireId);
-      toast.success("Exported questionnaire!");
-    },
-    onError: () => {
-      console.log("Failed to export questionnaire:", selectedQuestionnaireId);
-      toast.error("Failed to export questionnaire.");
+    if (!selectedQuestionnaireId) {
+      toast.error("Select a questionnaire first!");
+      return;
     }
-  });
+
+    exportQuestionnaire(selectedQuestionnaireId, {
+      onSuccess: () => {
+        console.log("Exported questionnaire:", selectedQuestionnaireId);
+        toast.success("Exported questionnaire!");
+      },
+      onError: () => {
+        console.log("Failed to export questionnaire:", selectedQuestionnaireId);
+        toast.error("Failed to export questionnaire.");
+      }
+    });
   };
 
   const sendQuestionnaires = () => {
@@ -100,9 +107,9 @@ export default function AdminDashboard() {
           onChange={(e) => setEndDate(new Date(e.target.value))}
         /></CardContent>
       <div className="mt-6 flex flex-row gap-4">
-        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire||!endDate}>Send Questionnaires</Button>
+        <Button onClick={sendQuestionnaires} disabled={isCreatingQuestionnaire || !endDate}>Send Questionnaires</Button>
       </div>
-      <br/>
+      <br />
       <CardContent>
         <select
           className="border rounded p-2 w-full"
