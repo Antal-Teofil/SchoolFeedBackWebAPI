@@ -1,5 +1,6 @@
-﻿using Application.DTOs.GetQuestionnairesDTOs;
-using Application.DTOs.QuestionnaireDTOs;
+
+using Application.DTOs.GetQuestionnairesDTOs;
+using Application.DTOs.Questionnaire;
 
 namespace Application.Services.Interfaces
 {

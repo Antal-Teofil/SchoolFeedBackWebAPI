@@ -23,7 +23,6 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
 
             _context.Add(metadata);
             _context.Add(tempForSave);
-            await _context.SaveChangesAsync();
 
             var questionnaires = new List<Questionnaire>();
 
@@ -46,7 +45,7 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
                             QuestionnaireResults = template
                                 .Select(t => new QuestionAnswer
                                 {
-                                    Answer = null,
+                                    Answer = string.Empty,
                                     QuestionId = t.Id
                                 })
                                 .ToList()
@@ -60,8 +59,8 @@ namespace FeedBackApp.Backend.Infrastructure.Persistence.Repository
             if (questionnaires.Count > 0)
             {
                 _context.AddRange(questionnaires);
-                await _context.SaveChangesAsync();
             }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteQuestionnairesBySurveyIdAsync(Guid surveyId)

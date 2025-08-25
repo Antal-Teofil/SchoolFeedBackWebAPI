@@ -44,7 +44,8 @@ var host = new HostBuilder()
 
         services.AddDbContext<AppDBContext>(options =>
         {
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionString")
+    ?? throw new InvalidOperationException("ConnectionString environment variable is not set.");
             options.UseCosmos(
                 connectionString : connectionString,
                 databaseName: "SchoolDatabase"
@@ -57,11 +58,11 @@ var host = new HostBuilder()
         services.AddScoped<IEvaluationService, EvaluationService>();
         services.AddScoped<IQuestionnaireRepository, QuestionnaireRepository>();
         services.AddScoped<IQuestionnaireService, QuestionnaireService>();
-        services.AddScoped<IQuestionnaireWorker, QuestionnaireCompilerWorkerEncapsulator>();
-        services.AddScoped<IQuestionnaireWorker, QuestionnaireDeletionWorkerEncapsulator>();
-        services.AddScoped<IQuestionnaireWorker, QuestionnaireEvaluationWorkerEncapsulator>();
-        services.AddScoped<IQuestionnaireWorker, QuestionnaireSummaryRequestWorkerEncapsulator>();
-        services.AddScoped<IQuestionnaireWorker, QuestionnaireUpdateRequestWorkerEncapsulator>();
+        services.AddScoped<QuestionnaireCompilerWorkerEncapsulator>();
+        services.AddScoped<QuestionnaireDeletionWorkerEncapsulator>();
+        services.AddScoped<QuestionnaireEvaluationWorkerEncapsulator>();
+        services.AddScoped<QuestionnaireSummaryRequestWorkerEncapsulator>();
+        services.AddScoped<QuestionnaireUpdateRequestWorkerEncapsulator>();
 
         services.AddValidatorsFromAssemblyContaining<CreateSurveyMetadataValidator>();
 

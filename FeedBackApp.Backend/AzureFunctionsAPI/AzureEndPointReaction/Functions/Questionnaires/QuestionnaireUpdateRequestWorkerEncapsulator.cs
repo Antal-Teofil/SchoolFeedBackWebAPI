@@ -1,4 +1,4 @@
-using Application.DTOs.QuestionnaireDTOs;
+using Application.DTOs.Questionnaire;
 using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -29,7 +29,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         )]
         [OpenApiRequestBody(
             contentType: "application/json",
-            bodyType: typeof(UpdateResponseDTO), // replace with update DTO
+            bodyType: typeof(object), // replace with update DTO
             Required = true
         )]
         [OpenApiResponseWithBody(
@@ -37,7 +37,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json",
             bodyType: typeof(UpdateResponseDTO)
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, FunctionContext context)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "evaluations/{id:guid}")] HttpRequestData request, Guid id)
         {
             var body = await new StreamReader(request.Body).ReadToEndAsync();
 

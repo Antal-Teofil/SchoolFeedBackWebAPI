@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.QuestionnaireDTOs
+﻿namespace Application.DTOs.Questionnaire
 {
     public class CreationResponseDTO
     {

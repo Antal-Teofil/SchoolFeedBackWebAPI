@@ -10,7 +10,7 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireSummaryRequestWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> logger) : IQuestionnaireWorker
+    public sealed class QuestionnaireSummaryRequestWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> logger) :IQuestionnaireWorker
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireSummaryRequestWorkerEncapsulator> _logger = logger;
@@ -32,7 +32,7 @@ namespace AzureEndPointReaction.Functions.Questionnaires
             contentType: "application/json",
             bodyType: typeof(object) // replace with `summary` DTO
         )]
-        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "questionnaires/{id:guid}")] HttpRequestData request, FunctionContext context)
+        public async Task<HttpResponseData> ExecuteTaskAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "questionnaires/{id:guid}")] HttpRequestData request, Guid id)
         {
             /*implementation in progress*/
             var response = request.CreateResponse(HttpStatusCode.OK);

@@ -1,4 +1,4 @@
-using Application.DTOs.QuestionnaireDTOs;
+using Application.DTOs.Questionnaire;
 using Application.Services.Interfaces;
 using FeedBackApp.Backend.Infrastructure.Middleware.Utils;
 using Microsoft.Azure.Functions.Worker;
@@ -10,7 +10,7 @@ using System.Net;
 
 namespace AzureEndPointReaction.Functions.Questionnaires
 {
-    public sealed class QuestionnaireDeletionWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireDeletionWorkerEncapsulator> logger) : IQuestionnaireWorker
+    public sealed class QuestionnaireDeletionWorkerEncapsulator(IQuestionnaireService service, ILogger<QuestionnaireDeletionWorkerEncapsulator> logger) :IQuestionnaireWorker
     {
         private readonly IQuestionnaireService _service = service;
         private readonly ILogger<QuestionnaireDeletionWorkerEncapsulator> _logger = logger;
@@ -37,21 +37,10 @@ namespace AzureEndPointReaction.Functions.Questionnaires
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError)]
         public async Task<HttpResponseData> ExecuteTaskAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "questionnaires/{id:guid}")] HttpRequestData request,
-            FunctionContext context)
+            Guid id)
         {
             try
             {
-                var routeData = context.BindingContext.BindingData;
-                if (!routeData.TryGetValue("id", out var idObj) || !Guid.TryParse(idObj?.ToString(), out Guid id))
-                {
-                    var badRequest = request.CreateResponse(HttpStatusCode.BadRequest);
-                    await badRequest.WriteAsJsonAsync(new DeletionResponseDTO
-                    (
-                         false,
-                        "Invalid or missing ID in the route."
-                    ));
-                    return badRequest;
-                }
 
                 DeletionResponseDTO result = await _service.DeleteSurveyAsync(id);
 

@@ -1,5 +1,6 @@
-﻿using Application.DTOs.GetQuestionnairesDTOs;
-using Application.DTOs.QuestionnaireDTOs;
+
+using Application.DTOs.GetQuestionnairesDTOs;
+using Application.DTOs.Questionnaire;
 using Application.Extensions.QuestionnaireExtensions;
 using Application.Services.Interfaces;
 using FeedBackApp.Core.Repositories;
@@ -10,7 +11,7 @@ namespace Application.Services
     public class QuestionnaireService : IQuestionnaireService
     {
         private readonly IQuestionnaireRepository _repository;
-        IValidator<CreateSurveyMetadataDto> _validator;
+        private readonly IValidator<CreateSurveyMetadataDto> _validator;
         public QuestionnaireService(IQuestionnaireRepository repository, IValidator<CreateSurveyMetadataDto> validator)
         {
             _repository = repository;
@@ -47,7 +48,7 @@ namespace Application.Services
                 bool questionnairesDeleted = await _repository.DeleteQuestionnairesBySurveyIdAsync(id);
                 bool questionTemplateDeleted = await _repository.DeleteQuestionTemplateBySurveyIdAsync(id);
 
-                if (surveyDeleted || questionnairesDeleted || questionTemplateDeleted)
+                if (surveyDeleted && questionnairesDeleted && questionTemplateDeleted)
                 {
                     return new DeletionResponseDTO
                     (

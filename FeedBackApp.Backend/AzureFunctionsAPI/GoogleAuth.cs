@@ -53,6 +53,18 @@ namespace AzureFunctionsAPI
             // Read POST body
             var body = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<LoginRequest>(body);
+            if (data is null || string.IsNullOrWhiteSpace(data.IdToken))
+            {
+                _logger.LogWarning("Login request missing or invalid IdToken");
+                var badReq = req.CreateResponse(System.Net.HttpStatusCode.BadRequest);
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    badReq.Headers.Add("Access-Control-Allow-Origin", origin);
+                    badReq.Headers.Add("Access-Control-Allow-Credentials", "true");
+                }
+                await badReq.WriteStringAsync("IdToken is required");
+                return badReq;
+            }
             GoogleJsonWebSignature.Payload payload;
 
             try
@@ -127,7 +139,7 @@ namespace AzureFunctionsAPI
 
         private string GenerateJwtToken(string email, bool isAdmin)
         {
-            string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey");
+            string secretKey = Environment.GetEnvironmentVariable("JwtSecretKey") ?? throw(new InvalidOperationException("JwtSecretKey environment variable not set."));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -150,7 +162,7 @@ namespace AzureFunctionsAPI
 
         public class LoginRequest
         {
-            public string IdToken { get; set; }
+            public required string IdToken { get; set; }
         }
     }
 }
