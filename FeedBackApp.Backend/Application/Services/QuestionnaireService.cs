@@ -94,7 +94,7 @@ namespace Application.Services
                     return new UpdateResponseDTO
                     (
                         false,
-                        $"Questionnaire {id} not found"
+                        $"Update questionnaire {id} failed"
                     );
                 }
             }
